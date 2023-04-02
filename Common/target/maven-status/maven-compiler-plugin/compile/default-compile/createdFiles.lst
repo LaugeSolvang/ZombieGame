@@ -1,0 +1,13 @@
+common\services\IEntityProcessingService.class
+common\data\entityparts\MovingPart.class
+common\data\GameData.class
+common\data\GameKeys.class
+common\services\IPostEntityProcessingService.class
+common\data\Entity.class
+common\data\entityparts\LifePart.class
+module-info.class
+common\data\entityparts\PositionPart.class
+common\data\entityparts\TimerPart.class
+common\data\entityparts\EntityPart.class
+common\data\World.class
+common\services\IGamePluginService.class
