@@ -6,8 +6,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="Bullet" />
         <module name="Player" />
+        <module name="Zombie" />
+        <module name="Collision" />
         <module name="Map" />
+        <module name="ZombieAI" />
+        <module name="Weapon" />
         <module name="Core" />
         <module name="Common" />
       </profile>
@@ -15,8 +20,11 @@
     <bytecodeTargetLevel>
       <module name="Common (1)" target="11" />
       <module name="Common (2)" target="11" />
+      <module name="Gun" target="19" />
+      <module name="Pistol" target="19" />
       <module name="Player (1)" target="11" />
       <module name="Player (2)" target="11" />
+      <module name="Revenant" target="19" />
     </bytecodeTargetLevel>
   </component>
 </project>

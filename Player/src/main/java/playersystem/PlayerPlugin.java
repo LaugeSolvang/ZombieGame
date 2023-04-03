@@ -22,19 +22,21 @@ public class PlayerPlugin implements IGamePluginService {
     }
 
     private Entity createPlayer(GameData gameData) {
-        float deceleration = 50;
-        float acceleration = 100;
-        float maxSpeed = 150;
+        Entity player = new Player();
+        player.setSprite(new Sprite(new Texture(Gdx.files.internal("Player/src/main/resources/player.png"))));
+
+        float deceleration = 300;
+        float acceleration = 600;
+        float maxSpeed = 100;
         float rotationSpeed = 5;
         float x = gameData.getDisplayWidth() / 2;
         float y = gameData.getDisplayHeight() / 2;
-        float radians = 3.1415f / 2;
+        float radians = 0;
+        float width = player.getSprite().getWidth();
+        float height = player.getSprite().getHeight();
 
-        Entity player = new Player();
         player.add(new MovingPart(deceleration, acceleration, maxSpeed, rotationSpeed));
-        player.add(new PositionPart(x, y, radians));
-
-        player.setSprite(new Sprite(new Texture(Gdx.files.internal("Player/src/main/resources/pixel_art.png"))));
+        player.add(new PositionPart(x, y, width, height, radians));
         player.getSprite().setPosition(x,y);
 
         return player;

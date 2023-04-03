@@ -7,6 +7,7 @@ import static java.lang.Math.*;
 
 public class MovingPart implements EntityPart{
     private float dx, dy;
+
     private float deceleration, acceleration;
     private float maxSpeed, rotationSpeed;
     private boolean left, right, up, down;
@@ -54,6 +55,23 @@ public class MovingPart implements EntityPart{
         this.down = down;
     }
 
+    public float getDx() {
+        return dx;
+    }
+
+    public float getDy() {
+        return dy;
+    }
+
+    public void setDx(float dx) {
+        this.dx = dx;
+    }
+
+    public void setDy(float dy) {
+        this.dy = dy;
+    }
+
+
     @Override
     public void process(GameData gameData, Entity entity) {
         PositionPart positionPart = entity.getPart(PositionPart.class);
@@ -65,6 +83,7 @@ public class MovingPart implements EntityPart{
         // moving up, down, left, or right
         float accelerationX = 0;
         float accelerationY = 0;
+
         if (up) {
             accelerationY += acceleration;
         }

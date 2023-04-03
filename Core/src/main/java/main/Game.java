@@ -70,6 +70,7 @@ public class Game implements ApplicationListener {
 
     private void draw() {
         sb.begin();
+        //Draw all sprites, update the sprites position beforehand
         for (Entity entity : world.getEntities()) {
             Sprite sprite = entity.getSprite();
             PositionPart positionPart = entity.getPart(PositionPart.class);

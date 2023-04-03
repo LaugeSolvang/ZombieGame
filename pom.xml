@@ -13,6 +13,11 @@
         <module>Common</module>
         <module>Player</module>
         <module>Map</module>
+        <module>Collision</module>
+        <module>Bullet</module>
+        <module>Zombie</module>
+        <module>Weapon</module>
+        <module>ZombieAI</module>
     </modules>
 
     <properties>

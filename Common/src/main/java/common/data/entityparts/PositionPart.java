@@ -6,13 +6,18 @@ import common.data.GameData;
 public class PositionPart implements EntityPart{
     private float x;
     private float y;
+    private float width;
+    private float height;
     private float radians;
 
-    public PositionPart(float x, float y, float radians) {
+    public PositionPart(float x, float y, float width, float height, float radians) {
         this.x = x;
         this.y = y;
+        this.width = width;
+        this.height = height;
         this.radians = radians;
     }
+
 
     public float getX() {
         return x;
@@ -24,6 +29,14 @@ public class PositionPart implements EntityPart{
 
     public float getRadians() {
         return radians;
+    }
+
+    public float getWidth() {
+        return width;
+    }
+
+    public float getHeight() {
+        return height;
     }
 
     public void setX(float newX) {

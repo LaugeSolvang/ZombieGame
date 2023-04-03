@@ -2,6 +2,7 @@ import common.services.IEntityProcessingService;
 import common.services.IGamePluginService;
 
 module Player {
+    exports playersystem;
     requires Common;
     requires com.badlogic.gdx;
     provides IEntityProcessingService with playersystem.PlayerProcessor;

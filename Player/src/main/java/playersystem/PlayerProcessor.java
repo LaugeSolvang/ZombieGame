@@ -7,9 +7,7 @@ import common.data.entityparts.MovingPart;
 import common.data.entityparts.PositionPart;
 import common.services.IEntityProcessingService;
 
-import static common.data.GameKeys.LEFT;
-import static common.data.GameKeys.RIGHT;
-import static common.data.GameKeys.UP;
+import static common.data.GameKeys.*;
 
 
 public class PlayerProcessor implements IEntityProcessingService {
@@ -22,7 +20,7 @@ public class PlayerProcessor implements IEntityProcessingService {
             movingPart.setLeft(gameData.getKeys().isDown(LEFT));
             movingPart.setRight(gameData.getKeys().isDown(RIGHT));
             movingPart.setUp(gameData.getKeys().isDown(UP));
-            movingPart.setDown(gameData.getKeys().isDown(UP));
+            movingPart.setDown(gameData.getKeys().isDown(DOWN));
 
             movingPart.process(gameData, player);
             positionPart.process(gameData, player);
