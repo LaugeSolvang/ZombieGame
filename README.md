@@ -1,2 +1,2 @@
-# ZombieGameTest
+# ZombieGame
 Semester Project
