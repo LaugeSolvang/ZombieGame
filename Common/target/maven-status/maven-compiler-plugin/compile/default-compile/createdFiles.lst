@@ -3,10 +3,12 @@ common\services\IEntityProcessingService.class
 common\data\entityparts\MovingPart.class
 common\data\GameData.class
 common\data\GameKeys.class
+common\data\entities\player\Player.class
 common\data\entities\zombie\Zombie.class
 common\services\IPostEntityProcessingService.class
 common\data\entities\weapon\WeaponSPI.class
 common\data\Entity.class
+common\data\entities\obstruction\Obstruction.class
 common\data\entityparts\LifePart.class
 common\data\entities\bullet\Bullet.class
 common\data\entities\zombie\IZombieAI.class

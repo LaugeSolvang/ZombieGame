@@ -6,7 +6,7 @@ import common.data.World;
 import common.data.entityparts.MovingPart;
 import common.data.entityparts.PositionPart;
 import common.services.IPostEntityProcessingService;
-import mapsystem.Obstruction;
+import common.data.entities.obstruction.Obstruction;
 
 public class CollisionProcessor implements IPostEntityProcessingService {
     @Override

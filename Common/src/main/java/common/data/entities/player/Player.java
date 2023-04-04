@@ -1,4 +1,4 @@
-package playersystem;
+package common.data.entities.player;
 
 
 import common.data.Entity;

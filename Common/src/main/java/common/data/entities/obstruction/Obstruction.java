@@ -1,4 +1,4 @@
-package mapsystem;
+package common.data.entities.obstruction;
 
 
 import common.data.Entity;

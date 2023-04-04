@@ -5,6 +5,7 @@ C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\enti
 C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\entities\bullet\Bullet.java
 C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\entities\weapon\IShoot.java
 C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\GameData.java
+C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\entities\player\Player.java
 C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\entities\weapon\Weapon.java
 C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\entityparts\MovingPart.java
 C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\entityparts\TimerPart.java
@@ -13,6 +14,7 @@ C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\enti
 C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\services\IGamePluginService.java
 C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\Entity.java
 C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\entityparts\LifePart.java
+C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\entities\obstruction\Obstruction.java
 C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\entities\zombie\IZombieAI.java
 C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\GameKeys.java
 C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\entities\zombie\Zombie.java

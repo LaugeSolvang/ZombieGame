@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import common.data.Entity;
 import common.data.GameData;
 import common.data.World;
+import common.data.entities.player.Player;
 import common.data.entityparts.MovingPart;
 import common.data.entityparts.PositionPart;
 import common.services.IGamePluginService;
