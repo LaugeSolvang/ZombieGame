@@ -3,6 +3,8 @@ package collisionsystem;
 import common.data.Entity;
 import common.data.GameData;
 import common.data.World;
+import common.data.entities.bullet.Bullet;
+import common.data.entities.bullet.BulletSPI;
 import common.data.entityparts.MovingPart;
 import common.data.entityparts.PositionPart;
 import common.services.IPostEntityProcessingService;
@@ -20,7 +22,7 @@ public class CollisionProcessor implements IPostEntityProcessingService {
                 }
                 // Check for collision between the two different entities
                 if (isColliding(firstEntity, secondEntity)) {
-                    handleCollision(firstEntity, secondEntity, gameData);
+                    handleCollision(firstEntity, secondEntity, gameData, world);
                 }
             }
         }
@@ -44,12 +46,16 @@ public class CollisionProcessor implements IPostEntityProcessingService {
                 firstY + firstHeight > secondY);
     }
 
-    private void handleCollision(Entity firstEntity, Entity secondEntity, GameData gameData) {
+    private void handleCollision(Entity firstEntity, Entity secondEntity, GameData gameData, World world) {
         if (firstEntity instanceof Obstruction || secondEntity instanceof Obstruction) {
 
             // Determine which entity is the player and which is the obstruction
             Entity obstruction = firstEntity instanceof Obstruction ? firstEntity : secondEntity;
             Entity entity = obstruction == firstEntity ? secondEntity : firstEntity;
+
+            if (entity.getClass() == Bullet.class) {
+                world.removeEntity(entity);
+            }
 
             //Get horizontal and vertical velocity of the entity
             MovingPart entityMovement = entity.getPart(MovingPart.class);
