@@ -2,7 +2,8 @@ package common.data.entities.weapon;
 
 import common.data.Entity;
 import common.data.GameData;
+import common.data.World;
 
 public interface IShoot {
-    Entity useWeapon(Entity shooter, GameData gameData);
+    void useWeapon(Entity shooter, GameData gameData, World world);
 }

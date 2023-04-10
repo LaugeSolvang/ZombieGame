@@ -7,12 +7,20 @@ import common.data.Entity;
 import common.data.GameData;
 import common.data.World;
 import common.data.entities.obstruction.Obstruction;
+import common.data.entities.weapon.IShoot;
+import common.data.entities.weapon.WeaponSPI;
 import common.data.entityparts.PositionPart;
 import common.services.IGamePluginService;
+
+import java.util.Collection;
+import java.util.ServiceLoader;
+
+import static java.util.stream.Collectors.toList;
 
 public class MapPlugin implements IGamePluginService {
     String[][] map;
     private Entity obstruction;
+    private WeaponSPI weapon;
     @Override
     public void start(GameData gameData, World world) {
         //Create a map with strings per 32x32 pixels of the whole display
@@ -27,8 +35,11 @@ public class MapPlugin implements IGamePluginService {
             }
         }
         //Spawn an obstruction closer to the centre
-        obstruction = createObstruction(gameData.getDisplayWidth()/2-64, gameData.getDisplayHeight()/2-64);
-        world.addEntity(obstruction);
+        world.addEntity(createObstruction(gameData.getDisplayWidth()/2-64, gameData.getDisplayHeight()/2-64));
+
+        for (WeaponSPI weapon : getWeaponSPI()) {
+            world.addEntity(weapon.createWeapon(gameData.getDisplayWidth()/2+64, gameData.getDisplayHeight()/2+64));
+        }
 
     }
 
@@ -50,5 +61,9 @@ public class MapPlugin implements IGamePluginService {
 
         return obstruction;
 
+    }
+
+    private Collection<? extends WeaponSPI> getWeaponSPI() {
+        return ServiceLoader.load(WeaponSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
     }
 }

@@ -6,6 +6,7 @@ import common.data.GameKeys;
 import common.data.World;
 import common.data.entities.bullet.BulletSPI;
 import common.data.entities.player.Player;
+import common.data.entities.weapon.IShoot;
 import common.data.entityparts.MovingPart;
 import common.data.entityparts.PositionPart;
 import common.services.IEntityProcessingService;
@@ -33,15 +34,15 @@ public class PlayerProcessor implements IEntityProcessingService {
             positionPart.process(gameData, player);
 
             if (gameData.getKeys().isDown(GameKeys.SPACE)) {
-                for (BulletSPI bullet : getBulletSPIs()) {
-                    world.addEntity(bullet.createBullet(player, gameData));
+                for (IShoot weapon : getIShoot()) {
+                    weapon.useWeapon(player, gameData, world);
                 }
             }
-
         }
 
     }
-    private Collection<? extends BulletSPI> getBulletSPIs() {
-        return ServiceLoader.load(BulletSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+    private Collection<? extends IShoot> getIShoot() {
+        return ServiceLoader.load(IShoot.class).stream().map(ServiceLoader.Provider::get).collect(toList());
     }
+
 }

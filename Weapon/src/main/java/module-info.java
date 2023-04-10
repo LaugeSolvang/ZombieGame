@@ -6,9 +6,10 @@ import common.services.IGamePluginService;
 
 module Weapon {
     requires Common;
+    requires com.badlogic.gdx;
     provides IEntityProcessingService with weaponsystem.WeaponProcessor;
     provides IGamePluginService with weaponsystem.WeaponPlugin;
-    provides WeaponSPI with weaponsystem.WeaponProcessor;
     provides IShoot with weaponsystem.WeaponProcessor;
+    provides WeaponSPI with weaponsystem.WeaponPlugin;
     uses BulletSPI;
 }
