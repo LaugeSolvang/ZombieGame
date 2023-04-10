@@ -109,6 +109,7 @@ public class CollisionProcessor implements IPostEntityProcessingService {
             Zombie zombie = (Zombie) (firstEntity instanceof Zombie ? firstEntity : secondEntity);
             Player player = (Player) (zombie == firstEntity ? secondEntity : firstEntity);
 
+
             LifePart lifePart = player.getPart(LifePart.class);
             if (lifePart.getLife() > 0) {
                 lifePart.setLife(lifePart.getLife() - 1);

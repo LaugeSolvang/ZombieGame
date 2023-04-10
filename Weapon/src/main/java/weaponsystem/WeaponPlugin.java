@@ -28,8 +28,6 @@ public class WeaponPlugin implements IGamePluginService, WeaponSPI {
         Entity weapon = new Weapon();
         weapon.setSprite(new Sprite(new Texture(Gdx.files.internal("Bullet/src/main/resources/bullet.png"))));
 
-        PositionPart weaponPos = weapon.getPart(PositionPart.class);
-
         float width = weapon.getSprite().getWidth();
         float height = weapon.getSprite().getHeight();
 
