@@ -80,27 +80,27 @@ public class MovingPart implements EntityPart{
         float radians = positionPart.getRadians();
         float dt = gameData.getDelta();
 
-        // moving up, down, left, or right
-        float accelerationX = 0;
-        float accelerationY = 0;
-
-        if (up) {
-            accelerationY += acceleration;
-        }
-        if (down) {
-            accelerationY -= acceleration;
-        }
+        // turning
         if (left) {
-            accelerationX -= acceleration;
+            radians = 3.14f;
         }
+
         if (right) {
-            accelerationX += acceleration;
+            radians = 0;
         }
 
         // accelerating
-        dx += accelerationX * dt;
-        dy += accelerationY * dt;
+        if (up) {
+            radians = 3.14f / 2;
+        }
 
+        if (down) {
+            radians = 3*3.14f / 2;
+        }
+        if (left || right || up || down ) {
+            dx += cos(radians) * acceleration * dt;
+            dy += sin(radians) * acceleration * dt;
+        }
         // deccelerating
         float vec = (float) sqrt(dx * dx + dy * dy);
         if (vec > 0) {

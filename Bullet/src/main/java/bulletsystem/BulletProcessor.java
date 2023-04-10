@@ -25,7 +25,6 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
             PositionPart positionPart = bullet.getPart(PositionPart.class);
             MovingPart movingPart = bullet.getPart(MovingPart.class);
             TimerPart timerPart = bullet.getPart(TimerPart.class);
-            movingPart.setUp(true);
 
             if (timerPart.getExpiration() < 0) {
                 world.removeEntity(bullet);
@@ -44,7 +43,6 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
 
         PositionPart weaponPos = weapon.getPart(PositionPart.class);
 
-
         float x = weaponPos.getX();
         float y = weaponPos.getY();
         float radians = weaponPos.getRadians();
@@ -61,6 +59,18 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
         bullet.add(new LifePart(1));
         bullet.add(new MovingPart(0, 5000000, speed, 5));
         bullet.add(new TimerPart(1));
+
+
+        MovingPart movingPart = bullet.getPart(MovingPart.class);
+        if (radians == 0) {
+            movingPart.setRight(true);
+        } else if (radians == 3.14f) {
+            movingPart.setLeft(true);
+        } else if (radians == 3.14f/2) {
+            movingPart.setUp(true);
+        } else if (radians == 3*3.14f/2) {
+            movingPart.setDown(true);
+        }
 
         return bullet;
     }

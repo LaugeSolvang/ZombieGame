@@ -14,6 +14,7 @@ common\data\entities\bullet\Bullet.class
 common\data\entities\zombie\IZombieAI.class
 module-info.class
 common\data\entityparts\PositionPart.class
+common\data\entities\zombie\ZombieSPI.class
 common\data\entityparts\TimerPart.class
 common\data\entityparts\EntityPart.class
 common\data\entities\weapon\Weapon.class

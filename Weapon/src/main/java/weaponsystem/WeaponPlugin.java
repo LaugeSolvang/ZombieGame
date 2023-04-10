@@ -31,7 +31,7 @@ public class WeaponPlugin implements IGamePluginService, WeaponSPI {
         float width = weapon.getSprite().getWidth();
         float height = weapon.getSprite().getHeight();
 
-        weapon.add(new PositionPart(x, y, width, height, 0));
+        weapon.add(new PositionPart(x, y, width, height, 3.14f/2));
         weapon.getSprite().setPosition(x,y);
 
         return weapon;
