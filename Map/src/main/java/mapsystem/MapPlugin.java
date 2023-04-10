@@ -40,9 +40,11 @@ public class MapPlugin implements IGamePluginService {
         for (WeaponSPI weapon : getWeaponSPI()) {
             world.addEntity(weapon.createWeapon(gameData.getDisplayWidth()/2+64, gameData.getDisplayHeight()/2+64));
         }
+
         for (ZombieSPI zombie : getZombieSPI()) {
             world.addEntity(zombie.createZombie(gameData.getDisplayWidth()/2+128, gameData.getDisplayHeight()/2+128));
         }
+
 
     }
 
@@ -66,11 +68,11 @@ public class MapPlugin implements IGamePluginService {
 
     }
 
-    private Collection<? extends WeaponSPI> getWeaponSPI() {
+    protected Collection<? extends WeaponSPI> getWeaponSPI() {
         return ServiceLoader.load(WeaponSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
     }
 
-    private Collection<? extends ZombieSPI> getZombieSPI() {
+    protected Collection<? extends ZombieSPI> getZombieSPI() {
         return ServiceLoader.load(ZombieSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
     }
 

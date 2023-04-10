@@ -66,6 +66,7 @@ public class Game implements ApplicationListener {
         for (IPostEntityProcessingService postEntityProcessorService : getPostEntityProcessingServices()) {
             postEntityProcessorService.process(gameData, world);
         }
+        gameData.setGameTime(gameData.getGameTime()+gameData.getDelta());
     }
 
     private void draw() {
@@ -76,7 +77,6 @@ public class Game implements ApplicationListener {
             PositionPart positionPart = entity.getPart(PositionPart.class);
             sprite.setX(positionPart.getX());
             sprite.setY(positionPart.getY());
-            sprite.setRotation((float) Math.toDegrees(positionPart.getRadians()));
 
             entity.getSprite().draw(sb);
         }
