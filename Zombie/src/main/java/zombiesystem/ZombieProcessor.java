@@ -21,14 +21,16 @@ public class ZombieProcessor implements IEntityProcessingService {
 
             Random rand = new Random();
 
-            int direction = rand.nextInt(3) - 1; // -1 for left, 0 for up/down, 1 for right
+            int direction = rand.nextInt(4) - 1; // -1 for left, 0 for up/down, 1 for right
 
             if (direction == -1) {
                 movingPart.setLeft(true);
             } else if (direction == 0) {
                 movingPart.setUp(true);
-            } else {
+            } else if (direction == 1){
                 movingPart.setRight(true);
+            } else {
+                movingPart.setDown(true);
             }
 
             movingPart.process(gameData, enemy);
@@ -38,6 +40,8 @@ public class ZombieProcessor implements IEntityProcessingService {
             movingPart.setRight(false);
             movingPart.setLeft(false);
             movingPart.setUp(false);
+            movingPart.setDown(false);
+
         }
     }
 }
