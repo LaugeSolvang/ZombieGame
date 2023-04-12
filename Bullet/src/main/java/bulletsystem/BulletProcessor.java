@@ -8,6 +8,7 @@ import common.data.GameData;
 import common.data.World;
 import common.data.entities.bullet.Bullet;
 import common.data.entities.bullet.BulletSPI;
+import common.data.entities.player.Player;
 import common.data.entityparts.LifePart;
 import common.data.entityparts.MovingPart;
 import common.data.entityparts.PositionPart;

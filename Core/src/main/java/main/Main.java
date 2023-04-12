@@ -6,7 +6,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 public class Main {
     public static void main(String[] args) {
         Lwjgl3ApplicationConfiguration cfg = new Lwjgl3ApplicationConfiguration();
-        cfg.setTitle("Asteroids");
+        cfg.setTitle("Zombie game");
         int width = 1500;
         int height = 800;
         cfg.setWindowSizeLimits(width, height, width, height);

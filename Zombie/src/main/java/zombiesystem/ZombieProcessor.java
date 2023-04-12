@@ -27,7 +27,7 @@ public class ZombieProcessor implements IEntityProcessingService {
                 movingPart.setLeft(true);
             } else if (direction == 0) {
                 movingPart.setUp(true);
-            } else if (direction == 1){
+            } else if (direction == 1) {
                 movingPart.setRight(true);
             } else {
                 movingPart.setDown(true);
@@ -41,7 +41,6 @@ public class ZombieProcessor implements IEntityProcessingService {
             movingPart.setLeft(false);
             movingPart.setUp(false);
             movingPart.setDown(false);
-
         }
     }
 }

@@ -1,23 +1,23 @@
-C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\entities\zombie\ZombieSPI.java
-C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\services\IEntityProcessingService.java
-C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\module-info.java
-C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\entities\bullet\BulletSPI.java
-C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\entityparts\PositionPart.java
-C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\entities\bullet\Bullet.java
-C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\entities\weapon\IShoot.java
-C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\GameData.java
-C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\entities\player\Player.java
-C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\entities\weapon\Weapon.java
-C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\entityparts\MovingPart.java
-C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\entityparts\TimerPart.java
-C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\entityparts\EntityPart.java
-C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\entities\weapon\WeaponSPI.java
-C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\services\IGamePluginService.java
-C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\Entity.java
-C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\entityparts\LifePart.java
-C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\entities\obstruction\Obstruction.java
-C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\entities\zombie\IZombieAI.java
-C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\GameKeys.java
-C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\entities\zombie\Zombie.java
-C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\data\World.java
-C:\Users\lauge\IdeaProjects\ZombieGameTest\Common\src\main\java\common\services\IPostEntityProcessingService.java
+/Users/patrickholm-jensen/Documents/4. sem/ZombieGame/Common/src/main/java/common/data/entities/weapon/IShoot.java
+/Users/patrickholm-jensen/Documents/4. sem/ZombieGame/Common/src/main/java/common/data/entities/obstruction/Obstruction.java
+/Users/patrickholm-jensen/Documents/4. sem/ZombieGame/Common/src/main/java/common/data/entities/bullet/Bullet.java
+/Users/patrickholm-jensen/Documents/4. sem/ZombieGame/Common/src/main/java/common/data/entityparts/EntityPart.java
+/Users/patrickholm-jensen/Documents/4. sem/ZombieGame/Common/src/main/java/common/data/entities/player/Player.java
+/Users/patrickholm-jensen/Documents/4. sem/ZombieGame/Common/src/main/java/common/services/IPostEntityProcessingService.java
+/Users/patrickholm-jensen/Documents/4. sem/ZombieGame/Common/src/main/java/common/data/Entity.java
+/Users/patrickholm-jensen/Documents/4. sem/ZombieGame/Common/src/main/java/common/data/entities/weapon/WeaponSPI.java
+/Users/patrickholm-jensen/Documents/4. sem/ZombieGame/Common/src/main/java/common/data/entities/zombie/IZombieAI.java
+/Users/patrickholm-jensen/Documents/4. sem/ZombieGame/Common/src/main/java/common/data/entityparts/MovingPart.java
+/Users/patrickholm-jensen/Documents/4. sem/ZombieGame/Common/src/main/java/common/services/IEntityProcessingService.java
+/Users/patrickholm-jensen/Documents/4. sem/ZombieGame/Common/src/main/java/common/data/entities/weapon/Weapon.java
+/Users/patrickholm-jensen/Documents/4. sem/ZombieGame/Common/src/main/java/common/data/World.java
+/Users/patrickholm-jensen/Documents/4. sem/ZombieGame/Common/src/main/java/common/data/GameData.java
+/Users/patrickholm-jensen/Documents/4. sem/ZombieGame/Common/src/main/java/common/data/GameKeys.java
+/Users/patrickholm-jensen/Documents/4. sem/ZombieGame/Common/src/main/java/common/services/IGamePluginService.java
+/Users/patrickholm-jensen/Documents/4. sem/ZombieGame/Common/src/main/java/module-info.java
+/Users/patrickholm-jensen/Documents/4. sem/ZombieGame/Common/src/main/java/common/data/entities/zombie/Zombie.java
+/Users/patrickholm-jensen/Documents/4. sem/ZombieGame/Common/src/main/java/common/data/entities/zombie/ZombieSPI.java
+/Users/patrickholm-jensen/Documents/4. sem/ZombieGame/Common/src/main/java/common/data/entities/bullet/BulletSPI.java
+/Users/patrickholm-jensen/Documents/4. sem/ZombieGame/Common/src/main/java/common/data/entityparts/LifePart.java
+/Users/patrickholm-jensen/Documents/4. sem/ZombieGame/Common/src/main/java/common/data/entityparts/TimerPart.java
+/Users/patrickholm-jensen/Documents/4. sem/ZombieGame/Common/src/main/java/common/data/entityparts/PositionPart.java

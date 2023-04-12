@@ -1,5 +1,7 @@
 package playersystem;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import common.data.Entity;
 import common.data.GameData;
 import common.data.GameKeys;
@@ -33,10 +35,20 @@ public class PlayerProcessor implements IEntityProcessingService {
             movingPart.process(gameData, player);
             positionPart.process(gameData, player);
 
-            if (gameData.getKeys().isDown(GameKeys.SPACE)) {
+            /*
+            isPressed shoots everytime the button is pressed
+            isDown shoots when the button is being held down (i.e. machinegun)
+             */
+            if (gameData.getKeys().isPressed(GameKeys.SPACE)) {
                 for (IShoot weapon : getIShoot()) {
                     weapon.useWeapon(player, gameData, world);
                 }
+            }
+            if (gameData.getKeys().isDown(RIGHT)){
+                player.setSprite(new Sprite(new Texture("Player/src/main/resources/player-kopi.png")));
+            }
+            if (gameData.getKeys().isDown(LEFT)){
+                player.setSprite(new Sprite(new Texture("Player/src/main/resources/player.png")));
             }
         }
 

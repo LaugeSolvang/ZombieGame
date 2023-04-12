@@ -30,7 +30,7 @@ public class ZombiePlugin implements IGamePluginService, ZombieSPI {
         zombie.setSprite(new Sprite(new Texture(Gdx.files.internal("Zombie/src/main/resources/zombie.png"))));
 
         float deacceleration = 10;
-        float acceleration = 600;
+        float acceleration = 200;
         float maxSpeed = 300;
         float rotationSpeed = 5;
         float radians = 0;
