@@ -1,10 +1,11 @@
-/Bullet/target/
-/Collision/target/
-/Common/target/
-/Map/target/
-/Player/target/
-/Weapon/target/
-/Zombie/target/
-/mods-mvn/
-/ZombieAI/target/
 /.idea/
+cat ~/.gitignore
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.logs
+*.iml
+*.properties
+.idea/
