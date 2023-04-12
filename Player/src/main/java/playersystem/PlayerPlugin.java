@@ -25,7 +25,7 @@ public class PlayerPlugin implements IGamePluginService {
 
     private Entity createPlayer(GameData gameData) {
         Entity player = new Player();
-        player.setSprite(new Sprite(new Texture(Gdx.files.internal("Player/src/main/resources/player.png"))));
+        player.setSprite(new Sprite(new Texture(Gdx.files.internal("Player/src/main/resources/img.png"))));
 
         float deceleration = 300;
         float acceleration = 600;

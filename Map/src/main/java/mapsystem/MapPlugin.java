@@ -56,7 +56,7 @@ public class MapPlugin implements IGamePluginService {
     private Entity createObstruction(int x, int y) {
         Entity obstruction = new Obstruction();
 
-        obstruction.setSprite(new Sprite(new Texture(Gdx.files.internal("Map/src/main/resources/obstruction.png"))));
+        obstruction.setSprite(new Sprite(new Texture(Gdx.files.internal("Map/src/main/resources/img.png"))));
 
         float width = obstruction.getSprite().getWidth();
         float height = obstruction.getSprite().getHeight();
