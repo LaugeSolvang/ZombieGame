@@ -27,7 +27,7 @@ public class PlayerPlugin implements IGamePluginService {
         Entity player = new Player();
         player.setSprite(new Sprite(new Texture(Gdx.files.internal("Player/src/main/resources/img.png"))));
 
-        float deceleration = 300;
+        float deceleration = 301;
         float acceleration = 600;
         float maxSpeed = 100;
         float rotationSpeed = 5;
