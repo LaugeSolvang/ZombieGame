@@ -1,4 +1,4 @@
-main/Game.class
+main\Game.class
+managers\GameInputProcessor.class
 module-info.class
-managers/GameInputProcessor.class
-main/Main.class
+main\Main.class
