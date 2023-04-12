@@ -117,6 +117,7 @@ public class CollisionProcessor implements IPostEntityProcessingService {
             Zombie zombie = (Zombie) (bullet == firstEntity ? secondEntity : firstEntity);
 
             reduceLife(zombie, world);
+            world.removeEntity(bullet);
         }
     }
 
