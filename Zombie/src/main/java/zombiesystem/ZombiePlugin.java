@@ -27,7 +27,7 @@ public class ZombiePlugin implements IGamePluginService, ZombieSPI {
     @Override
     public Entity createZombie(int x, int y) {
         Entity zombie = new Zombie();
-        zombie.setSprite(new Sprite(new Texture(Gdx.files.internal("Zombie/src/main/resources/img.png"))));
+        zombie.setSprite(new Sprite(new Texture(Gdx.files.internal("Zombie/src/main/resources/zombie.png"))));
 
         float deacceleration = 10;
         float acceleration = 600;

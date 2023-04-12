@@ -26,7 +26,7 @@ public class WeaponPlugin implements IGamePluginService, WeaponSPI {
     @Override
     public Entity createWeapon(int x, int y) {
         Entity weapon = new Weapon();
-        weapon.setSprite(new Sprite(new Texture(Gdx.files.internal("Weapon/src/main/resources/img.png"))));
+        weapon.setSprite(new Sprite(new Texture(Gdx.files.internal("Weapon/src/main/resources/weapon.png"))));
 
         float width = weapon.getSprite().getWidth();
         float height = weapon.getSprite().getHeight();
