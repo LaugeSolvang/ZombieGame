@@ -6,10 +6,8 @@ import common.data.World;
 import common.data.entities.weapon.Weapon;
 import common.data.entities.weapon.WeaponSPI;
 import common.data.entityparts.PositionPart;
+import common.data.entityparts.SpritePart;
 import common.services.IGamePluginService;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 
 
 public class WeaponPlugin implements IGamePluginService, WeaponSPI {
@@ -26,13 +24,14 @@ public class WeaponPlugin implements IGamePluginService, WeaponSPI {
     @Override
     public Entity createWeapon(int x, int y) {
         Entity weapon = new Weapon();
-        weapon.setSprite(new Sprite(new Texture(Gdx.files.internal("Weapon/src/main/resources/weapon.png"))));
+        weapon.add(new SpritePart("Weapon/src/main/resources/weapon.png"));
+        SpritePart spritePart = weapon.getPart(SpritePart.class);
 
-        float width = weapon.getSprite().getWidth();
-        float height = weapon.getSprite().getHeight();
-
+        float width = spritePart.getWidth();
+        float height = spritePart.getHeight();
         weapon.add(new PositionPart(x, y, width, height, 3.14f/2));
-        weapon.getSprite().setPosition(x,y);
+
+        spritePart.setPosition(x,y);
 
         return weapon;
 

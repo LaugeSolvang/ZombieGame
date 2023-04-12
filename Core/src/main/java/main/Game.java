@@ -9,7 +9,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import common.data.Entity;
 import common.data.GameData;
 import common.data.World;
+import common.data.entities.weapon.Weapon;
 import common.data.entityparts.PositionPart;
+import common.data.entityparts.SpritePart;
 import common.services.IEntityProcessingService;
 import common.services.IGamePluginService;
 import common.services.IPostEntityProcessingService;
@@ -75,10 +77,16 @@ public class Game implements ApplicationListener {
         for (Entity entity : world.getEntities()) {
             Sprite sprite = entity.getSprite();
             PositionPart positionPart = entity.getPart(PositionPart.class);
-            sprite.setX(positionPart.getX());
-            sprite.setY(positionPart.getY());
 
-            entity.getSprite().draw(sb);
+            if (entity instanceof Weapon) {
+                SpritePart spritePart = entity.getPart(SpritePart.class);
+                spritePart.getSprite().draw(sb);
+            } else {
+                sprite.setX(positionPart.getX());
+                sprite.setY(positionPart.getY());
+
+                entity.getSprite().draw(sb);
+            }
         }
         sb.end();
     }

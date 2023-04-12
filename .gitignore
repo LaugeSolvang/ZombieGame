@@ -9,3 +9,5 @@ target/
 *.iml
 *.properties
 .idea/
+/mods-mvn/
+/libs/
