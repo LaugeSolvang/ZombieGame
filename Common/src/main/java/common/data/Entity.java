@@ -1,8 +1,5 @@
 package common.data;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import common.data.entityparts.EntityPart;
 
 import java.io.Serializable;
@@ -13,7 +10,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Entity implements Serializable {
     private final UUID ID = UUID.randomUUID();
     private float radius;
-    private Sprite sprite;
     private Map<Class, EntityPart> parts;
 
     public Entity() {
@@ -42,12 +38,5 @@ public class Entity implements Serializable {
 
     public String getID() {
         return ID.toString();
-    }
-    public Sprite getSprite() {
-        return sprite;
-    }
-
-    public void setSprite(Sprite sprite) {
-        this.sprite = sprite;
     }
 }

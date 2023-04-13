@@ -36,10 +36,19 @@ public class PlayerProcessor implements IEntityProcessingService {
             isPressed shoots everytime the button is pressed
             isDown shoots when the button is being held down (i.e. machinegun)
              */
-            if (gameData.getKeys().isPressed(SPACE) && player.getWeapons().size() != 0) {
+            if (player.getWeapons().size() != 0) {
                 Weapon weapon = player.getCurrentWeapon();
-                IShoot shootImpl = getShootImpl(weapon);
-                shootImpl.useWeapon(player, gameData, world);
+                PositionPart positionPartWeapon = weapon.getPart(PositionPart.class);
+                positionPartWeapon.setPosition(positionPart.getX(),positionPart.getY());
+
+                if (gameData.getKeys().isPressed(SPACE)) {
+                    if (weapon.getAmmo() == 0) {
+                        world.removeEntity(weapon);
+                    } else {
+                        IShoot shootImpl = getShootImpl(weapon);
+                        shootImpl.useWeapon(player, gameData, world);
+                    }
+                }
             }
 
             if (gameData.getKeys().isPressed(ONE)) {
@@ -48,7 +57,6 @@ public class PlayerProcessor implements IEntityProcessingService {
             if (gameData.getKeys().isPressed(TWO)) {
                 player.cycleWeapon(1);
             }
-
         }
     }
     private IShoot getShootImpl(Weapon weapon) {

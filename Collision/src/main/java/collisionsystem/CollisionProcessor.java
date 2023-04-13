@@ -94,7 +94,6 @@ public class CollisionProcessor implements IPostEntityProcessingService {
             Player player = (Player) (weapon == firstEntity ? secondEntity : firstEntity);
 
             player.addWeaponToInventory(weapon);
-            world.removeEntity(weapon);
         }
 
         if ((firstEntity instanceof Zombie || secondEntity instanceof Zombie)

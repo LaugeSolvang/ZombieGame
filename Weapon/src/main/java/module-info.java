@@ -9,6 +9,6 @@ module Weapon {
     provides IEntityProcessingService with weaponsystem.WeaponProcessor;
     provides IGamePluginService with weaponsystem.WeaponPlugin;
     provides IShoot with weaponsystem.WeaponProcessor;
-    provides WeaponSPI with weaponsystem.WeaponPlugin;
+    provides WeaponSPI with weaponsystem.WeaponProcessor;
     uses BulletSPI;
 }
