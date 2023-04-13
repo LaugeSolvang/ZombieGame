@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import common.data.Entity;
 import common.data.GameData;
 import common.data.World;
+import common.data.entities.player.Player;
+import common.data.entities.weapon.Weapon;
 import common.data.entityparts.PositionPart;
 import common.data.entityparts.SpritePart;
 import common.services.IEntityProcessingService;
@@ -76,6 +78,13 @@ public class Game implements ApplicationListener {
             SpritePart spritePart = entity.getPart(SpritePart.class);
             spritePart.setPosition(positionPart.getX(), positionPart.getY());
             spritePart.getSprite().draw(sb);
+
+            if (entity instanceof Player && (((Player) entity).getWeapons().size() !=0)) {
+                Player player = (Player) entity;
+                SpritePart weaponSprite = player.getCurrentWeapon().getPart(SpritePart.class);
+                weaponSprite.setPosition(positionPart.getX(), positionPart.getY());
+                weaponSprite.getSprite().draw(sb);
+            }
         }
         sb.end();
     }

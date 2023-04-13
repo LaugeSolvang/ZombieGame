@@ -27,7 +27,7 @@ public class WeaponPlugin implements IGamePluginService, WeaponSPI {
 
     @Override
     public Entity createWeapon(int x, int y) {
-        Entity weapon = new Weapon();
+        Entity weapon = new Weapon("weaponsystem.WeaponProcessor");
         weapon.add(new SpritePart("Weapon/src/main/resources/weapon.png"));
         SpritePart spritePart = weapon.getPart(SpritePart.class);
         spritePart.setPosition(x,y);

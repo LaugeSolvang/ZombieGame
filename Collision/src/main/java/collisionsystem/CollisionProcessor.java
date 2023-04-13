@@ -6,6 +6,7 @@ import common.data.GameKeys;
 import common.data.World;
 import common.data.entities.bullet.Bullet;
 import common.data.entities.player.Player;
+import common.data.entities.weapon.IShoot;
 import common.data.entities.weapon.Weapon;
 import common.data.entities.zombie.Zombie;
 import common.data.entityparts.LifePart;
@@ -13,6 +14,9 @@ import common.data.entityparts.MovingPart;
 import common.data.entityparts.PositionPart;
 import common.services.IPostEntityProcessingService;
 import common.data.entities.obstruction.Obstruction;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CollisionProcessor implements IPostEntityProcessingService {
     @Override
@@ -87,16 +91,14 @@ public class CollisionProcessor implements IPostEntityProcessingService {
         }
 
         if ((firstEntity instanceof Weapon || secondEntity instanceof Weapon)
-                && (firstEntity instanceof Player || secondEntity instanceof Player)) {
+                && (firstEntity instanceof Player || secondEntity instanceof Player) && gameData.getKeys().isPressed(GameKeys.SHIFT)) {
 
             // Determine which entity is the player and which is the obstruction
             Weapon weapon = (Weapon) (firstEntity instanceof Weapon ? firstEntity : secondEntity);
             Player player = (Player) (weapon == firstEntity ? secondEntity : firstEntity);
 
-
-            if (gameData.getKeys().isDown(GameKeys.SHIFT)) {
-                world.removeEntity(weapon);
-            }
+            player.addWeaponToInventory(weapon);
+            world.removeEntity(weapon);
         }
 
         if ((firstEntity instanceof Zombie || secondEntity instanceof Zombie)
