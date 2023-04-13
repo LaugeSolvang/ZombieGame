@@ -5,7 +5,6 @@ import common.services.IGamePluginService;
 module Player {
     exports playersystem;
     requires Common;
-    requires com.badlogic.gdx;
     provides IEntityProcessingService with playersystem.PlayerProcessor;
     provides IGamePluginService with playersystem.PlayerPlugin;
     uses IShoot;

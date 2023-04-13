@@ -4,12 +4,10 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import common.data.Entity;
 import common.data.GameData;
 import common.data.World;
-import common.data.entities.weapon.Weapon;
 import common.data.entityparts.PositionPart;
 import common.data.entityparts.SpritePart;
 import common.services.IEntityProcessingService;
@@ -23,17 +21,16 @@ import java.util.ServiceLoader;
 import static java.util.stream.Collectors.toList;
 
 public class Game implements ApplicationListener {
-    private static OrthographicCamera cam;
     private SpriteBatch sb;
     private final GameData gameData = new GameData();
-    private World world = new World();
+    private final World world = new World();
 
     @Override
     public void create() {
         gameData.setDisplayWidth(Gdx.graphics.getWidth());
         gameData.setDisplayHeight(Gdx.graphics.getHeight());
 
-        cam = new OrthographicCamera(gameData.getDisplayWidth(), gameData.getDisplayHeight());
+        OrthographicCamera cam = new OrthographicCamera(gameData.getDisplayWidth(), gameData.getDisplayHeight());
         cam.translate(gameData.getDisplayWidth() / 2, gameData.getDisplayHeight() / 2);
         cam.update();
 
@@ -75,18 +72,10 @@ public class Game implements ApplicationListener {
         sb.begin();
         //Draw all sprites, update the sprites position beforehand
         for (Entity entity : world.getEntities()) {
-            Sprite sprite = entity.getSprite();
             PositionPart positionPart = entity.getPart(PositionPart.class);
-
-            if (entity instanceof Weapon) {
-                SpritePart spritePart = entity.getPart(SpritePart.class);
-                spritePart.getSprite().draw(sb);
-            } else {
-                sprite.setX(positionPart.getX());
-                sprite.setY(positionPart.getY());
-
-                entity.getSprite().draw(sb);
-            }
+            SpritePart spritePart = entity.getPart(SpritePart.class);
+            spritePart.setPosition(positionPart.getX(), positionPart.getY());
+            spritePart.getSprite().draw(sb);
         }
         sb.end();
     }

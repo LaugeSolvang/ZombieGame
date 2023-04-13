@@ -1,18 +1,11 @@
 package bulletsystem;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import common.data.Entity;
 import common.data.GameData;
 import common.data.World;
 import common.data.entities.bullet.Bullet;
 import common.data.entities.bullet.BulletSPI;
-import common.data.entities.player.Player;
-import common.data.entityparts.LifePart;
-import common.data.entityparts.MovingPart;
-import common.data.entityparts.PositionPart;
-import common.data.entityparts.TimerPart;
+import common.data.entityparts.*;
 import common.services.IEntityProcessingService;
 
 import static java.lang.Math.cos;
@@ -39,7 +32,9 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
     @Override
     public Entity createBullet(Entity weapon, GameData gameData) {
         Entity bullet = new Bullet();
-        bullet.setSprite(new Sprite(new Texture(Gdx.files.internal("Bullet/src/main/resources/bullet.png"))));
+
+        bullet.add(new SpritePart("Bullet/src/main/resources/bullet.png"));
+        SpritePart spritePart = bullet.getPart(SpritePart.class);
 
         PositionPart weaponPos = weapon.getPart(PositionPart.class);
 
@@ -47,10 +42,12 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
         float y = weaponPos.getY();
         float radians = weaponPos.getRadians();
         float speed = 350;
-        float width = bullet.getSprite().getWidth();
-        float height = bullet.getSprite().getHeight();
+        float width = spritePart.getWidth();
+        float height = spritePart.getHeight();
 
         bullet.setRadius(2);
+        spritePart.setPosition(x,y);
+
 
         float bx = (float) cos(radians) * weapon.getRadius() * bullet.getRadius();
         float by = (float) sin(radians) * weapon.getRadius() * bullet.getRadius();
@@ -62,6 +59,7 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
 
 
         MovingPart movingPart = bullet.getPart(MovingPart.class);
+
         if (radians == 0) {
             movingPart.setRight(true);
         } else if (radians == 3.14f) {
@@ -71,7 +69,6 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
         } else if (radians == 3*3.14f/2) {
             movingPart.setDown(true);
         }
-
         return bullet;
     }
 }

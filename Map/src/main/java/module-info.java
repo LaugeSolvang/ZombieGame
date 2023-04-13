@@ -6,7 +6,6 @@ import common.services.IGamePluginService;
 module Map {
     exports mapsystem;
     requires Common;
-    requires com.badlogic.gdx;
     provides IEntityProcessingService with mapsystem.MapProcessor;
     provides IGamePluginService with mapsystem.MapPlugin;
     uses WeaponSPI;

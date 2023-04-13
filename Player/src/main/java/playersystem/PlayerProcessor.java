@@ -1,12 +1,9 @@
 package playersystem;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import common.data.Entity;
 import common.data.GameData;
 import common.data.GameKeys;
 import common.data.World;
-import common.data.entities.bullet.BulletSPI;
 import common.data.entities.player.Player;
 import common.data.entities.weapon.IShoot;
 import common.data.entityparts.MovingPart;
@@ -43,12 +40,6 @@ public class PlayerProcessor implements IEntityProcessingService {
                 for (IShoot weapon : getIShoot()) {
                     weapon.useWeapon(player, gameData, world);
                 }
-            }
-            if (gameData.getKeys().isDown(RIGHT)){
-                player.setSprite(new Sprite(new Texture("Player/src/main/resources/player-kopi.png")));
-            }
-            if (gameData.getKeys().isDown(LEFT)){
-                player.setSprite(new Sprite(new Texture("Player/src/main/resources/player.png")));
             }
         }
 

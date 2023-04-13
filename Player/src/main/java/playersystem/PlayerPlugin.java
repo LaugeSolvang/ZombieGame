@@ -1,8 +1,5 @@
 package playersystem;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import common.data.Entity;
 import common.data.GameData;
 import common.data.World;
@@ -10,6 +7,7 @@ import common.data.entities.player.Player;
 import common.data.entityparts.LifePart;
 import common.data.entityparts.MovingPart;
 import common.data.entityparts.PositionPart;
+import common.data.entityparts.SpritePart;
 import common.services.IGamePluginService;
 
 public class PlayerPlugin implements IGamePluginService {
@@ -25,7 +23,9 @@ public class PlayerPlugin implements IGamePluginService {
 
     private Entity createPlayer(GameData gameData) {
         Entity player = new Player();
-        player.setSprite(new Sprite(new Texture(Gdx.files.internal("Player/src/main/resources/player.png"))));
+
+        player.add(new SpritePart("Player/src/main/resources/player.png"));
+        SpritePart spritePart = player.getPart(SpritePart.class);
 
         float deceleration = 300;
         float acceleration = 600;
@@ -34,14 +34,14 @@ public class PlayerPlugin implements IGamePluginService {
         float x = gameData.getDisplayWidth() / 2;
         float y = gameData.getDisplayHeight() / 2;
         float radians = 0;
-        float width = player.getSprite().getWidth();
-        float height = player.getSprite().getHeight();
+        float width = spritePart.getWidth();
+        float height = spritePart.getHeight();
+
+        spritePart.setPosition(x,y);
 
         player.add(new MovingPart(deceleration, acceleration, maxSpeed, rotationSpeed));
         player.add(new PositionPart(x, y, width, height, radians));
         player.add(new LifePart(100));
-
-        player.getSprite().setPosition(x,y);
 
         return player;
     }

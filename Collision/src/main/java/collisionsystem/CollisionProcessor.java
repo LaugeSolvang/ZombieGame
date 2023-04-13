@@ -5,10 +5,8 @@ import common.data.GameData;
 import common.data.GameKeys;
 import common.data.World;
 import common.data.entities.bullet.Bullet;
-import common.data.entities.bullet.BulletSPI;
 import common.data.entities.player.Player;
 import common.data.entities.weapon.Weapon;
-import common.data.entities.weapon.WeaponSPI;
 import common.data.entities.zombie.Zombie;
 import common.data.entityparts.LifePart;
 import common.data.entityparts.MovingPart;
@@ -16,15 +14,12 @@ import common.data.entityparts.PositionPart;
 import common.services.IPostEntityProcessingService;
 import common.data.entities.obstruction.Obstruction;
 
-import java.util.ArrayList;
-
 public class CollisionProcessor implements IPostEntityProcessingService {
     @Override
     public void process(GameData gameData, World world) {
         // Loop through all pairs of entities in the world
         for (Entity firstEntity : world.getEntities()) {
             for (Entity secondEntity : world.getEntities()) {
-                LifePart entityLife = firstEntity.getPart(LifePart.class);
 
                 // Skip the iteration if the entities are identical
                 if (firstEntity.getID().equals(secondEntity.getID())) {

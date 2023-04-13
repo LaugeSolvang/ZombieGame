@@ -18,7 +18,11 @@ public class WeaponPlugin implements IGamePluginService, WeaponSPI {
 
     @Override
     public void stop(GameData gameData, World world) {
-
+        for (Entity e : world.getEntities()) {
+            if (e.getClass() == Weapon.class) {
+                world.removeEntity(e);
+            }
+        }
     }
 
     @Override
@@ -26,12 +30,12 @@ public class WeaponPlugin implements IGamePluginService, WeaponSPI {
         Entity weapon = new Weapon();
         weapon.add(new SpritePart("Weapon/src/main/resources/weapon.png"));
         SpritePart spritePart = weapon.getPart(SpritePart.class);
+        spritePart.setPosition(x,y);
 
         float width = spritePart.getWidth();
         float height = spritePart.getHeight();
         weapon.add(new PositionPart(x, y, width, height, 3.14f/2));
 
-        spritePart.setPosition(x,y);
 
         return weapon;
 
