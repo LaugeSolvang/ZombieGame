@@ -10,11 +10,9 @@ import common.data.entityparts.MovingPart;
 import common.data.entityparts.PositionPart;
 import common.services.IEntityProcessingService;
 
-import java.util.Collection;
 import java.util.ServiceLoader;
 
 import static common.data.GameKeys.*;
-import static java.util.stream.Collectors.toList;
 
 
 public class PlayerProcessor implements IEntityProcessingService {
@@ -40,12 +38,7 @@ public class PlayerProcessor implements IEntityProcessingService {
              */
             if (gameData.getKeys().isPressed(SPACE) && player.getWeapons().size() != 0) {
                 Weapon weapon = player.getCurrentWeapon();
-
-                IShoot shootImpl = ServiceLoader.load(IShoot.class).stream()
-                        .map(ServiceLoader.Provider::get)
-                        .filter(s -> s.getClass().getName().equals(weapon.getShootImplName()))
-                        .findFirst()
-                        .orElseThrow(() -> new RuntimeException("Could not find shoot implementation: " + weapon.getShootImplName()));
+                IShoot shootImpl = getShootImpl(weapon);
                 shootImpl.useWeapon(player, gameData, world);
             }
 
@@ -58,7 +51,11 @@ public class PlayerProcessor implements IEntityProcessingService {
 
         }
     }
-    private Collection<? extends IShoot> getIShoot() {
-        return ServiceLoader.load(IShoot.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+    private IShoot getShootImpl(Weapon weapon) {
+        return ServiceLoader.load(IShoot.class).stream()
+                .map(ServiceLoader.Provider::get)
+                .filter(s -> s.getClass().getName().equals(weapon.getShootImplName()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Could not find shoot implementation: " + weapon.getShootImplName()));
     }
 }
