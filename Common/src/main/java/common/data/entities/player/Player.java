@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Player extends Entity {
-    private List<Weapon> weapons = new ArrayList<>();
+    private final List<Weapon> weapons = new ArrayList<>();
     private int currentWeaponIndex = 0;
 
     public List<Weapon> getWeapons() {
@@ -21,10 +21,6 @@ public class Player extends Entity {
 
     public Weapon getCurrentWeapon() {
         return weapons.get(currentWeaponIndex);
-    }
-
-    public void setCurrentWeapon(int index) {
-        this.currentWeaponIndex = index;
     }
 
     public void cycleWeapon(int direction) {

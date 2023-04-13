@@ -11,8 +11,6 @@ import common.data.entityparts.PositionPart;
 import common.services.IEntityProcessingService;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ServiceLoader;
 
 import static common.data.GameKeys.*;
