@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import common.data.Entity;
 import common.data.GameData;
 import common.data.World;
+import common.data.entities.weapon.Weapon;
 import common.data.entityparts.PositionPart;
 import common.data.entityparts.SpritePart;
 import common.services.IEntityProcessingService;
@@ -31,7 +32,7 @@ public class Game implements ApplicationListener {
         gameData.setDisplayHeight(Gdx.graphics.getHeight());
 
         OrthographicCamera cam = new OrthographicCamera(gameData.getDisplayWidth(), gameData.getDisplayHeight());
-        cam.translate(gameData.getDisplayWidth() / 2, gameData.getDisplayHeight() / 2);
+        cam.translate((float) gameData.getDisplayWidth() / 2, (float) gameData.getDisplayHeight() / 2);
         cam.update();
 
         sb = new SpriteBatch();

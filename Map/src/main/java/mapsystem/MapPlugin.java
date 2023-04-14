@@ -22,12 +22,14 @@ public class MapPlugin implements IGamePluginService {
         //Create a map with strings per 32x32 pixels of the whole display
         map = new String[gameData.getDisplayHeight()/32][gameData.getDisplayWidth()/32];
 
-        //Spawn a cube of 5x5 obstructions in the corner of the game
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
-                Entity obstruction = createObstruction(i * 32, j * 32);
-                world.addEntity(obstruction);
-                map[i][j] = "obstruction";
+        //Spawn obstructions around the perimeter of the game
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[0].length; j++) {
+                if (i == 0 || j == 0 || i == map.length-1 || j == map[0].length-1) {
+                    Entity obstruction = createObstruction(j * 32, i * 32);
+                    world.addEntity(obstruction);
+                    map[i][j] = "obstruction";
+                }
             }
         }
         //Spawn an obstruction closer to the centre
@@ -40,8 +42,6 @@ public class MapPlugin implements IGamePluginService {
         for (ZombieSPI zombie : getZombieSPI()) {
             world.addEntity(zombie.createZombie(gameData.getDisplayWidth()/2+128, gameData.getDisplayHeight()/2+128));
         }
-
-
     }
 
     @Override

@@ -53,69 +53,69 @@ public class CollisionProcessor implements IPostEntityProcessingService {
 
     private void handleCollision(Entity firstEntity, Entity secondEntity, GameData gameData, World world) {
         if (firstEntity instanceof Obstruction || secondEntity instanceof Obstruction) {
-
-            // Determine which entity is the player and which is the obstruction
-            Entity obstruction = firstEntity instanceof Obstruction ? firstEntity : secondEntity;
-            Entity entity = obstruction == firstEntity ? secondEntity : firstEntity;
-
-            if (entity.getClass() == Bullet.class) {
-                world.removeEntity(entity);
-            }
-
-            //Get horizontal and vertical velocity of the entity
-            MovingPart entityMovement = entity.getPart(MovingPart.class);
-            float dx = entityMovement.getDx() * gameData.getDelta(), dy = entityMovement.getDy() * gameData.getDelta();
-
-            //Get the position, width and height of the entity
-            PositionPart ePosPart = entity.getPart(PositionPart.class);
-            float eX = ePosPart.getX(), eY = ePosPart.getY(), eWidth = ePosPart.getWidth(), eHeight = ePosPart.getHeight();
-
-            //Get the position, width and height of the obstruction
-            PositionPart oPosPart = obstruction.getPart(PositionPart.class);
-            float oX = oPosPart.getX(), oY = oPosPart.getY(), oWidth = oPosPart.getWidth(), oHeight = oPosPart.getHeight();
-
-            // Check for collision in the X direction
-            if (eX + eWidth + dx > oX && eX + dx < oX + oWidth && eY + eHeight > oY && eY < oY + oHeight) {
-                entityMovement.setDx(-dx);
-                ePosPart.setX(eX - dx);
-            }
-            // Check for collision in the Y direction
-            if (eY + eHeight + dy > oY && eY + dy < oY + oHeight && eX + eWidth > oX && eX < oX + oWidth) {
-                entityMovement.setDy(-dy);
-                ePosPart.setY(eY - dy);
-            }
-        }
-
-        if ((firstEntity instanceof Weapon || secondEntity instanceof Weapon)
+            handleObstructionCollision(firstEntity, secondEntity, gameData, world);
+        } else if ((firstEntity instanceof Weapon || secondEntity instanceof Weapon)
+                && (firstEntity instanceof Player || secondEntity instanceof Player)
+                && gameData.getKeys().isPressed(GameKeys.SHIFT)) {
+            handleWeaponCollision(firstEntity, secondEntity);
+        } else if ((firstEntity instanceof Zombie || secondEntity instanceof Zombie)
                 && (firstEntity instanceof Player || secondEntity instanceof Player)) {
-
-            // Determine which entity is the player and which is the obstruction
-            Weapon weapon = (Weapon) (firstEntity instanceof Weapon ? firstEntity : secondEntity);
-            Player player = (Player) (weapon == firstEntity ? secondEntity : firstEntity);
-
-
-            if (gameData.getKeys().isDown(GameKeys.SHIFT)) {
-                world.removeEntity(weapon);
-            }
-        }
-
-        if ((firstEntity instanceof Zombie || secondEntity instanceof Zombie)
-                && (firstEntity instanceof Player || secondEntity instanceof Player)) {
-            Zombie zombie = (Zombie) (firstEntity instanceof Zombie ? firstEntity : secondEntity);
-            Player player = (Player) (zombie == firstEntity ? secondEntity : firstEntity);
-
-            reduceLife(player, world);
-        }
-        if ((firstEntity instanceof Bullet || secondEntity instanceof Bullet)
+            handleZombiePlayerCollision(firstEntity, secondEntity, world);
+        } else if ((firstEntity instanceof Bullet || secondEntity instanceof Bullet)
                 && (firstEntity instanceof Zombie || secondEntity instanceof Zombie)) {
-            Bullet bullet = (Bullet) (firstEntity instanceof Bullet ? firstEntity : secondEntity);
-            Zombie zombie = (Zombie) (bullet == firstEntity ? secondEntity : firstEntity);
-
-            reduceLife(zombie, world);
-            world.removeEntity(bullet);
+            handleBulletZombieCollision(firstEntity, secondEntity, world);
         }
     }
 
+    private void handleObstructionCollision(Entity firstEntity, Entity secondEntity, GameData gameData, World world) {
+        // Determine which entity is the player and which is the obstruction
+        Entity obstruction = firstEntity instanceof Obstruction ? firstEntity : secondEntity;
+        Entity entity = obstruction == firstEntity ? secondEntity : firstEntity;
+
+        if (entity.getClass() == Bullet.class) {
+            world.removeEntity(entity);
+        }
+
+        //Get horizontal and vertical velocity of the entity
+        MovingPart entityMovement = entity.getPart(MovingPart.class);
+        float dx = entityMovement.getDx() * gameData.getDelta(), dy = entityMovement.getDy() * gameData.getDelta();
+
+        //Get the position, width and height of the entity
+        PositionPart ePosPart = entity.getPart(PositionPart.class);
+        float eX = ePosPart.getX(), eY = ePosPart.getY(), eWidth = ePosPart.getWidth(), eHeight = ePosPart.getHeight();
+
+        //Get the position, width and height of the obstruction
+        PositionPart oPosPart = obstruction.getPart(PositionPart.class);
+        float oX = oPosPart.getX(), oY = oPosPart.getY(), oWidth = oPosPart.getWidth(), oHeight = oPosPart.getHeight();
+
+        // Check for collision in the X direction
+        if (eX + eWidth + dx > oX && eX + dx < oX + oWidth && eY + eHeight > oY && eY < oY + oHeight) {
+            entityMovement.setDx(-dx);
+            ePosPart.setX(eX - dx);
+        }
+        // Check for collision in the Y direction
+        if (eY + eHeight + dy > oY && eY + dy < oY + oHeight && eX + eWidth > oX && eX < oX + oWidth) {
+            entityMovement.setDy(-dy);
+            ePosPart.setY(eY - dy);
+        }
+    }
+
+    private void handleWeaponCollision(Entity firstEntity, Entity secondEntity) {
+        Weapon weapon = (Weapon) (firstEntity instanceof Weapon ? firstEntity : secondEntity);
+        Player player = (Player) (weapon == firstEntity ? secondEntity : firstEntity);
+        player.addWeaponToInventory(weapon);
+    }
+    private void handleZombiePlayerCollision(Entity firstEntity, Entity secondEntity, World world) {
+        Zombie zombie = (Zombie) (firstEntity instanceof Zombie ? firstEntity : secondEntity);
+        Player player = (Player) (zombie == firstEntity ? secondEntity : firstEntity);
+        reduceLife(player, world);
+    }
+    private void handleBulletZombieCollision(Entity firstEntity, Entity secondEntity, World world) {
+        Bullet bullet = (Bullet) (firstEntity instanceof Bullet ? firstEntity : secondEntity);
+        Zombie zombie = (Zombie) (bullet == firstEntity ? secondEntity : firstEntity);
+        reduceLife(zombie, world);
+        world.removeEntity(bullet);
+    }
     private void reduceLife(Entity entity, World world) {
         LifePart lifePart = entity.getPart(LifePart.class);
         if (lifePart.getLife() > 0) {
