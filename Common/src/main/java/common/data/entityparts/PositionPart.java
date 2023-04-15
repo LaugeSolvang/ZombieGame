@@ -10,11 +10,9 @@ public class PositionPart implements EntityPart{
     private float height;
     private float radians;
 
-    public PositionPart(float x, float y, float width, float height, float radians) {
+    public PositionPart(float x, float y, float radians) {
         this.x = x;
         this.y = y;
-        this.width = width;
-        this.height = height;
         this.radians = radians;
     }
 
@@ -50,6 +48,11 @@ public class PositionPart implements EntityPart{
     public void setPosition(float newX, float newY) {
         this.x = newX;
         this.y = newY;
+    }
+
+    public void setDimension(float width, float height) {
+        this.width = width;
+        this.height = height;
     }
 
     public void setRadians(float radians) {
