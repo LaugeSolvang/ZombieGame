@@ -12,6 +12,8 @@ public class Entity implements Serializable {
     private float radius;
     private Map<Class, EntityPart> parts;
 
+    private String path;
+
     public Entity() {
         parts = new ConcurrentHashMap<>();
     }
@@ -38,5 +40,13 @@ public class Entity implements Serializable {
 
     public String getID() {
         return ID.toString();
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 }

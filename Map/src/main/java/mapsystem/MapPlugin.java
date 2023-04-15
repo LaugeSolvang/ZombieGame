@@ -7,7 +7,6 @@ import common.data.entities.obstruction.Obstruction;
 import common.data.entities.weapon.WeaponSPI;
 import common.data.entities.zombie.ZombieSPI;
 import common.data.entityparts.PositionPart;
-import common.data.entityparts.SpritePart;
 import common.services.IGamePluginService;
 
 import java.util.Collection;
@@ -18,7 +17,7 @@ import static java.util.stream.Collectors.toList;
 public class MapPlugin implements IGamePluginService {
     String[][] map;
     @Override
-    public void start(GameData gameData, World world) {
+    public void start(GameData gameData, World world)  {
         //Create a map with strings per 32x32 pixels of the whole display
         map = new String[gameData.getDisplayHeight()/32][gameData.getDisplayWidth()/32];
 
@@ -52,17 +51,19 @@ public class MapPlugin implements IGamePluginService {
     private Entity createObstruction(int x, int y) {
         Entity obstruction = new Obstruction();
 
-        obstruction.add(new SpritePart("Map/src/main/resources/obstruction.png"));
-        SpritePart spritePart = obstruction.getPart(SpritePart.class);
-        spritePart.setPosition(x,y);
-
-        float width = spritePart.getWidth();
-        float height = spritePart.getHeight();
-
-        obstruction.add(new PositionPart(x, y, width, height, 0));
+        String path = "obstruction.png";
+        obstruction.setPath(path);
+        obstruction.add(new PositionPart(x, y, 0));
 
         return obstruction;
+    }
 
+    public String[][] getMap() {
+        return map;
+    }
+
+    public void setMap(String[][] map) {
+        this.map = map;
     }
 
     protected Collection<? extends WeaponSPI> getWeaponSPI() {

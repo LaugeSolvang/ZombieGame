@@ -9,7 +9,6 @@ import common.data.entities.weapon.IShoot;
 import common.data.entities.weapon.Weapon;
 import common.data.entities.weapon.WeaponSPI;
 import common.data.entityparts.PositionPart;
-import common.data.entityparts.SpritePart;
 import common.services.IEntityProcessingService;
 
 import java.util.Collection;
@@ -30,21 +29,17 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot, Weapon
         }
     }
 
-    @Override
-    public Entity createWeapon(int x, int y) {
-        Entity weapon = new Weapon("weaponsystem.WeaponProcessor", 10);
-        weapon.add(new SpritePart("Weapon/src/main/resources/weapon.png"));
-        SpritePart spritePart = weapon.getPart(SpritePart.class);
-        spritePart.setPosition(x,y);
-
-        float width = spritePart.getWidth();
-        float height = spritePart.getHeight();
-        weapon.add(new PositionPart(x, y, width, height, 3.14f/2));
-
-        return weapon;
-    }
-
     private Collection<? extends BulletSPI> getBulletSPIs() {
         return ServiceLoader.load(BulletSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
     }
+    @Override
+    public Entity createWeapon(int x, int y) {
+        Entity weapon = new Weapon("weaponsystem.WeaponProcessor", 10);
+
+        String path = "weapon.png";
+        weapon.setPath(path);
+
+        weapon.add(new PositionPart(x, y, 3.14f/2));
+
+        return weapon;    }
 }

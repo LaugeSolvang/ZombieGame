@@ -23,7 +23,40 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.6.1</version>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>../Common/src/main/resources/sprites</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>../Player/src/main/resources</directory>
+                                </resource>
+                                <resource>
+                                    <directory>../Weapon/src/main/resources</directory>
+                                </resource>
+                                <resource>
+                                    <directory>../Zombie/src/main/resources</directory>
+                                </resource>
+                                <resource>
+                                    <directory>../Bullet/src/main/resources</directory>
+                                </resource>
+                                <resource>
+                                    <directory>../Map/src/main/resources</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
 </project>

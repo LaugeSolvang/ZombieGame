@@ -8,7 +8,6 @@ import common.data.entities.zombie.ZombieSPI;
 import common.data.entityparts.LifePart;
 import common.data.entityparts.MovingPart;
 import common.data.entityparts.PositionPart;
-import common.data.entityparts.SpritePart;
 import common.services.IGamePluginService;
 
 public class ZombiePlugin implements IGamePluginService, ZombieSPI {
@@ -28,23 +27,17 @@ public class ZombiePlugin implements IGamePluginService, ZombieSPI {
     public Entity createZombie(int x, int y) {
         Entity zombie = new Zombie();
 
-        zombie.add(new SpritePart("Zombie/src/main/resources/zombie.png"));
-        SpritePart spritePart = zombie.getPart(SpritePart.class);
-        spritePart.setPosition(x,y);
-
         float deacceleration = 10;
         float acceleration = 200;
         float maxSpeed = 300;
         float rotationSpeed = 5;
         float radians = 0;
-
-        float width = spritePart.getWidth();
-        float height = spritePart.getHeight();
+        String path = "zombie.png";
+        zombie.setPath(path);
 
         zombie.add(new MovingPart(deacceleration, acceleration, maxSpeed, rotationSpeed));
-        zombie.add(new PositionPart(x, y, width, height, radians));
+        zombie.add(new PositionPart(x, y, 0));
         zombie.add(new LifePart(1));
 
-        return zombie;
-    }
+        return zombie;    }
 }

@@ -4,18 +4,19 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import common.data.Entity;
 import common.data.GameData;
 import common.data.World;
-import common.data.entities.weapon.Weapon;
 import common.data.entityparts.PositionPart;
-import common.data.entityparts.SpritePart;
 import common.services.IEntityProcessingService;
 import common.services.IGamePluginService;
 import common.services.IPostEntityProcessingService;
 import managers.GameInputProcessor;
+import managers.SpriteCache;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.ServiceLoader;
 
@@ -52,14 +53,18 @@ public class Game implements ApplicationListener {
 
         gameData.setDelta(Gdx.graphics.getDeltaTime());
 
-        update();
+        try {
+            update();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         draw();
 
         gameData.getKeys().update();
     }
 
-    private void update() {
+    private void update() throws IOException {
         for (IEntityProcessingService entityProcessorService : getEntityProcessingServices()) {
             entityProcessorService.process(gameData, world);
         }
@@ -73,10 +78,13 @@ public class Game implements ApplicationListener {
         sb.begin();
         //Draw all sprites, update the sprites position beforehand
         for (Entity entity : world.getEntities()) {
+            Sprite sprite = SpriteCache.getSprite(entity.getPath());
             PositionPart positionPart = entity.getPart(PositionPart.class);
-            SpritePart spritePart = entity.getPart(SpritePart.class);
-            spritePart.setPosition(positionPart.getX(), positionPart.getY());
-            spritePart.getSprite().draw(sb);
+            positionPart.setDimension(sprite.getWidth(), sprite.getHeight());
+            sprite.setPosition(positionPart.getX(), positionPart.getY());
+
+            sprite.draw(sb);
+
         }
         sb.end();
     }
