@@ -16,7 +16,6 @@ import common.services.IPostEntityProcessingService;
 import managers.GameInputProcessor;
 import managers.SpriteCache;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.ServiceLoader;
 
@@ -53,18 +52,15 @@ public class Game implements ApplicationListener {
 
         gameData.setDelta(Gdx.graphics.getDeltaTime());
 
-        try {
-            update();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        update();
+
 
         draw();
 
         gameData.getKeys().update();
     }
 
-    private void update() throws IOException {
+    private void update() {
         for (IEntityProcessingService entityProcessorService : getEntityProcessingServices()) {
             entityProcessorService.process(gameData, world);
         }

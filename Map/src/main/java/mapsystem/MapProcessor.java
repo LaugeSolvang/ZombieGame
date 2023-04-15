@@ -5,9 +5,6 @@ import common.data.World;
 import common.data.entities.zombie.ZombieSPI;
 import common.services.IEntityProcessingService;
 
-import java.io.IOException;
-
-
 public class MapProcessor implements IEntityProcessingService {
     MapPlugin mapPlugin = new MapPlugin();
 
