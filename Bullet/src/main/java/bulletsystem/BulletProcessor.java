@@ -8,8 +8,6 @@ import common.data.entities.bullet.BulletSPI;
 import common.data.entityparts.*;
 import common.services.IEntityProcessingService;
 
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
 
 public class BulletProcessor implements IEntityProcessingService, BulletSPI {
     @Override
@@ -22,6 +20,7 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
             if (timerPart.getExpiration() < 0) {
                 world.removeEntity(bullet);
             }
+
 
             movingPart.process(gameData, bullet);
             positionPart.process(gameData, bullet);
@@ -37,30 +36,40 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
         float x = weaponPos.getX();
         float y = weaponPos.getY();
         float radians = weaponPos.getRadians();
-        float speed = 350;
+        float speed = 500;
         String path = "bullet.png";
         bullet.setPath(path);
         bullet.setRadius(2);
 
-        float bx = (float) cos(radians) * weapon.getRadius() * bullet.getRadius();
-        float by = (float) sin(radians) * weapon.getRadius() * bullet.getRadius();
-
-        bullet.add(new PositionPart(bx + x, by + y, radians));
+        bullet.add(new PositionPart(x, y, radians));
         bullet.add(new LifePart(1));
-        bullet.add(new MovingPart(0, 5000000, speed, 5));
+        bullet.add(new MovingPart(0, 2000, speed, 5));
         bullet.add(new TimerPart(1));
 
         MovingPart movingPart = bullet.getPart(MovingPart.class);
 
-        if (radians == 0) {
+        if (radians >= -3.14f/8 && radians <= 3.14f/8) {
             movingPart.setRight(true);
-        } else if (radians == 3.14f) {
-            movingPart.setLeft(true);
-        } else if (radians == 3.14f/2) {
+        } else if (radians > 3.14f/8 && radians < 3*3.14f/8) {
             movingPart.setUp(true);
-        } else if (radians == 3*3.14f/2) {
+            movingPart.setRight(true);
+        } else if (radians >= 3*3.14f/8 && radians <= 5*3.14f/8) {
+            movingPart.setUp(true);
+        } else if (radians > 5*3.14f/8 && radians < 7*3.14f/8) {
+            movingPart.setUp(true);
+            movingPart.setLeft(true);
+        } else if (radians >= 7*3.14f/8 || radians <= -7*3.14f/8) {
+            movingPart.setLeft(true);
+        } else if (radians < -5*3.14f/8) {
             movingPart.setDown(true);
+            movingPart.setLeft(true);
+        } else if (radians <= -3*3.14f/8) {
+            movingPart.setDown(true);
+        } else if (radians < -3.14f/8) {
+            movingPart.setDown(true);
+            movingPart.setRight(true);
         }
+
         return bullet;
     }
 }

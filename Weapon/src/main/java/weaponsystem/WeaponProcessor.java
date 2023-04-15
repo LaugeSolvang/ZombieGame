@@ -34,7 +34,7 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot, Weapon
     }
     @Override
     public Entity createWeapon(int x, int y) {
-        Entity weapon = new Weapon("weaponsystem.WeaponProcessor", 10);
+        Entity weapon = new Weapon("weaponsystem.WeaponProcessor", 100);
 
         String path = "weapon.png";
         weapon.setPath(path);

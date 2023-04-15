@@ -29,14 +29,9 @@ public class PlayerProcessor implements IEntityProcessingService {
             movingPart.setUp(gameData.getKeys().isDown(UP));
             movingPart.setDown(gameData.getKeys().isDown(DOWN));
 
-
             movingPart.process(gameData, player);
             positionPart.process(gameData, player);
 
-            /*
-            isPressed shoots everytime the button is pressed
-            isDown shoots when the button is being held down (i.e. machinegun)
-             */
             //Checks if the player has any weapons
             if (player.getWeapons().size() != 0) {
                 //Sets the PositionPart of the weapon to the players so the weapon follows the player
