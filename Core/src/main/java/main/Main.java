@@ -7,8 +7,8 @@ public class Main {
     public static void main(String[] args) {
         Lwjgl3ApplicationConfiguration cfg = new Lwjgl3ApplicationConfiguration();
         cfg.setTitle("Zombie game");
-        int width = 1536;
-        int height = 800;
+        int width = 1472;
+        int height = 736;
         cfg.setWindowSizeLimits(width, height, width, height);
         cfg.setWindowedMode(width, height);
         cfg.setResizable(false);
