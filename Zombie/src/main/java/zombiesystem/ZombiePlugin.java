@@ -5,6 +5,7 @@ import common.data.GameData;
 import common.data.World;
 import common.data.entities.zombie.Zombie;
 import common.data.entities.zombie.ZombieSPI;
+import common.data.entityparts.DamagePart;
 import common.data.entityparts.LifePart;
 import common.data.entityparts.MovingPart;
 import common.data.entityparts.PositionPart;
@@ -38,6 +39,7 @@ public class ZombiePlugin implements IGamePluginService, ZombieSPI {
         zombie.add(new MovingPart(deacceleration, acceleration, maxSpeed, rotationSpeed));
         zombie.add(new PositionPart(x, y, 0));
         zombie.add(new LifePart(1));
+        zombie.add(new DamagePart(1));
 
         return zombie;    }
 }

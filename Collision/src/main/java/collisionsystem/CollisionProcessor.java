@@ -8,6 +8,7 @@ import common.data.entities.bullet.Bullet;
 import common.data.entities.player.Player;
 import common.data.entities.weapon.Weapon;
 import common.data.entities.zombie.Zombie;
+import common.data.entityparts.DamagePart;
 import common.data.entityparts.LifePart;
 import common.data.entityparts.MovingPart;
 import common.data.entityparts.PositionPart;
@@ -111,18 +112,20 @@ public class CollisionProcessor implements IPostEntityProcessingService {
     private void handleZombiePlayerCollision(Entity firstEntity, Entity secondEntity, World world) {
         Zombie zombie = (Zombie) (firstEntity instanceof Zombie ? firstEntity : secondEntity);
         Player player = (Player) (zombie == firstEntity ? secondEntity : firstEntity);
-        reduceLife(player, world);
+        DamagePart damagePart = zombie.getPart(DamagePart.class);
+        reduceLife(player, world, damagePart);
     }
     private void handleBulletZombieCollision(Entity firstEntity, Entity secondEntity, World world) {
         Bullet bullet = (Bullet) (firstEntity instanceof Bullet ? firstEntity : secondEntity);
         Zombie zombie = (Zombie) (bullet == firstEntity ? secondEntity : firstEntity);
-        reduceLife(zombie, world);
+        DamagePart damagePart = bullet.getPart(DamagePart.class);
+        reduceLife(zombie, world, damagePart);
         world.removeEntity(bullet);
     }
-    private void reduceLife(Entity entity, World world) {
+    private void reduceLife(Entity entity, World world, DamagePart damagePart) {
         LifePart lifePart = entity.getPart(LifePart.class);
         if (lifePart.getLife() > 0) {
-            lifePart.setLife(lifePart.getLife() - 1);
+            lifePart.setLife(lifePart.getLife() - damagePart.getDamage());
             lifePart.setIsHit(true);
             if (lifePart.getLife() <= 0) {
                 // Remove entity from the world if its life is 0 or less

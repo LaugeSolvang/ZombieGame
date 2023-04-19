@@ -45,7 +45,7 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
         bullet.add(new LifePart(1));
         bullet.add(new MovingPart(0, 2000, speed, 5));
         bullet.add(new TimerPart(1));
-
+        bullet.add(new DamagePart(100));
         MovingPart movingPart = bullet.getPart(MovingPart.class);
 
         if (radians >= -3.14f/8 && radians <= 3.14f/8) {
