@@ -80,7 +80,6 @@ public class Game implements ApplicationListener {
             sprite.setPosition(positionPart.getX(), positionPart.getY());
 
             sprite.draw(sb);
-
         }
         sb.end();
     }

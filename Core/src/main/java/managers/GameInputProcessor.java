@@ -38,11 +38,10 @@ public class GameInputProcessor extends InputAdapter {
             gameData.getKeys().setKey(GameKeys.SHIFT, true);
         }
         if(k == Keys.NUM_1 || k == Keys.NUMPAD_1) {
-            gameData.getKeys().setKey(GameKeys.SHIFT, true);
+            gameData.getKeys().setKey(GameKeys.ONE, true);
         }
-        if(k == Keys.NUM_1 || k == Keys.NUMPAD_1) {
-            gameData.getKeys().setKey(GameKeys.SHIFT, true);
-
+        if(k == Keys.NUM_2 || k == Keys.NUMPAD_2) {
+            gameData.getKeys().setKey(GameKeys.TWO, true);
         }
         return true;
     }
