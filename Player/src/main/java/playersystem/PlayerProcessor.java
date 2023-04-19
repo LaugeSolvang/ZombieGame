@@ -38,6 +38,7 @@ public class PlayerProcessor implements IEntityProcessingService {
         PositionPart positionPart = player.getPart(PositionPart.class);
         positionPart.process(gameData, player);
     }
+    
 
     private void processWeapon(GameData gameData, World world, Player player) {
         if (!player.getWeapons().isEmpty()) {

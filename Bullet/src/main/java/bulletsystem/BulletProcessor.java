@@ -33,8 +33,8 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
         PositionPart weaponPos = weapon.getPart(PositionPart.class);
         Entity bullet = new Bullet();
 
-        float x = weaponPos.getX();
-        float y = weaponPos.getY();
+        float x = weaponPos.getX()+ weaponPos.getHeight()/2;
+        float y = weaponPos.getY() + weaponPos.getWidth()/2;
         float radians = weaponPos.getRadians();
         float speed = 500;
         String path = "bullet.png";
