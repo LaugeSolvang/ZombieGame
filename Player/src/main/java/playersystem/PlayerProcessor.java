@@ -37,6 +37,15 @@ public class PlayerProcessor implements IEntityProcessingService {
 
         PositionPart positionPart = player.getPart(PositionPart.class);
         positionPart.process(gameData, player);
+
+        if (gameData.getKeys().isDown(RIGHT)){
+            String path = "player-kopi.png";
+            player.setPath(path);
+        }
+        if (gameData.getKeys().isDown(LEFT)){
+            String path = "player.png";
+            player.setPath(path);
+        }
     }
     
 
