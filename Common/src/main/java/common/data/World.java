@@ -9,13 +9,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class World {
     private final Map<String, Entity> entityMap = new ConcurrentHashMap<>();
 
-    private int[][] map = null;
+    private String[][] map = null;
 
-    public int[][] getMap() {
+    public String[][] getMap() {
         return map;
     }
 
-    public void setMap(int[][] map) {
+    public void setMap(String[][] map) {
         this.map = map;
     }
 

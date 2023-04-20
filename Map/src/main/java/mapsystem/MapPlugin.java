@@ -8,11 +8,11 @@ import common.data.entityparts.PositionPart;
 import common.services.IGamePluginService;
 
 public class MapPlugin implements IGamePluginService {
-    int[][] map;
+    String[][] map;
     @Override
     public void start(GameData gameData, World world)  {
         //Create a map with strings per 32x32 pixels of the whole display
-        map = new int[gameData.getDisplayWidth()/32][gameData.getDisplayHeight()/32];
+        map = new String[gameData.getDisplayWidth() / 32][gameData.getDisplayHeight() / 32];
 
         //Spawn obstructions around the perimeter of the game
         for (int i = 0; i < map.length; i++) {
@@ -20,9 +20,7 @@ public class MapPlugin implements IGamePluginService {
                 if (i == 0 || j == 0 || i == map.length-1 || j == map[0].length-1 || i%6==0 && j%6==0) {
                     Entity obstruction = createObstruction(i * 32, j * 32);
                     world.addEntity(obstruction);
-                    map[i][j] = 1;
-                } else {
-                    map[i][j] = 0;
+                    map[i][j] = "obstruction";
                 }
             }
         }
