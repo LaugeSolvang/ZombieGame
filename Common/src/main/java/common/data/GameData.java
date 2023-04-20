@@ -2,9 +2,7 @@ package common.data;
 
 public class GameData {
     private float delta;
-
     private float gameTime;
-
     private int displayWidth;
     private int displayHeight;
     private final GameKeys keys = new GameKeys();
