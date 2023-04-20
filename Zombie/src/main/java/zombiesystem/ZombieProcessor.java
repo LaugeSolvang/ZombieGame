@@ -3,44 +3,54 @@ package zombiesystem;
 import common.data.Entity;
 import common.data.GameData;
 import common.data.World;
+import common.data.entities.player.Player;
 import common.data.entities.zombie.Zombie;
 import common.data.entityparts.LifePart;
 import common.data.entityparts.MovingPart;
 import common.data.entityparts.PositionPart;
 import common.services.IEntityProcessingService;
 
-import java.util.Random;
 
 public class ZombieProcessor implements IEntityProcessingService {
     @Override
     public void process(GameData gameData, World world) {
-        for (Entity enemy : world.getEntities(Zombie.class)) {
-            PositionPart positionPart = enemy.getPart(PositionPart.class);
-            MovingPart movingPart = enemy.getPart(MovingPart.class);
-            LifePart lifePart = enemy.getPart(LifePart.class);
+        Entity player = world.getEntities(Player.class).stream().findFirst().orElse(null);
+        if (player == null) {
+            return;
+        }
 
-            Random rand = new Random();
+        for (Entity zombie : world.getEntities(Zombie.class)) {
+            PositionPart zombiePosition = zombie.getPart(PositionPart.class);
+            MovingPart zombieMovement = zombie.getPart(MovingPart.class);
+            LifePart zombieLife = zombie.getPart(LifePart.class);
 
-            int direction = rand.nextInt(4) - 1; // -1 for left, 0 for up/down, 1 for right
+            PositionPart playerPosition = player.getPart(PositionPart.class);
 
-            if (direction == -1) {
-                movingPart.setLeft(true);
-            } else if (direction == 0) {
-                movingPart.setUp(true);
-            } else if (direction == 1) {
-                movingPart.setRight(true);
+            float deltaX = playerPosition.getX() - zombiePosition.getX();
+            float deltaY = playerPosition.getY() - zombiePosition.getY();
+
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                if (deltaX > 0) {
+                    zombieMovement.setRight(true);
+                } else {
+                    zombieMovement.setLeft(true);
+                }
             } else {
-                movingPart.setDown(true);
+                if (deltaY > 0) {
+                    zombieMovement.setUp(true);
+                } else {
+                    zombieMovement.setDown(true);
+                }
             }
 
-            movingPart.process(gameData, enemy);
-            positionPart.process(gameData, enemy);
-            lifePart.process(gameData, enemy);
+            zombieMovement.process(gameData, zombie);
+            zombiePosition.process(gameData, zombie);
+            zombieLife.process(gameData, zombie);
 
-            movingPart.setRight(false);
-            movingPart.setLeft(false);
-            movingPart.setUp(false);
-            movingPart.setDown(false);
+            zombieMovement.setRight(false);
+            zombieMovement.setLeft(false);
+            zombieMovement.setUp(false);
+            zombieMovement.setDown(false);
         }
     }
 }
