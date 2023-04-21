@@ -10,7 +10,7 @@ public class AStar {
         //Spawn obstructions around the perimeter of the game
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[0].length; j++) {
-                if (i == 0 || j == 0 || i == map.length-1 || j == map[0].length-1) {
+                if (i == 0 || j == 0 || i == map.length - 1 || j == map[0].length - 1) {
                     map[i][j] = 1;
                 } else {
                     map[i][j] = 0;
@@ -34,7 +34,7 @@ public class AStar {
         long averageDuration = totalDuration / 30;
         System.out.println("Average execution time: " + averageDuration + " ns");
 
-        System.out.println(astar.treeSearch(map, "1,1", "10,10"));
+        System.out.println(Arrays.deepToString(astar.treeSearch(map, "1,1", "10,10")));
 
     }
 
@@ -71,16 +71,33 @@ public class AStar {
                     '}';
         }
     }
+
     private static Map<String, List<String>> STATE_SPACE;
     private Map<String, Double> HEURISTICS;
 
-    public ArrayList<Node> treeSearch(int[][] grid, String INITIAL_STATE, String GOAL_STATE) {
+    private int[][] nodePathToIntArray(ArrayList<Node> path) {
+        int[][] result = new int[path.size()][2];
+        int j = 0;
+        for (int i = path.size() - 1; i >= 0; i--) {
+            String[] splitState = path.get(i).STATE.split(",");
+            result[j][0] = Integer.parseInt(splitState[0]);
+            result[j][1] = Integer.parseInt(splitState[1]);
+            j++;
+        }
+        return result;
+    }
+
+
+    public int[][] treeSearch(int[][] grid, String INITIAL_STATE, String GOAL_STATE) {
         if (STATE_SPACE == null) {
             STATE_SPACE = generateStateSpace(grid);
         }
+        //printStateSpace(STATE_SPACE);
         if (HEURISTICS == null) {
             HEURISTICS = generateHeuristics(grid, GOAL_STATE);
         }
+
+        //System.out.println(HEURISTICS);
 
         ArrayList<Node> fringe = new ArrayList<>();
         Node initialNode = new Node(INITIAL_STATE, null, 0, 0);
@@ -90,7 +107,7 @@ public class AStar {
         while (!fringe.isEmpty()) {
             Node node = REMOVE_FIRST(fringe);
             if (node.STATE.equals(GOAL_STATE)) {
-                return node.path();
+                return nodePathToIntArray(node.path());
             }
             ArrayList<Node> children = EXPAND(node);
             for (Node child : children) {

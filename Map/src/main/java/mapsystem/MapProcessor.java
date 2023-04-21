@@ -14,6 +14,7 @@ import static java.util.stream.Collectors.toList;
 public class MapProcessor implements IEntityProcessingService {
     @Override
     public void process(GameData gameData, World world) {
+        /*
         if ((gameData.getGameTime() % 5 <= gameData.getDelta()) && (gameData.getGameTime() > 1)) {
             // Spawn a zombie
             for (ZombieSPI zombie : getZombieSPI()) {
@@ -24,6 +25,8 @@ public class MapProcessor implements IEntityProcessingService {
                 world.addEntity(weapon.createWeapon(gameData.getDisplayWidth()/2+64, gameData.getDisplayHeight()/2+64));
             }
         }
+
+         */
     }
 
     protected Collection<? extends WeaponSPI> getWeaponSPI() {
