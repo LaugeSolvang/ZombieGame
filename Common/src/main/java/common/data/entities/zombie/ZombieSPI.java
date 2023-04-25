@@ -1,8 +1,7 @@
 package common.data.entities.zombie;
 
-import common.data.Entity;
+import common.data.entities.SpawnSPI;
 
-public interface ZombieSPI {
-    Entity createZombie(int x, int y);
+public interface ZombieSPI extends SpawnSPI{
 
 }

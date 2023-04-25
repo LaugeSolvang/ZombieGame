@@ -2,6 +2,7 @@ package mapsystem;
 
 import common.data.GameData;
 import common.data.World;
+import common.data.entities.SpawnSPI;
 import common.data.entities.weapon.WeaponSPI;
 import common.data.entities.zombie.ZombieSPI;
 import common.services.IEntityProcessingService;
@@ -16,19 +17,27 @@ import static java.util.stream.Collectors.toList;
 public class MapProcessor implements IEntityProcessingService {
     @Override
     public void process(GameData gameData, World world) {
-        int numZombies = 3;
-        int numWeapons = 1;
-        int zombieSpawnInterval = 5;
-        int weaponSpawnInterval = 10;
-        if ((gameData.getGameTime() % zombieSpawnInterval <= gameData.getDelta()) && (gameData.getGameTime() > 1)) {
-            spawnEntities(numZombies, "zombie", world, gameData);
+        int zombieSpawnInterval = 20;
+        int weaponSpawnInterval = 30;
+        Collection<? extends SpawnSPI> zombieSPI = getEntitySPI("zombie");
+        Collection<? extends SpawnSPI> weaponSPI = getEntitySPI("weapon");
+
+        // calculate the number of zombies to spawn based on game time
+        int zombiesToSpawn = (int) Math.sqrt(gameData.getGameTime() / 10000) + 3;
+
+        // calculate the number of weapons to spawn based on game time
+        int weaponsToSpawn = (int) Math.sqrt(gameData.getGameTime() / 10000) + 1;
+
+
+        if ((gameData.getGameTime() % zombieSpawnInterval <= gameData.getDelta())) {
+            spawnEntities(zombiesToSpawn, zombieSPI, world, gameData);
         }
-        if ((gameData.getGameTime() % weaponSpawnInterval <= gameData.getDelta()) && (gameData.getGameTime() > 1)) {
-            spawnEntities(numWeapons, "weapon", world, gameData);
+        if ((gameData.getGameTime() % weaponSpawnInterval <= gameData.getDelta())) {
+            spawnEntities(weaponsToSpawn, weaponSPI, world, gameData);
         }
     }
 
-    private void spawnEntities(int numEntities, String entity, World world, GameData gameData) {
+    private void spawnEntities(int numEntities, Collection<? extends SpawnSPI> entitySPI, World world, GameData gameData) {
         String[][] map = world.getMap();
         //change so that tile size is stored in gameData
         int tileSize = 32;
@@ -49,14 +58,8 @@ public class MapProcessor implements IEntityProcessingService {
             int entityX = (x * tileSize) + xOffset;
             int entityY = (y * tileSize) + yOffset;
 
-            if (Objects.equals(entity, "weapon")) {
-                for (WeaponSPI weapon : getWeaponSPI()) {
-                    world.addEntity(weapon.createWeapon(entityX, entityY));
-                }
-            } else if (Objects.equals(entity, "zombie")) {
-                for (ZombieSPI zombie : getZombieSPI()) {
-                    world.addEntity(zombie.createZombie(entityX, entityY));
-                }
+            for (SpawnSPI spawn : entitySPI) {
+                world.addEntity(spawn.createEntity(entityX, entityY));
             }
         }
     }
@@ -75,12 +78,13 @@ public class MapProcessor implements IEntityProcessingService {
         }
         return true;
     }
-
-    protected Collection<? extends WeaponSPI> getWeaponSPI() {
-        return ServiceLoader.load(WeaponSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
-    }
-
-    protected Collection<? extends ZombieSPI> getZombieSPI() {
-        return ServiceLoader.load(ZombieSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+    protected Collection<? extends SpawnSPI> getEntitySPI(String entityType) {
+        if (entityType.equals("zombie")) {
+            return ServiceLoader.load(ZombieSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+        } else if (entityType.equals("weapon")) {
+            return ServiceLoader.load(WeaponSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+        } else {
+            throw new IllegalArgumentException("Invalid entity type: " + entityType);
+        }
     }
 }

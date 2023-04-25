@@ -1,8 +1,6 @@
 package common.data.entities.weapon;
 
-import common.data.Entity;
+import common.data.entities.SpawnSPI;
 
-public interface WeaponSPI {
-    Entity createWeapon(int x, int y);
-
+public interface WeaponSPI extends SpawnSPI {
 }

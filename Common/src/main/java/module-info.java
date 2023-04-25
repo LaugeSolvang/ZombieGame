@@ -7,4 +7,5 @@ module Common {
     exports common.data.entities.zombie;
     exports common.data.entities.obstruction;
     exports common.data.entities.player;
+    exports common.data.entities;
 }
