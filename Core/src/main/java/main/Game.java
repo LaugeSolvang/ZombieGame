@@ -54,7 +54,6 @@ public class Game implements ApplicationListener {
 
         update();
 
-
         draw();
 
         gameData.getKeys().update();
@@ -67,7 +66,8 @@ public class Game implements ApplicationListener {
         for (IPostEntityProcessingService postEntityProcessorService : getPostEntityProcessingServices()) {
             postEntityProcessorService.process(gameData, world);
         }
-        gameData.setGameTime(gameData.getGameTime()+gameData.getDelta());
+
+        gameData.setGameTime(Math.max(gameData.getGameTime() + gameData.getDelta(), 0.18F));
     }
 
     private void draw() {

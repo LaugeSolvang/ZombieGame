@@ -33,7 +33,7 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot, Weapon
         return ServiceLoader.load(BulletSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
     }
     @Override
-    public Entity createWeapon(int x, int y) {
+    public Entity createEntity(int x, int y) {
         Entity weapon = new Weapon("weaponsystem.WeaponProcessor", 20);
 
         String path = "weapon.png";
