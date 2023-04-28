@@ -38,14 +38,16 @@ public class PlayerProcessor implements IEntityProcessingService {
         PositionPart positionPart = player.getPart(PositionPart.class);
         positionPart.process(gameData, player);
 
-        if (gameData.getKeys().isDown(RIGHT)){
-            String path = "player-kopi.png";
-            player.setPath(path);
-        }
-        if (gameData.getKeys().isDown(LEFT)){
+        //makes the player face the direction they are going
+        if (movingPart.getDx() < 0){
             String path = "player.png";
             player.setPath(path);
         }
+        if (movingPart.getDx() > 0){
+            String path = "player-kopi.png";
+            player.setPath(path);
+        }
+
     }
     
 
@@ -56,6 +58,18 @@ public class PlayerProcessor implements IEntityProcessingService {
             PositionPart weaponPositionPart = weapon.getPart(PositionPart.class);
 
             weaponPositionPart.setPosition(playerPositionPart.getX(), playerPositionPart.getY());
+
+            //makes the weapon face the direction the player is facing
+            MovingPart movingPart = player.getPart(MovingPart.class);
+
+            if (movingPart.getDx() < 0){
+            String path = "weapon-kopi.png";
+            weapon.setPath(path);
+            }
+            if (movingPart.getDx() > 0){
+            String path = "weapon.png";
+            weapon.setPath(path);
+            }
 
             if (gameData.getKeys().isPressed(SPACE) && weapon.getAmmo() > 0) {
                 IShoot shootImpl = getShootImpl(weapon);
