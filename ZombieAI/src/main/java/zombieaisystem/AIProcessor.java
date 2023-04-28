@@ -25,7 +25,7 @@ public class AIProcessor implements IPostEntityProcessingService, IZombieAI {
             return;
         }
         int startIndex = (int) (gameData.getGameTime() / 0.5) % zombies.size(); // Calculate the start index based on the time elapsed and the time interval (200 milliseconds).
-        int[][] map = world.getMap();
+        String[][] map = world.getMap();
         Entity player = world.getEntities(Player.class).stream().findFirst().orElse(null);
         if (player == null) {
             return;
@@ -52,7 +52,7 @@ public class AIProcessor implements IPostEntityProcessingService, IZombieAI {
             PositionPart zombiePosition = zombie.getPart(PositionPart.class);
             MovingPart zombieMovement = zombie.getPart(MovingPart.class);
             int[][] pathFinding = ((Zombie) zombie).getPathFinding();
-            System.out.println(Arrays.deepToString(pathFinding));
+            //System.out.println(Arrays.deepToString(pathFinding));
             if (pathFinding == null) {
                 continue;
             }
@@ -64,8 +64,8 @@ public class AIProcessor implements IPostEntityProcessingService, IZombieAI {
             float diffX = nextX - currentX;
             float diffY = nextY - currentY;
 
-            System.out.println("DiffX: "+ diffX+" CurrentX: "+currentX+" NextX: "+nextX);
-            System.out.println("DiffY: "+ diffY+" CurrentY: "+currentY+" NextY: "+nextY);
+            //System.out.println("DiffX: "+ diffX+" CurrentX: "+currentX+" NextX: "+nextX);
+            //System.out.println("DiffY: "+ diffY+" CurrentY: "+currentY+" NextY: "+nextY);
 
 
             float threshold = 0;

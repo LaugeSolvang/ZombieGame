@@ -30,7 +30,7 @@ public class ZombiePlugin implements IGamePluginService, ZombieSPI {
 
         float deacceleration = 200;
         float acceleration = 400;
-        float maxSpeed = 800;
+        float maxSpeed = 80;
         float rotationSpeed = 5;
         float radians = 0;
         String path = "zombie.png";

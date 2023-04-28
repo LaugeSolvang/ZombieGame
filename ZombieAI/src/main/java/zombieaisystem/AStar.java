@@ -5,15 +5,13 @@ import java.util.stream.Collectors;
 
 public class AStar {
     public static void main(String[] args) {
-        int[][] map = new int[30][15];
+        String[][] map = new String[30][15];
 
         //Spawn obstructions around the perimeter of the game
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[0].length; j++) {
                 if (i == 0 || j == 0 || i == map.length - 1 || j == map[0].length - 1) {
-                    map[i][j] = 1;
-                } else {
-                    map[i][j] = 0;
+                    map[i][j] = "obstruction";
                 }
             }
         }
@@ -88,7 +86,7 @@ public class AStar {
     }
 
 
-    public int[][] treeSearch(int[][] grid, String INITIAL_STATE, String GOAL_STATE) {
+    public int[][] treeSearch(String[][] grid, String INITIAL_STATE, String GOAL_STATE) {
         if (STATE_SPACE == null) {
             STATE_SPACE = generateStateSpace(grid);
         }
@@ -107,7 +105,9 @@ public class AStar {
         while (!fringe.isEmpty()) {
             Node node = REMOVE_FIRST(fringe);
             if (node.STATE.equals(GOAL_STATE)) {
-                return nodePathToIntArray(node.path());
+                int[][] path = nodePathToIntArray(node.path());
+                printPath(path,grid);
+                return path;
             }
             ArrayList<Node> children = EXPAND(node);
             for (Node child : children) {
@@ -153,11 +153,11 @@ public class AStar {
         return STATE_SPACE.get(state);
     }
 
-    public static Map<String, List<String>> generateStateSpace(int[][] grid) {
+    public static Map<String, List<String>> generateStateSpace(String[][] grid) {
         Map<String, List<String>> stateSpace = new HashMap<>();
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[0].length; j++) {
-                if (grid[i][j] != 1) {
+                if (!Objects.equals(grid[i][j], "obstruction") || (j == 0 || !Objects.equals(grid[i][j-1], "obstruction"))) {
                     String state = i + "," + j;
                     stateSpace.put(state, generateNeighbours(grid, state));
                 }
@@ -167,7 +167,7 @@ public class AStar {
     }
 
     // Method to get a list of a node's neighbors on the grid
-    private static List<String> generateNeighbours(int[][] grid, String STATE) {
+    private static List<String> generateNeighbours(String[][] grid, String STATE) {
         List<String> neighbors = new ArrayList<>();
         int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
         String[] parts = STATE.split(",");
@@ -179,7 +179,7 @@ public class AStar {
             if (newX < 0 || newX >= grid.length || newY < 0 || newY >= grid[0].length) {
                 continue;
             }
-            if (grid[newX][newY] == 1) {
+            if (Objects.equals(grid[newX][newY], "obstruction")) {
                 continue;
             }
             neighbors.add(newX + "," + newY);
@@ -187,7 +187,7 @@ public class AStar {
         return neighbors;
     }
 
-    public static Map<String, Double> generateHeuristics(int[][] grid, String GOAL_STATE) {
+    public static Map<String, Double> generateHeuristics(String[][] grid, String GOAL_STATE) {
         Map<String, Double> heuristics = new HashMap<>();
         String[] goalParts = GOAL_STATE.split(",");
         int dx = Integer.parseInt(goalParts[0]);
@@ -212,4 +212,19 @@ public class AStar {
             }
             System.out.println();
         }
-    }}
+    }
+    public static void printPath(int[][] path, String[][] map) {
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[0].length; j++) {
+                if ((path.length <= i || path.length <= j) && path[i][j] != 0) {
+                    System.out.println("*");
+                } else if (map[i][j] == "obstruction") {
+                    System.out.println("[]");
+                } else {
+                    System.out.println("");
+                }
+            }
+            System.out.println();
+        }
+    }
+}

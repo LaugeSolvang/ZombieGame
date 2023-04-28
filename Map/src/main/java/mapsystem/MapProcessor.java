@@ -17,13 +17,13 @@ import static java.util.stream.Collectors.toList;
 public class MapProcessor implements IEntityProcessingService {
     @Override
     public void process(GameData gameData, World world) {
-        int zombieSpawnInterval = 20;
-        int weaponSpawnInterval = 30;
+        int zombieSpawnInterval = 2000;
+        int weaponSpawnInterval = 3000;
         Collection<? extends SpawnSPI> zombieSPI = getEntitySPI("zombie");
         Collection<? extends SpawnSPI> weaponSPI = getEntitySPI("weapon");
 
         // calculate the number of zombies to spawn based on game time
-        int zombiesToSpawn = (int) Math.sqrt(gameData.getGameTime() / 10000) + 3;
+        int zombiesToSpawn = (int) Math.sqrt(gameData.getGameTime() / 10000) + 1;
 
         // calculate the number of weapons to spawn based on game time
         int weaponsToSpawn = (int) Math.sqrt(gameData.getGameTime() / 10000) + 1;
