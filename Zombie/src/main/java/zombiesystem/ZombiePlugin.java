@@ -28,9 +28,9 @@ public class ZombiePlugin implements IGamePluginService, ZombieSPI {
     public Entity createZombie(int x, int y) {
         Entity zombie = new Zombie();
 
-        float deacceleration = 500;
-        float acceleration = 1000;
-        float maxSpeed = 100;
+        float deacceleration = 200;
+        float acceleration = 400;
+        float maxSpeed = 800;
         float rotationSpeed = 5;
         float radians = 0;
         String path = "zombie.png";

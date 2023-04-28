@@ -80,9 +80,6 @@ public class MovingPart implements EntityPart{
         float radians = positionPart.getRadians();
         float dt = gameData.getDelta();
 
-        // calculate current speed
-        float speed = (float) Math.sqrt(dx * dx + dy * dy);
-
         // update speed based on acceleration
         if (down) {
             dy -= acceleration * dt;
@@ -99,6 +96,9 @@ public class MovingPart implements EntityPart{
         if (right) {
             dx += acceleration * dt;
         }
+
+        // calculate current speed
+        float speed = (float) Math.sqrt(dx * dx + dy * dy);
 
         // limit speed to maximum
         if (speed > maxSpeed) {
