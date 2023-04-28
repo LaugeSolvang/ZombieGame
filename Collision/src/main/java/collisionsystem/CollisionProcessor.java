@@ -85,22 +85,13 @@ public class CollisionProcessor implements IPostEntityProcessingService {
 
             //Get the position, width and height of the entity
             PositionPart ePosPart = entity.getPart(PositionPart.class);
-            float eX = ePosPart.getX(), eY = ePosPart.getY(), eWidth = ePosPart.getWidth(), eHeight = ePosPart.getHeight();
+            float eX = ePosPart.getX(), eY = ePosPart.getY();
 
-            //Get the position, width and height of the obstruction
-            PositionPart oPosPart = obstruction.getPart(PositionPart.class);
-            float oX = oPosPart.getX(), oY = oPosPart.getY(), oWidth = oPosPart.getWidth(), oHeight = oPosPart.getHeight();
+            entityMovement.setDx(-dx);
+            ePosPart.setX(eX - dx);
 
-            // Check for collision in the X direction
-            if (eX + eWidth + dx > oX && eX + dx < oX + oWidth && eY + eHeight > oY && eY < oY + oHeight) {
-                entityMovement.setDx(-dx);
-                ePosPart.setX(eX - dx);
-            }
-            // Check for collision in the Y direction
-            if (eY + eHeight + dy > oY && eY + dy < oY + oHeight && eX + eWidth > oX && eX < oX + oWidth) {
-                entityMovement.setDy(-dy);
-                ePosPart.setY(eY - dy);
-            }
+            entityMovement.setDy(-dy);
+            ePosPart.setY(eY - dy);
         }
     }
 
