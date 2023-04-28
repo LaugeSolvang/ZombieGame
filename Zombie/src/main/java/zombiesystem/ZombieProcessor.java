@@ -51,6 +51,16 @@ public class ZombieProcessor implements IEntityProcessingService {
             zombieMovement.setLeft(false);
             zombieMovement.setUp(false);
             zombieMovement.setDown(false);
+
+            //makes the zombie sprite face the direction it is walking
+            if (zombieMovement.getDx() < 0){
+                String path = "zombie.png";
+                zombie.setPath(path);
+            }
+            if (zombieMovement.getDx() > 0){
+                String path = "zombie-kopi.png";
+                zombie.setPath(path);
+            }
         }
     }
 }
