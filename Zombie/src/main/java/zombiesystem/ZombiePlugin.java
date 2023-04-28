@@ -25,7 +25,7 @@ public class ZombiePlugin implements IGamePluginService, ZombieSPI {
         }    }
 
     @Override
-    public Entity createZombie(int x, int y) {
+    public Entity createEntity(int x, int y) {
         Entity zombie = new Zombie();
 
         float deacceleration = 200;
