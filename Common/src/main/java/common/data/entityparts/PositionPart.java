@@ -14,6 +14,14 @@ public class PositionPart implements EntityPart{
         this.x = x;
         this.y = y;
         this.radians = radians;
+        this.width = width;
+        this.height = height;
+    }
+    public PositionPart(float x, float y, float width, float height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
     }
 
 

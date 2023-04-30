@@ -28,7 +28,6 @@ public class MapProcessor implements IEntityProcessingService {
         // calculate the number of weapons to spawn based on game time
         int weaponsToSpawn = (int) Math.sqrt(gameData.getGameTime() / 10000) + 1;
 
-
         if ((gameData.getGameTime() % zombieSpawnInterval <= gameData.getDelta())) {
             spawnEntities(zombiesToSpawn, zombieSPI, world, gameData);
         }
@@ -40,7 +39,7 @@ public class MapProcessor implements IEntityProcessingService {
     private void spawnEntities(int numEntities, Collection<? extends SpawnSPI> entitySPI, World world, GameData gameData) {
         String[][] map = world.getMap();
         //change so that tile size is stored in gameData
-        int tileSize = 32;
+        int tileSize = gameData.getTileSize();
         Random rand = new Random();
 
         boolean isValidLocation = false;

@@ -1,7 +1,6 @@
 package zombieaisystem;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class AStar {
     public static void main(String[] args) {
@@ -15,8 +14,10 @@ public class AStar {
                 }
             }
         }
-        AStar astar = new AStar();
 
+        System.out.println((int)Math.ceil(1.0F));
+
+        /*
         long totalDuration = 0;
 
         for (int i = 0; i < 30; i++) {
@@ -33,6 +34,9 @@ public class AStar {
         System.out.println("Average execution time: " + averageDuration + " ns");
 
         System.out.println(Arrays.deepToString(astar.treeSearch(map, "1,1", "10,10")));
+
+         */
+
 
     }
 
@@ -101,22 +105,20 @@ public class AStar {
         Node initialNode = new Node(INITIAL_STATE, null, 0, 0);
         Set<String> visited = new HashSet<>();
         visited.add(initialNode.STATE);
-        fringe = INSERT(initialNode, fringe);
+        INSERT(initialNode, fringe);
         while (!fringe.isEmpty()) {
             Node node = REMOVE_FIRST(fringe);
             if (node.STATE.equals(GOAL_STATE)) {
-                int[][] path = nodePathToIntArray(node.path());
-                printPath(path,grid);
-                return path;
+                //printStateSpace(generateStateSpace(grid));
+                return nodePathToIntArray(node.path());
             }
             ArrayList<Node> children = EXPAND(node);
             for (Node child : children) {
                 if (!visited.contains(child.STATE)) {
                     visited.add(child.STATE);
                     child.COST = node.COST + 1;
-                    fringe = INSERT(child, fringe);
+                    INSERT(child, fringe);
                 }
-
             }
             fringe.sort(Comparator.comparingDouble(x -> HEURISTICS.get(x.STATE)));
 
@@ -128,9 +130,11 @@ public class AStar {
     public ArrayList<Node> EXPAND(Node node) {
         ArrayList<Node> successors = new ArrayList<>();
         List<String> children = successor_fn(node.STATE);
-        for (String child : children) {
-            Node s = new Node(child, node, node.DEPTH + 1, 0);
-            successors = INSERT(s, successors);
+        if (children != null) {
+            for (String child : children) {
+                Node s = new Node(child, node, node.DEPTH + 1, 0);
+                INSERT(s, successors);
+            }
         }
         return successors;
     }
@@ -157,11 +161,12 @@ public class AStar {
         Map<String, List<String>> stateSpace = new HashMap<>();
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[0].length; j++) {
-                if (!Objects.equals(grid[i][j], "obstruction") || (j == 0 || !Objects.equals(grid[i][j-1], "obstruction"))) {
+                if (grid[i][j] == null) {
                     String state = i + "," + j;
                     stateSpace.put(state, generateNeighbours(grid, state));
                 }
             }
+            System.out.println();
         }
         return stateSpace;
     }
@@ -180,6 +185,10 @@ public class AStar {
                 continue;
             }
             if (Objects.equals(grid[newX][newY], "obstruction")) {
+                continue;
+            }
+            if (Objects.equals(grid[newX][newY+1], "obstruction")) {
+                System.out.println("newx "+newX+" newy "+newY);
                 continue;
             }
             neighbors.add(newX + "," + newY);
@@ -209,20 +218,6 @@ public class AStar {
             List<String> neighbours = stateSpace.get(state);
             for (String neighbour : neighbours) {
                 System.out.print("["+neighbour + "] ");
-            }
-            System.out.println();
-        }
-    }
-    public static void printPath(int[][] path, String[][] map) {
-        for (int i = 0; i < map.length; i++) {
-            for (int j = 0; j < map[0].length; j++) {
-                if ((path.length <= i || path.length <= j) && path[i][j] != 0) {
-                    System.out.println("*");
-                } else if (map[i][j] == "obstruction") {
-                    System.out.println("[]");
-                } else {
-                    System.out.println("");
-                }
             }
             System.out.println();
         }

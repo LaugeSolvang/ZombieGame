@@ -59,37 +59,29 @@ public class AIProcessor implements IPostEntityProcessingService, IZombieAI {
 
             float currentX = (int) zombiePosition.getX();
             float currentY = (int) zombiePosition.getY();
-            int nextX = pathFinding[1][0] * gameData.getTileSize();
-            int nextY = pathFinding[1][1] * gameData.getTileSize();
+            int nextX = pathFinding[2][0] * gameData.getTileSize();
+            int nextY = pathFinding[2][1] * gameData.getTileSize();
             float diffX = nextX - currentX;
             float diffY = nextY - currentY;
 
-            //System.out.println("DiffX: "+ diffX+" CurrentX: "+currentX+" NextX: "+nextX);
-            //System.out.println("DiffY: "+ diffY+" CurrentY: "+currentY+" NextY: "+nextY);
+            System.out.println("DiffX: "+ diffX+" CurrentX: "+currentX+" NextX: "+nextX);
+            System.out.println("DiffY: "+ diffY+" CurrentY: "+currentY+" NextY: "+nextY);
 
 
-            float threshold = 0;
+            zombieMovement.setRight(diffX > 0);
+            zombieMovement.setLeft(diffX < 0);
+            zombieMovement.setUp(diffY > 0);
+            zombieMovement.setDown(diffY < 0);
 
-            if (Math.abs(diffX) > threshold) {
-                zombieMovement.setRight(diffX > 0);
-                zombieMovement.setLeft(diffX < 0);
-            } else {
-                zombieMovement.setRight(false);
-                zombieMovement.setLeft(false);
-                zombieMovement.setDx(0);
-            }
-
-            if (Math.abs(diffY) > threshold) {
-                zombieMovement.setUp(diffY > 0);
-                zombieMovement.setDown(diffY < 0);
-            } else {
-                zombieMovement.setDown(false);
-                zombieMovement.setUp(false);
-                zombieMovement.setDy(0);
-            }
-
+            System.out.println(Arrays.deepToString(pathFinding));
             zombieMovement.process(gameData, zombie);
             zombiePosition.process(gameData, zombie);
+
+            zombieMovement.setUp(false);
+            zombieMovement.setDown(false);
+            zombieMovement.setRight(false);
+            zombieMovement.setLeft(false);
+
         }
     }
 }
