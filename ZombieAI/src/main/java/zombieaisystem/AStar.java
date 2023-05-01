@@ -188,7 +188,6 @@ public class AStar {
                 continue;
             }
             if (Objects.equals(grid[newX][newY+1], "obstruction")) {
-                System.out.println("newx "+newX+" newy "+newY);
                 continue;
             }
             neighbors.add(newX + "," + newY);

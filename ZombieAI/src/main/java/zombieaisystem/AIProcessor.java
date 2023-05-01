@@ -11,7 +11,6 @@ import common.data.entityparts.PositionPart;
 import common.services.IPostEntityProcessingService;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class AIProcessor implements IPostEntityProcessingService, IZombieAI {
@@ -59,21 +58,41 @@ public class AIProcessor implements IPostEntityProcessingService, IZombieAI {
 
             float currentX = (int) zombiePosition.getX();
             float currentY = (int) zombiePosition.getY();
-            int nextX = pathFinding[2][0] * gameData.getTileSize();
-            int nextY = pathFinding[2][1] * gameData.getTileSize();
+            int nextX;
+            int nextY;
+            if (pathFinding.length <= 1) {
+                nextX = pathFinding[0][0] * gameData.getTileSize();
+                nextY = pathFinding[0][1] * gameData.getTileSize();
+            } else if (pathFinding.length <= 2) {
+                nextX = pathFinding[1][0] * gameData.getTileSize();
+                nextY = pathFinding[1][1] * gameData.getTileSize();
+            } else {
+                nextX = pathFinding[2][0] * gameData.getTileSize();
+                nextY = pathFinding[2][1] * gameData.getTileSize();
+            }
             float diffX = nextX - currentX;
             float diffY = nextY - currentY;
 
-            System.out.println("DiffX: "+ diffX+" CurrentX: "+currentX+" NextX: "+nextX);
-            System.out.println("DiffY: "+ diffY+" CurrentY: "+currentY+" NextY: "+nextY);
+            //System.out.println("DiffX: "+ diffX+" CurrentX: "+currentX+" NextX: "+nextX+" Dx: "+zombieMovement.getDx());
+            //System.out.println("DiffY: "+ diffY+" CurrentY: "+currentY+" NextY: "+nextY+" Dy: "+zombieMovement.getDy());
 
 
-            zombieMovement.setRight(diffX > 0);
-            zombieMovement.setLeft(diffX < 0);
-            zombieMovement.setUp(diffY > 0);
-            zombieMovement.setDown(diffY < 0);
+            if (Math.abs(diffX) <= Math.abs(zombieMovement.getDx()*gameData.getDelta())) {
+                zombieMovement.setDx(0);
+                zombiePosition.setX(currentX);
+            } else {
+                zombieMovement.setRight(diffX > 0);
+                zombieMovement.setLeft(diffX < 0);
+            }
+            if (Math.abs(diffY) <= Math.abs(zombieMovement.getDy()*gameData.getDelta())) {
+                zombieMovement.setDy(0);
+                zombiePosition.setY(currentY);
+            } else {
+                zombieMovement.setUp(diffY > 0);
+                zombieMovement.setDown(diffY < 0);
+            }
 
-            System.out.println(Arrays.deepToString(pathFinding));
+            //System.out.println(Arrays.deepToString(pathFinding));
             zombieMovement.process(gameData, zombie);
             zombiePosition.process(gameData, zombie);
 
@@ -81,7 +100,6 @@ public class AIProcessor implements IPostEntityProcessingService, IZombieAI {
             zombieMovement.setDown(false);
             zombieMovement.setRight(false);
             zombieMovement.setLeft(false);
-
         }
     }
 }
