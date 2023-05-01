@@ -1,19 +1,20 @@
 package zombiesystem;
 
-import common.data.Entity;
 import common.data.GameData;
 import common.data.World;
-import common.data.entities.player.Player;
-import common.data.entities.zombie.Zombie;
-import common.data.entityparts.LifePart;
-import common.data.entityparts.MovingPart;
-import common.data.entityparts.PositionPart;
+import common.data.entities.zombie.IZombieAI;
 import common.services.IEntityProcessingService;
+
+import java.util.Collection;
+import java.util.ServiceLoader;
+
+import static java.util.stream.Collectors.toList;
 
 
 public class ZombieProcessor implements IEntityProcessingService {
     @Override
     public void process(GameData gameData, World world) {
+        /*
         Entity player = world.getEntities(Player.class).stream().findFirst().orElse(null);
         if (player == null) {
             return;
@@ -62,5 +63,15 @@ public class ZombieProcessor implements IEntityProcessingService {
                 zombie.setPath(path);
             }
         }
+
+         */
+            for (IZombieAI AI : getIZombieAIs()) {
+                AI.moveTowards(gameData, world);
+            }
+
+
+    }
+    private Collection<? extends IZombieAI> getIZombieAIs() {
+        return ServiceLoader.load(IZombieAI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
     }
 }

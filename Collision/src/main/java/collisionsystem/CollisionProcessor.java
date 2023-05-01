@@ -27,21 +27,19 @@ public class CollisionProcessor implements IPostEntityProcessingService {
                     continue;
                 }
                 // Check for collision between the two different entities
-                if (isColliding(firstEntity, secondEntity)) {
+                if (isColliding(firstEntity.getPart(PositionPart.class), secondEntity.getPart(PositionPart.class))) {
                     handleCollision(firstEntity, secondEntity, gameData, world);
                 }
             }
         }
     }
 
-    private boolean isColliding(Entity firstEntity, Entity secondEntity) {
+    private boolean isColliding(PositionPart firstPosition, PositionPart secondPosition) {
         //Get the position, width and height of the first entity
-        PositionPart firstPosition = firstEntity.getPart(PositionPart.class);
         float firstX = firstPosition.getX(), firstY = firstPosition.getY();
         float firstWidth = firstPosition.getWidth(), firstHeight = firstPosition.getHeight();
 
         //Get the position, width and height of the second entity
-        PositionPart secondPosition = secondEntity.getPart(PositionPart.class);
         float secondX = secondPosition.getX(), secondY = secondPosition.getY();
         float secondWidth = secondPosition.getWidth(), secondHeight = secondPosition.getHeight();
 
@@ -87,11 +85,20 @@ public class CollisionProcessor implements IPostEntityProcessingService {
             PositionPart ePosPart = entity.getPart(PositionPart.class);
             float eX = ePosPart.getX(), eY = ePosPart.getY();
 
-            entityMovement.setDx(-dx);
-            ePosPart.setX(eX - dx);
+            if (isColliding(obstruction.getPart(PositionPart.class), new PositionPart(eX, eY-dy, ePosPart.getWidth(), ePosPart.getHeight()))) {
+                entityMovement.setDx(-dx);
+                ePosPart.setX(eX - dx);
+                System.out.println("X colliding");
+            }
 
-            entityMovement.setDy(-dy);
-            ePosPart.setY(eY - dy);
+            if (isColliding(obstruction.getPart(PositionPart.class), new PositionPart(eX-dx, eY, ePosPart.getWidth(), ePosPart.getHeight()))) {
+                entityMovement.setDy(-dy);
+                ePosPart.setY(eY - dy);
+                System.out.println("Y colliding");
+
+            }
+
+
         }
     }
 
