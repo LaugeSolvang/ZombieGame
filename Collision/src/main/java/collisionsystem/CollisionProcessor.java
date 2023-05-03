@@ -88,17 +88,12 @@ public class CollisionProcessor implements IPostEntityProcessingService {
             if (isColliding(obstruction.getPart(PositionPart.class), new PositionPart(eX, eY-dy, ePosPart.getWidth(), ePosPart.getHeight()))) {
                 entityMovement.setDx(-dx);
                 ePosPart.setX(eX - dx);
-                System.out.println("X colliding");
             }
 
             if (isColliding(obstruction.getPart(PositionPart.class), new PositionPart(eX-dx, eY, ePosPart.getWidth(), ePosPart.getHeight()))) {
                 entityMovement.setDy(-dy);
                 ePosPart.setY(eY - dy);
-                System.out.println("Y colliding");
-
             }
-
-
         }
     }
 

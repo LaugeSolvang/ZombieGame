@@ -77,20 +77,20 @@ public class AStar {
     private static Map<String, List<String>> STATE_SPACE;
     private Map<String, Double> HEURISTICS;
 
-    private int[][] nodePathToIntArray(ArrayList<Node> path) {
-        int[][] result = new int[path.size()][2];
-        int j = 0;
+    private List<int[]> nodePathToIntList(ArrayList<Node> path) {
+        List<int[]> result = new ArrayList<>();
         for (int i = path.size() - 1; i >= 0; i--) {
             String[] splitState = path.get(i).STATE.split(",");
-            result[j][0] = Integer.parseInt(splitState[0]);
-            result[j][1] = Integer.parseInt(splitState[1]);
-            j++;
+            int[] nodeCoords = new int[2];
+            nodeCoords[0] = Integer.parseInt(splitState[0]);
+            nodeCoords[1] = Integer.parseInt(splitState[1]);
+            result.add(nodeCoords);
         }
         return result;
     }
 
 
-    public int[][] treeSearch(String[][] grid, String INITIAL_STATE, String GOAL_STATE) {
+    public List<int[]> treeSearch(String[][] grid, String INITIAL_STATE, String GOAL_STATE) {
         if (STATE_SPACE == null) {
             STATE_SPACE = generateStateSpace(grid);
         }
@@ -110,7 +110,7 @@ public class AStar {
             Node node = REMOVE_FIRST(fringe);
             if (node.STATE.equals(GOAL_STATE)) {
                 //printStateSpace(generateStateSpace(grid));
-                return nodePathToIntArray(node.path());
+                return nodePathToIntList(node.path());
             }
             ArrayList<Node> children = EXPAND(node);
             for (Node child : children) {
@@ -184,12 +184,10 @@ public class AStar {
             if (newX < 0 || newX >= grid.length || newY < 0 || newY >= grid[0].length) {
                 continue;
             }
-            if (Objects.equals(grid[newX][newY], "obstruction")) {
+            if (Objects.equals(grid[newX][newY], "obstruction")||Objects.equals(grid[newX][newY+1], "obstruction")) {
                 continue;
             }
-            if (Objects.equals(grid[newX][newY+1], "obstruction")) {
-                continue;
-            }
+
             neighbors.add(newX + "," + newY);
         }
         return neighbors;

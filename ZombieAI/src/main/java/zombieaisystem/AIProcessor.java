@@ -23,7 +23,10 @@ public class AIProcessor implements IPostEntityProcessingService, IZombieAI {
         if (zombies.isEmpty()) {
             return;
         }
-        int startIndex = (int) (gameData.getGameTime() / 0.5) % zombies.size(); // Calculate the start index based on the time elapsed and the time interval (200 milliseconds).
+        if (gameData.getGameTime() < 1) {
+            return;
+        }
+        int startIndex = (int) (gameData.getGameTime() * 100) % (int) gameData.getGameTime(); // Calculate the start index based on the time elapsed and the time interval (200 milliseconds).
         String[][] map = world.getMap();
         Entity player = world.getEntities(Player.class).stream().findFirst().orElse(null);
         if (player == null) {
@@ -31,7 +34,7 @@ public class AIProcessor implements IPostEntityProcessingService, IZombieAI {
         }
         PositionPart playerPosition = player.getPart(PositionPart.class);
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 18; i++) {
             int indexToUpdate = (startIndex + i) % zombies.size(); // Calculate the index of the zombie to update.
             Zombie zombie = zombies.get(indexToUpdate);
 
@@ -50,7 +53,7 @@ public class AIProcessor implements IPostEntityProcessingService, IZombieAI {
         for (Entity zombie : world.getEntities(Zombie.class)) {
             PositionPart zombiePosition = zombie.getPart(PositionPart.class);
             MovingPart zombieMovement = zombie.getPart(MovingPart.class);
-            int[][] pathFinding = ((Zombie) zombie).getPathFinding();
+            List<int[]> pathFinding = ((Zombie) zombie).getPathFinding();
             //System.out.println(Arrays.deepToString(pathFinding));
             if (pathFinding == null) {
                 continue;
@@ -58,23 +61,34 @@ public class AIProcessor implements IPostEntityProcessingService, IZombieAI {
 
             float currentX = (int) zombiePosition.getX();
             float currentY = (int) zombiePosition.getY();
-            int nextX;
-            int nextY;
-            if (pathFinding.length <= 1) {
-                nextX = pathFinding[0][0] * gameData.getTileSize();
-                nextY = pathFinding[0][1] * gameData.getTileSize();
-            } else if (pathFinding.length <= 2) {
-                nextX = pathFinding[1][0] * gameData.getTileSize();
-                nextY = pathFinding[1][1] * gameData.getTileSize();
-            } else {
-                nextX = pathFinding[2][0] * gameData.getTileSize();
-                nextY = pathFinding[2][1] * gameData.getTileSize();
-            }
-            float diffX = nextX - currentX;
-            float diffY = nextY - currentY;
 
-            //System.out.println("DiffX: "+ diffX+" CurrentX: "+currentX+" NextX: "+nextX+" Dx: "+zombieMovement.getDx());
-            //System.out.println("DiffY: "+ diffY+" CurrentY: "+currentY+" NextY: "+nextY+" Dy: "+zombieMovement.getDy());
+            int targetX;
+            int targetY;
+
+            if (pathFinding.size() == 1) {
+                 targetX = pathFinding.get(0)[0] * gameData.getTileSize();
+                 targetY = pathFinding.get(0)[1] * gameData.getTileSize();
+            } else if (pathFinding.size() == 2) {
+                targetX = pathFinding.get(1)[0] * gameData.getTileSize();
+                targetY = pathFinding.get(1)[1] * gameData.getTileSize();
+            } else {
+                targetX = pathFinding.get(2)[0] * gameData.getTileSize();
+                targetY = pathFinding.get(2)[1] * gameData.getTileSize();
+
+                if (targetX == currentX && targetY == currentY) {
+                    pathFinding.remove(2);
+                    if (pathFinding.size() >= 3) {
+                        targetX = pathFinding.get(2)[0] * gameData.getTileSize();
+                        targetY = pathFinding.get(2)[1] * gameData.getTileSize();
+                    }
+                }
+            }
+
+            float diffX = targetX - currentX;
+            float diffY = targetY - currentY;
+
+            //System.out.println("DiffX: "+ diffX+" CurrentX: "+currentX+" NextX: "+targetX+" Dx: "+zombieMovement.getDx());
+            //System.out.println("DiffY: "+ diffY+" CurrentY: "+currentY+" NextY: "+targetY+" Dy: "+zombieMovement.getDy());
 
 
             if (Math.abs(diffX) <= Math.abs(zombieMovement.getDx()*gameData.getDelta())) {
