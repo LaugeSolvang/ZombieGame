@@ -24,16 +24,15 @@ public class PlayerPlugin implements IGamePluginService {
         float deceleration = 2000;
         float acceleration = 4000;
         float maxSpeed = 100;
-        float rotationSpeed = 5;
         float x = gameData.getDisplayWidth() / 2;
         float y = gameData.getDisplayHeight() / 2;
-        float radians = 0;
+        int life = 100;
         String path = "player.png";
         player.setPath(path);
 
-        player.add(new MovingPart(deceleration, acceleration, maxSpeed, rotationSpeed));
-        player.add(new PositionPart(x, y, radians));
-        player.add(new LifePart(100));
+        player.add(new MovingPart(deceleration, acceleration, maxSpeed));
+        player.add(new PositionPart(x, y));
+        player.add(new LifePart(life));
 
         return player;
     }

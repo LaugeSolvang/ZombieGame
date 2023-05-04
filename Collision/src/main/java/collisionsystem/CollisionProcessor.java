@@ -21,7 +21,6 @@ public class CollisionProcessor implements IPostEntityProcessingService {
         // Loop through all pairs of entities in the world
         for (Entity firstEntity : world.getEntities()) {
             for (Entity secondEntity : world.getEntities()) {
-
                 // Skip the iteration if the entities are identical
                 if (firstEntity.getID().equals(secondEntity.getID())) {
                     continue;
@@ -35,11 +34,11 @@ public class CollisionProcessor implements IPostEntityProcessingService {
     }
 
     private boolean isColliding(PositionPart firstPosition, PositionPart secondPosition) {
-        //Get the position, width and height of the first entity
+        //Get the position and dimensions of the first entity
         float firstX = firstPosition.getX(), firstY = firstPosition.getY();
         float firstWidth = firstPosition.getWidth(), firstHeight = firstPosition.getHeight();
 
-        //Get the position, width and height of the second entity
+        //Get the position and dimensions of the second entity
         float secondX = secondPosition.getX(), secondY = secondPosition.getY();
         float secondWidth = secondPosition.getWidth(), secondHeight = secondPosition.getHeight();
 
@@ -78,27 +77,26 @@ public class CollisionProcessor implements IPostEntityProcessingService {
         //Get horizontal and vertical velocity of the entity
         if (entity.getPart(MovingPart.class) != null) {
             MovingPart entityMovement = entity.getPart(MovingPart.class);
-
             float dx = entityMovement.getDx() * gameData.getDelta(), dy = entityMovement.getDy() * gameData.getDelta();
 
-            //Get the position, width and height of the entity
+            //Get the position, width and height of the entity and create the PositionPart for the next turn
             PositionPart ePosPart = entity.getPart(PositionPart.class);
             float eX = ePosPart.getX(), eY = ePosPart.getY();
+            float width = ePosPart.getWidth(), height = ePosPart.getHeight();
+            PositionPart newPosPart = new PositionPart(eX, eY - dy, width, height);
 
-            if (isColliding(obstruction.getPart(PositionPart.class), new PositionPart(eX, eY-dy, ePosPart.getWidth(), ePosPart.getHeight()))) {
+            PositionPart oPosPart = obstruction.getPart(PositionPart.class);
+
+            if (isColliding(oPosPart, newPosPart)) {
                 entityMovement.setDx(-dx);
                 ePosPart.setX(eX - dx);
-                System.out.println("X colliding");
             }
 
-            if (isColliding(obstruction.getPart(PositionPart.class), new PositionPart(eX-dx, eY, ePosPart.getWidth(), ePosPart.getHeight()))) {
+            newPosPart.setPosition(eX - dx, eY);
+            if (isColliding(oPosPart, newPosPart)) {
                 entityMovement.setDy(-dy);
                 ePosPart.setY(eY - dy);
-                System.out.println("Y colliding");
-
             }
-
-
         }
     }
 

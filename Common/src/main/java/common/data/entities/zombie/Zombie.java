@@ -2,14 +2,16 @@ package common.data.entities.zombie;
 
 import common.data.Entity;
 
-public class Zombie extends Entity {
-    int[][] pathFinding;
+import java.util.List;
 
-    public int[][] getPathFinding() {
+public class Zombie extends Entity {
+    List<int[]> pathFinding;
+
+    public List<int[]> getPathFinding() {
         return pathFinding;
     }
 
-    public void setPathFinding(int[][] pathFinding) {
+    public void setPathFinding(List<int[]> pathFinding) {
         this.pathFinding = pathFinding;
     }
 }

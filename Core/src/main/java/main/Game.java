@@ -44,7 +44,6 @@ public class Game implements ApplicationListener {
         }
     }
 
-
     @Override
     public void render() {
         Gdx.gl.glClearColor(0, 0, 0, 1);

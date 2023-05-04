@@ -20,6 +20,9 @@ public class Player extends Entity {
     }
 
     public Weapon getCurrentWeapon() {
+        if (weapons.isEmpty()) {
+            return null;
+        }
         return weapons.get(currentWeaponIndex);
     }
 
