@@ -30,8 +30,9 @@ public class TimerPart implements EntityPart{
 
         if (expiration <= 0) {
             LifePart lifePart = entity.getPart(LifePart.class);
-            lifePart.setLife(0);
-
+            if (lifePart != null) {
+                lifePart.setLife(0);
+            }
         }
     }
 }

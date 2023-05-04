@@ -8,9 +8,6 @@ import common.data.entities.bullet.BulletSPI;
 import common.data.entityparts.*;
 import common.services.IEntityProcessingService;
 
-import static common.data.GameKeys.*;
-
-
 public class BulletProcessor implements IEntityProcessingService, BulletSPI {
     @Override
     public void process(GameData gameData, World world) {
@@ -23,7 +20,6 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
                 world.removeEntity(bullet);
             }
 
-
             movingPart.process(gameData, bullet);
             positionPart.process(gameData, bullet);
             timerPart.process(gameData, bullet);
@@ -35,8 +31,8 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
         PositionPart weaponPos = weapon.getPart(PositionPart.class);
         Entity bullet = new Bullet();
         setBulletPosition(weaponPos, bullet);
-        setBulletProperties(bullet);
-        setBulletDirection(gameData, bullet);
+        setBulletProperties(bullet, weapon);
+        setBulletDirection(weaponPos, bullet);
         return bullet;
     }
 
@@ -46,46 +42,46 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
         bullet.add(new PositionPart(x, y));
     }
 
-    private void setBulletProperties(Entity bullet) {
+    private void setBulletProperties(Entity bullet, Entity weapon) {
         String path = "bullet.png";
         float deceleration = 0;
         float acceleration = 2000;
         float speed = 500;
         int life = 1;
         int timer = 1;
-        int damage = 100;
 
         bullet.setPath(path);
         bullet.setRadius(2);
         bullet.add(new LifePart(life));
         bullet.add(new MovingPart(deceleration, acceleration, speed));
         bullet.add(new TimerPart(timer));
-        bullet.add(new DamagePart(damage));
+        bullet.add(weapon.getPart(DamagePart.class));
     }
 
-    private void setBulletDirection(GameData gameData, Entity bullet) {
+    private void setBulletDirection(PositionPart posPart, Entity bullet) {
         MovingPart movingPart = bullet.getPart(MovingPart.class);
+        float radians = posPart.getRadians();
 
-        if (gameData.getKeys().isDown(UP) && gameData.getKeys().isDown(RIGHT)) {
+        if (radians >= -3.14f/8 && radians <= 3.14f/8) {
+            movingPart.setRight(true);
+        } else if (radians > 3.14f/8 && radians < 3*3.14f/8) {
             movingPart.setUp(true);
             movingPart.setRight(true);
-        } else if (gameData.getKeys().isDown(UP) && gameData.getKeys().isDown(LEFT)) {
+        } else if (radians >= 3*3.14f/8 && radians <= 5*3.14f/8) {
+            movingPart.setUp(true);
+        } else if (radians > 5*3.14f/8 && radians < 7*3.14f/8) {
             movingPart.setUp(true);
             movingPart.setLeft(true);
-        } else if (gameData.getKeys().isDown(LEFT) && gameData.getKeys().isDown(DOWN)) {
+        } else if (radians >= 7*3.14f/8 || radians <= -7*3.14f/8) {
+            movingPart.setLeft(true);
+        } else if (radians < -5*3.14f/8) {
             movingPart.setDown(true);
             movingPart.setLeft(true);
-        } else if (gameData.getKeys().isDown(DOWN) && gameData.getKeys().isDown(RIGHT)) {
+        } else if (radians <= -3*3.14f/8) {
+            movingPart.setDown(true);
+        } else if (radians < -3.14f/8) {
             movingPart.setDown(true);
             movingPart.setRight(true);
-        } else if (gameData.getKeys().isDown(UP)) {
-            movingPart.setUp(true);
-        } else if (gameData.getKeys().isDown(RIGHT)) {
-            movingPart.setRight(true);
-        } else if (gameData.getKeys().isDown(LEFT)) {
-            movingPart.setLeft(true);
-        } else if (gameData.getKeys().isDown(DOWN)) {
-            movingPart.setDown(true);
         }
     }
 }

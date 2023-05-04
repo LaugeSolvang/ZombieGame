@@ -1,11 +1,11 @@
-package weaponsystem;
+package riflesystem;
 
 import common.data.Entity;
 import common.data.GameData;
 import common.data.World;
+import common.data.entities.ValidLocation;
 import common.data.entities.bullet.BulletSPI;
 import common.data.entities.player.Player;
-import common.data.entities.ValidLocation;
 import common.data.entities.weapon.IShoot;
 import common.data.entities.weapon.Weapon;
 import common.data.entityparts.DamagePart;
@@ -19,7 +19,7 @@ import java.util.ServiceLoader;
 
 import static java.util.stream.Collectors.toList;
 
-public class WeaponProcessor implements IEntityProcessingService, IShoot {
+public class RifleProcessor implements IEntityProcessingService, IShoot {
     @Override
     public void process(GameData gameData, World world) {
         updateWeaponDirection(world);
@@ -89,19 +89,19 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
         }
     }
     private Entity createEntity(int x, int y) {
-        int ammo = 20;
-        float fireRate = 0.5F;
-        int damage = 50;
-        Entity weapon = new Weapon("weaponsystem.WeaponProcessor", ammo, fireRate);
+        int ammo = 200;
+        float fireRate = 0.1F;
+        int damage = 25;
+        Entity weapon = new Weapon("riflesystem.RifleProcessor", ammo, fireRate);
 
-        String path = "weapon.png";
+        String path = "weapon-kopi.png";
         weapon.setPath(path);
 
         weapon.add(new PositionPart(x, y));
         weapon.add(new TimerPart(0));
         weapon.add(new DamagePart(damage));
 
-        return weapon;    
+        return weapon;
     }
     private Collection<? extends BulletSPI> getBulletSPIs() {
         return ServiceLoader.load(BulletSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());

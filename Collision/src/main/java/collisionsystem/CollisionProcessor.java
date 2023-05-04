@@ -15,6 +15,9 @@ import common.data.entityparts.PositionPart;
 import common.services.IPostEntityProcessingService;
 import common.data.entities.obstruction.Obstruction;
 
+import java.util.List;
+import java.util.Objects;
+
 public class CollisionProcessor implements IPostEntityProcessingService {
     @Override
     public void process(GameData gameData, World world) {
@@ -55,7 +58,7 @@ public class CollisionProcessor implements IPostEntityProcessingService {
         } else if ((firstEntity instanceof Weapon || secondEntity instanceof Weapon)
                 && (firstEntity instanceof Player || secondEntity instanceof Player)
                 && gameData.getKeys().isPressed(GameKeys.SHIFT)) {
-            handleWeaponCollision(firstEntity, secondEntity);
+            handleWeaponCollision(firstEntity, secondEntity, world);
         } else if ((firstEntity instanceof Zombie || secondEntity instanceof Zombie)
                 && (firstEntity instanceof Player || secondEntity instanceof Player)) {
             handleZombiePlayerCollision(firstEntity, secondEntity, world);
@@ -100,10 +103,28 @@ public class CollisionProcessor implements IPostEntityProcessingService {
         }
     }
 
-    private void handleWeaponCollision(Entity firstEntity, Entity secondEntity) {
+    private void handleWeaponCollision(Entity firstEntity, Entity secondEntity, World world) {
         Weapon weapon = (Weapon) (firstEntity instanceof Weapon ? firstEntity : secondEntity);
         Player player = (Player) (weapon == firstEntity ? secondEntity : firstEntity);
-        player.addWeaponToInventory(weapon);
+        List<Weapon> weaponList = player.getWeapons();
+
+        for (Weapon secondWeapon :weaponList) {
+            if (Objects.equals(weapon.getID(), secondWeapon.getID())) {
+                return;
+            }
+        }
+        boolean sameWeapon = false;
+        for (Weapon secondWeapon :weaponList) {
+            if (Objects.equals(secondWeapon.getShootImplName(), weapon.getShootImplName())) {
+                secondWeapon.setAmmo(weapon.getAmmo()+secondWeapon.getAmmo());
+                world.removeEntity(weapon);
+                sameWeapon = true;
+                System.out.println("hi");
+            }
+        }
+        if (!sameWeapon) {
+            player.addWeaponToInventory(weapon);
+        }
     }
     private void handleZombiePlayerCollision(Entity firstEntity, Entity secondEntity, World world) {
         Zombie zombie = (Zombie) (firstEntity instanceof Zombie ? firstEntity : secondEntity);

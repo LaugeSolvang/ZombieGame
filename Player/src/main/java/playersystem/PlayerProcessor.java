@@ -53,16 +53,14 @@ public class PlayerProcessor implements IEntityProcessingService {
     private void processWeapon(GameData gameData, World world, Player player) {
         if (!player.getWeapons().isEmpty()) {
             Weapon weapon = player.getCurrentWeapon();
-            PositionPart playerPositionPart = player.getPart(PositionPart.class);
-            PositionPart weaponPositionPart = weapon.getPart(PositionPart.class);
+            PositionPart playerPosPart = player.getPart(PositionPart.class);
+            PositionPart weaponPosPart = weapon.getPart(PositionPart.class);
 
-            weaponPositionPart.setPosition(playerPositionPart.getX(), playerPositionPart.getY());
+            weaponPosPart.setPosition(playerPosPart.getX(), playerPosPart.getY(), playerPosPart.getRadians());
 
-            if (gameData.getKeys().isPressed(SPACE) && weapon.getAmmo() > 0) {
+            if (gameData.getKeys().isPressed(SPACE)) {
                 IShoot shootImpl = getShootImpl(weapon);
                 shootImpl.useWeapon(player, gameData, world);
-            } else if (weapon.getAmmo() == 0) {
-                world.removeEntity(weapon);
             }
         }
     }

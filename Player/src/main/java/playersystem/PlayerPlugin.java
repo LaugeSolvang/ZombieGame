@@ -26,7 +26,7 @@ public class PlayerPlugin implements IGamePluginService {
         float maxSpeed = 100;
         float x = gameData.getDisplayWidth() / 2;
         float y = gameData.getDisplayHeight() / 2;
-        int life = 100;
+        int life = 10000;
         String path = "player.png";
         player.setPath(path);
 
