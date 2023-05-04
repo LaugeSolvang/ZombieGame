@@ -9,18 +9,17 @@ import java.util.Random;
 
 public class MapProcessor implements ValidLocation {
     @Override
-    public int[] spawnEntities(World world, GameData gameData) {
+    public int[] generateSpawnLocation(World world, GameData gameData) {
         String[][] map = world.getMap();
         Random rand = new Random();
 
-        boolean isValidLocation = false;
-        int x = 0;
-        int y = 0;
-        while (!isValidLocation) {
+        int x;
+        int y;
+
+        do {
             x = rand.nextInt(map.length - 1);
             y = rand.nextInt(map[0].length - 1);
-            isValidLocation = isValidLocation(map, x, y);
-        }
+        } while (!isValidLocation(map, x, y));
         return new int[]{x, y};
     }
     private boolean isValidLocation(String[][] map, int x, int y) {

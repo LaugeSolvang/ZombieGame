@@ -40,25 +40,24 @@ public class AStar {
 
     }
 
-    class Node {
-        public String STATE;
-        public Node PARENT_NODE;
-        public int DEPTH;
-        public int COST;
-
-        public Node(String state, Node parent, int depth, int cost) {
-            STATE = state;
-            PARENT_NODE = parent;
-            DEPTH = depth;
-            COST = cost;
+    static class Node {
+        public String state;
+        public Node parentNode;
+        public int depth;
+        public int cost;
+        public Node(String state, Node parentNode, int depth, int cost) {
+            this.state = state;
+            this.parentNode = parentNode;
+            this.depth = depth;
+            this.cost = cost;
         }
 
         public ArrayList<Node> path() {
             Node currentNode = this;
             ArrayList<Node> path = new ArrayList<>();
             path.add(this);
-            while (currentNode.PARENT_NODE != null) {
-                currentNode = currentNode.PARENT_NODE;
+            while (currentNode.parentNode != null) {
+                currentNode = currentNode.parentNode;
                 path.add(currentNode);
             }
             return path;
@@ -67,9 +66,9 @@ public class AStar {
         @Override
         public String toString() {
             return "Node{" +
-                    "STATE='" + STATE + '\'' +
-                    ", DEPTH=" + DEPTH +
-                    ", COST=" + COST +
+                    "STATE='" + state + '\'' +
+                    ", DEPTH=" + depth +
+                    ", COST=" + cost +
                     '}';
         }
     }
@@ -80,7 +79,7 @@ public class AStar {
     private List<int[]> nodePathToIntList(ArrayList<Node> path) {
         List<int[]> result = new ArrayList<>();
         for (int i = path.size() - 1; i >= 0; i--) {
-            String[] splitState = path.get(i).STATE.split(",");
+            String[] splitState = path.get(i).state.split(",");
             int[] nodeCoords = new int[2];
             nodeCoords[0] = Integer.parseInt(splitState[0]);
             nodeCoords[1] = Integer.parseInt(splitState[1]);
@@ -94,66 +93,54 @@ public class AStar {
         if (STATE_SPACE == null) {
             STATE_SPACE = generateStateSpace(grid);
         }
-        //printStateSpace(STATE_SPACE);
         if (HEURISTICS == null) {
             HEURISTICS = generateHeuristics(grid, GOAL_STATE);
         }
 
-        //System.out.println(HEURISTICS);
-
         ArrayList<Node> fringe = new ArrayList<>();
         Node initialNode = new Node(INITIAL_STATE, null, 0, 0);
         Set<String> visited = new HashSet<>();
-        visited.add(initialNode.STATE);
-        INSERT(initialNode, fringe);
+        visited.add(initialNode.state);
+        insert(initialNode, fringe);
         while (!fringe.isEmpty()) {
-            Node node = REMOVE_FIRST(fringe);
-            if (node.STATE.equals(GOAL_STATE)) {
-                //printStateSpace(generateStateSpace(grid));
+            Node node = removeFirst(fringe);
+            if (node.state.equals(GOAL_STATE)) {
                 return nodePathToIntList(node.path());
             }
-            ArrayList<Node> children = EXPAND(node);
+            ArrayList<Node> children = expand(node);
             for (Node child : children) {
-                if (!visited.contains(child.STATE)) {
-                    visited.add(child.STATE);
-                    child.COST = node.COST + 1;
-                    INSERT(child, fringe);
+                if (!visited.contains(child.state)) {
+                    visited.add(child.state);
+                    child.cost = node.cost + 1;
+                    insert(child, fringe);
                 }
             }
-            fringe.sort(Comparator.comparingDouble(x -> HEURISTICS.get(x.STATE)));
-
-            //System.out.println("fringe: " + fringe);
+            fringe.sort(Comparator.comparingDouble(x -> HEURISTICS.get(x.state)));
         }
         return null;
     }
 
-    public ArrayList<Node> EXPAND(Node node) {
+    public ArrayList<Node> expand(Node node) {
         ArrayList<Node> successors = new ArrayList<>();
-        List<String> children = successor_fn(node.STATE);
+        List<String> children = successorFunction(node.state);
         if (children != null) {
             for (String child : children) {
-                Node s = new Node(child, node, node.DEPTH + 1, 0);
-                INSERT(s, successors);
+                Node s = new Node(child, node, node.depth + 1, 0);
+                insert(s, successors);
             }
         }
         return successors;
     }
 
-    public static ArrayList<Node> INSERT(Node node, ArrayList<Node> queue) {
+    public static void insert(Node node, ArrayList<Node> queue) {
         queue.add(node);
-        return queue;
     }
 
-    public static ArrayList<Node> INSERT_ALL(ArrayList<Node> list, ArrayList<Node> queue) {
-        queue.addAll(list);
-        return queue;
-    }
-
-    public static Node REMOVE_FIRST(ArrayList<Node> queue) {
+    public static Node removeFirst(ArrayList<Node> queue) {
         return queue.remove(0);
     }
 
-    public static List<String> successor_fn(String state) {
+    public static List<String> successorFunction(String state) {
         return STATE_SPACE.get(state);
     }
 
@@ -166,7 +153,6 @@ public class AStar {
                     stateSpace.put(state, generateNeighbours(grid, state));
                 }
             }
-            System.out.println();
         }
         return stateSpace;
     }
@@ -204,19 +190,5 @@ public class AStar {
             }
         }
         return heuristics;
-    }
-
-    public static void printStateSpace(Map<String, List<String>> stateSpace) {
-        TreeSet<String> sortedStates = new TreeSet<>(Comparator.comparing((String o) -> o));
-        sortedStates.addAll(stateSpace.keySet());
-
-        for (String state : sortedStates) {
-            System.out.print("State: [" + state + "] Neighbours: ");
-            List<String> neighbours = stateSpace.get(state);
-            for (String neighbour : neighbours) {
-                System.out.print("["+neighbour + "] ");
-            }
-            System.out.println();
-        }
     }
 }

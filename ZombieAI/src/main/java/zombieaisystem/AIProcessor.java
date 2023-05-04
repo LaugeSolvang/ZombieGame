@@ -20,18 +20,17 @@ public class AIProcessor implements IPostEntityProcessingService, IZombieAI {
         for (Entity entity : world.getEntities(Zombie.class)) {
             zombies.add((Zombie) entity);
         }
-        if (zombies.isEmpty()) {
-            return;
-        }
-        if (gameData.getGameTime() < 1) {
-            return;
-        }
-        int startIndex = (int) (gameData.getGameTime() * 100) % (int) gameData.getGameTime(); // Calculate the start index based on the time elapsed and the time interval (200 milliseconds).
-        String[][] map = world.getMap();
         Entity player = world.getEntities(Player.class).stream().findFirst().orElse(null);
-        if (player == null) {
-            return;
+
+        if (player == null || zombies.isEmpty()) {return;}
+
+        int startIndex;
+        if (gameData.getGameTime() >= 1) {
+            startIndex = (int) (gameData.getGameTime() * 100) % (int) gameData.getGameTime();
+        } else {
+            startIndex = 0; // or any other value that you want to use when gameTime is under 1
         }
+        String[][] map = world.getMap();
         PositionPart playerPosition = player.getPart(PositionPart.class);
 
         for (int i = 0; i < 18; i++) {
@@ -49,71 +48,59 @@ public class AIProcessor implements IPostEntityProcessingService, IZombieAI {
     }
 
     @Override
-    public void moveTowards(GameData gameData, World world) {
-        for (Entity zombie : world.getEntities(Zombie.class)) {
-            PositionPart zombiePosition = zombie.getPart(PositionPart.class);
-            MovingPart zombieMovement = zombie.getPart(MovingPart.class);
-            List<int[]> pathFinding = ((Zombie) zombie).getPathFinding();
-            //System.out.println(Arrays.deepToString(pathFinding));
-            if (pathFinding == null) {
-                continue;
-            }
+    public void moveTowards(GameData gameData, Entity zombie) {
+        PositionPart zombiePosition = zombie.getPart(PositionPart.class);
+        MovingPart zombieMovement = zombie.getPart(MovingPart.class);
 
-            float currentX = (int) zombiePosition.getX();
-            float currentY = (int) zombiePosition.getY();
+        List<int[]> pathFinding = ((Zombie) zombie).getPathFinding();
+        if (pathFinding == null) {return;}
 
-            int targetX;
-            int targetY;
+        float currentX = (int) zombiePosition.getX();
+        float currentY = (int) zombiePosition.getY();
 
-            if (pathFinding.size() == 1) {
-                 targetX = pathFinding.get(0)[0] * gameData.getTileSize();
-                 targetY = pathFinding.get(0)[1] * gameData.getTileSize();
-            } else if (pathFinding.size() == 2) {
-                targetX = pathFinding.get(1)[0] * gameData.getTileSize();
-                targetY = pathFinding.get(1)[1] * gameData.getTileSize();
-            } else {
-                targetX = pathFinding.get(2)[0] * gameData.getTileSize();
-                targetY = pathFinding.get(2)[1] * gameData.getTileSize();
+        int targetX;
+        int targetY;
 
-                if (targetX == currentX && targetY == currentY) {
-                    pathFinding.remove(2);
-                    if (pathFinding.size() >= 3) {
-                        targetX = pathFinding.get(2)[0] * gameData.getTileSize();
-                        targetY = pathFinding.get(2)[1] * gameData.getTileSize();
-                    }
+        if (pathFinding.size() <= 2) {
+            targetX = pathFinding.get(pathFinding.size() - 1)[0] * gameData.getTileSize();
+            targetY = pathFinding.get(pathFinding.size() - 1)[1] * gameData.getTileSize();
+        } else {
+            targetX = pathFinding.get(2)[0] * gameData.getTileSize();
+            targetY = pathFinding.get(2)[1] * gameData.getTileSize();
+
+            if (targetX == currentX && targetY == currentY) {
+                pathFinding.remove(2);
+                if (pathFinding.size() >= 3) {
+                    targetX = pathFinding.get(2)[0] * gameData.getTileSize();
+                    targetY = pathFinding.get(2)[1] * gameData.getTileSize();
                 }
             }
-
-            float diffX = targetX - currentX;
-            float diffY = targetY - currentY;
-
-            //System.out.println("DiffX: "+ diffX+" CurrentX: "+currentX+" NextX: "+targetX+" Dx: "+zombieMovement.getDx());
-            //System.out.println("DiffY: "+ diffY+" CurrentY: "+currentY+" NextY: "+targetY+" Dy: "+zombieMovement.getDy());
-
-
-            if (Math.abs(diffX) <= Math.abs(zombieMovement.getDx()*gameData.getDelta())) {
-                zombieMovement.setDx(0);
-                zombiePosition.setX(currentX);
-            } else {
-                zombieMovement.setRight(diffX > 0);
-                zombieMovement.setLeft(diffX < 0);
-            }
-            if (Math.abs(diffY) <= Math.abs(zombieMovement.getDy()*gameData.getDelta())) {
-                zombieMovement.setDy(0);
-                zombiePosition.setY(currentY);
-            } else {
-                zombieMovement.setUp(diffY > 0);
-                zombieMovement.setDown(diffY < 0);
-            }
-
-            //System.out.println(Arrays.deepToString(pathFinding));
-            zombieMovement.process(gameData, zombie);
-            zombiePosition.process(gameData, zombie);
-
-            zombieMovement.setUp(false);
-            zombieMovement.setDown(false);
-            zombieMovement.setRight(false);
-            zombieMovement.setLeft(false);
         }
+
+        float diffX = targetX - currentX;
+        float diffY = targetY - currentY;
+
+        if (Math.abs(diffX) <= Math.abs(zombieMovement.getDx()*gameData.getDelta())) {
+            zombieMovement.setDx(0);
+            zombiePosition.setX(currentX);
+        } else {
+            zombieMovement.setRight(diffX > 0);
+            zombieMovement.setLeft(diffX < 0);
+        }
+        if (Math.abs(diffY) <= Math.abs(zombieMovement.getDy()*gameData.getDelta())) {
+            zombieMovement.setDy(0);
+            zombiePosition.setY(currentY);
+        } else {
+            zombieMovement.setUp(diffY > 0);
+            zombieMovement.setDown(diffY < 0);
+        }
+
+        zombieMovement.process(gameData, zombie);
+        zombiePosition.process(gameData, zombie);
+
+        zombieMovement.setUp(false);
+        zombieMovement.setDown(false);
+        zombieMovement.setRight(false);
+        zombieMovement.setLeft(false);
     }
 }

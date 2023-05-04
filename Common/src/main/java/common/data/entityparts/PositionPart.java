@@ -8,14 +8,10 @@ public class PositionPart implements EntityPart{
     private float y;
     private float width;
     private float height;
-    private float radians;
 
-    public PositionPart(float x, float y, float radians) {
+    public PositionPart(float x, float y) {
         this.x = x;
         this.y = y;
-        this.radians = radians;
-        this.width = width;
-        this.height = height;
     }
     public PositionPart(float x, float y, float width, float height) {
         this.x = x;
@@ -31,10 +27,6 @@ public class PositionPart implements EntityPart{
 
     public float getY() {
         return y;
-    }
-
-    public float getRadians() {
-        return radians;
     }
 
     public float getWidth() {
@@ -61,10 +53,6 @@ public class PositionPart implements EntityPart{
     public void setDimension(float width, float height) {
         this.width = width;
         this.height = height;
-    }
-
-    public void setRadians(float radians) {
-        this.radians = radians;
     }
 
     @Override

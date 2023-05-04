@@ -22,6 +22,11 @@ public class ZombieProcessor implements IEntityProcessingService {
     int zombieSpawnInterval = 15;
     @Override
     public void process(GameData gameData, World world) {
+        spawnZombies(gameData, world);
+        moveZombies(gameData, world);
+    }
+
+    private void spawnZombies(GameData gameData, World world) {
         int tileSize = gameData.getTileSize();
 
         // calculate the number of zombies to spawn based on game time
@@ -30,36 +35,38 @@ public class ZombieProcessor implements IEntityProcessingService {
         if ((gameData.getGameTime() % zombieSpawnInterval <= gameData.getDelta())) {
             for (int i = 0; i < zombiesToSpawn; i++) {
                 for (ValidLocation validLocation : getValidLocation()) {
-                    int[] spawnLocation = validLocation.spawnEntities(world, gameData);
+                    int[] spawnLocation = validLocation.generateSpawnLocation(world, gameData);
                     int x = spawnLocation[0];
                     int y = spawnLocation[1];
                     world.addEntity(createEntity(x*tileSize,y*tileSize));
                 }
             }
         }
-
-        for (IZombieAI AI : getIZombieAIs()) {
-            AI.moveTowards(gameData, world);
+    }
+    private void moveZombies(GameData gameData, World world) {
+        for (Entity zombie : world.getEntities(Zombie.class)) {
+            for (IZombieAI AI : getIZombieAIs()) {
+                AI.moveTowards(gameData, zombie);
+            }
         }
     }
     private Entity createEntity(int x, int y) {
         Entity zombie = new Zombie();
 
-        float deacceleration = 200;
+        float deceleration = 200;
         float acceleration = 400;
         float maxSpeed = 80;
-        float rotationSpeed = 5;
-        float radians = 0;
+        int life = 50;
+        int damage = 1;
         String path = "zombie.png";
         zombie.setPath(path);
 
-        zombie.add(new MovingPart(deacceleration, acceleration, maxSpeed, rotationSpeed));
-        zombie.add(new PositionPart(x, y, 0));
-        zombie.add(new LifePart(1));
-        zombie.add(new DamagePart(1));
+        zombie.add(new MovingPart(deceleration, acceleration, maxSpeed));
+        zombie.add(new PositionPart(x, y));
+        zombie.add(new LifePart(life));
+        zombie.add(new DamagePart(damage));
 
         return zombie;
-
     }
     private Collection<? extends IZombieAI> getIZombieAIs() {
         return ServiceLoader.load(IZombieAI.class).stream().map(ServiceLoader.Provider::get).collect(toList());

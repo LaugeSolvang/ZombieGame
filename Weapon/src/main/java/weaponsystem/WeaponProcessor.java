@@ -8,6 +8,7 @@ import common.data.entities.player.Player;
 import common.data.entities.ValidLocation;
 import common.data.entities.weapon.IShoot;
 import common.data.entities.weapon.Weapon;
+import common.data.entityparts.MovingPart;
 import common.data.entityparts.PositionPart;
 import common.services.IEntityProcessingService;
 
@@ -20,15 +21,38 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
     int weaponSpawnInterval = 30;
     @Override
     public void process(GameData gameData, World world) {
-        int tileSize = gameData.getTileSize();
+        updateWeaponDirection(world);
+        spawnWeapons(gameData, world);
+    }
 
-        // calculate the number of zombies to spawn based on game time
+    private void updateWeaponDirection(World world) {
+        for (Entity playerEntity : world.getEntities(Player.class)) {
+            Player player = (Player) playerEntity;
+            MovingPart movingPart = player.getPart(MovingPart.class);
+            Weapon currentWeapon = player.getCurrentWeapon();
+
+            if (currentWeapon == null) {
+                return;
+            }
+            if (movingPart.getDx() < 0) {
+                String path = "weapon-kopi.png";
+                currentWeapon.setPath(path);
+            }
+            if (movingPart.getDx() > 0) {
+                String path = "weapon.png";
+                currentWeapon.setPath(path);
+            }
+        }
+    }
+    private void spawnWeapons(GameData gameData, World world) {
+        int tileSize = gameData.getTileSize();
+        // calculate the number of weapons to spawn based on game time
         int weaponsToSpawn = (int) Math.sqrt(gameData.getGameTime() / 10000) + 2;
 
         if ((gameData.getGameTime() % weaponSpawnInterval <= gameData.getDelta())) {
-            for (int i = 0; i < weaponsToSpawn; i++) {
-                for (ValidLocation validLocation : getValidLocation()) {
-                    int[] spawnLocation = validLocation.spawnEntities(world, gameData);
+            for (ValidLocation validLocation : getValidLocation()) {
+                for (int i = 0; i < weaponsToSpawn; i++) {
+                    int[] spawnLocation = validLocation.generateSpawnLocation(world, gameData);
                     int x = spawnLocation[0];
                     int y = spawnLocation[1];
                     world.addEntity(createEntity(x*tileSize,y*tileSize));
@@ -50,7 +74,7 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
         String path = "weapon.png";
         weapon.setPath(path);
 
-        weapon.add(new PositionPart(x, y, 3.14f/2));
+        weapon.add(new PositionPart(x, y));
 
         return weapon;    
     }

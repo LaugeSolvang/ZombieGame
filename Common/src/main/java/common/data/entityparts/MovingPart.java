@@ -8,14 +8,13 @@ public class MovingPart implements EntityPart{
     private float dx, dy;
 
     private float deceleration, acceleration;
-    private float maxSpeed, rotationSpeed;
+    private float maxSpeed;
     private boolean left, right, up, down;
 
-    public MovingPart(float deceleration, float acceleration, float maxSpeed, float rotationSpeed) {
+    public MovingPart(float deceleration, float acceleration, float maxSpeed) {
         this.deceleration = deceleration;
         this.acceleration = acceleration;
         this.maxSpeed = maxSpeed;
-        this.rotationSpeed = rotationSpeed;
     }
 
     public void setDeceleration(float deceleration) {
@@ -33,10 +32,6 @@ public class MovingPart implements EntityPart{
     public void setSpeed(float speed) {
         this.acceleration = speed;
         this.maxSpeed = speed;
-    }
-
-    public void setRotationSpeed(float rotationSpeed) {
-        this.rotationSpeed = rotationSpeed;
     }
 
     public void setLeft(boolean left) {
@@ -77,7 +72,6 @@ public class MovingPart implements EntityPart{
         PositionPart positionPart = entity.getPart(PositionPart.class);
         float x = positionPart.getX();
         float y = positionPart.getY();
-        float radians = positionPart.getRadians();
         float dt = gameData.getDelta();
 
         // update speed based on acceleration
@@ -154,12 +148,5 @@ public class MovingPart implements EntityPart{
 
         positionPart.setX(x);
         positionPart.setY(y);
-
-        // update radians if moving
-        if (dx != 0 || dy != 0) {
-            radians = (float) Math.atan2(dy, dx);
-        }
-
-        positionPart.setRadians(radians);
     }
 }
