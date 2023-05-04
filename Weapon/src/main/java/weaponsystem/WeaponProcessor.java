@@ -18,7 +18,6 @@ import java.util.ServiceLoader;
 import static java.util.stream.Collectors.toList;
 
 public class WeaponProcessor implements IEntityProcessingService, IShoot {
-    int weaponSpawnInterval = 30;
     @Override
     public void process(GameData gameData, World world) {
         updateWeaponDirection(world);
@@ -49,6 +48,7 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
         // calculate the number of weapons to spawn based on game time
         int weaponsToSpawn = (int) Math.sqrt(gameData.getGameTime() / 10000) + 2;
 
+        int weaponSpawnInterval = 30;
         if ((gameData.getGameTime() % weaponSpawnInterval <= gameData.getDelta())) {
             for (ValidLocation validLocation : getValidLocation()) {
                 for (int i = 0; i < weaponsToSpawn; i++) {
@@ -81,7 +81,7 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
     private Collection<? extends BulletSPI> getBulletSPIs() {
         return ServiceLoader.load(BulletSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
     }
-    protected Collection<? extends ValidLocation> getValidLocation() {
+    private Collection<? extends ValidLocation> getValidLocation() {
         return ServiceLoader.load(ValidLocation.class).stream().map(ServiceLoader.Provider::get).collect(toList());
     }
 }

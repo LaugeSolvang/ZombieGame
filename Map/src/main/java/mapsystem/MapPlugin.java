@@ -8,7 +8,7 @@ import common.data.entityparts.PositionPart;
 import common.services.IGamePluginService;
 
 public class MapPlugin implements IGamePluginService {
-    String[][] map;
+    private String[][] map;
     @Override
     public void start(GameData gameData, World world)  {
         //Create a map with strings per 32x32 pixels of the whole display

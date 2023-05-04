@@ -19,7 +19,6 @@ import static java.util.stream.Collectors.toList;
 
 
 public class ZombieProcessor implements IEntityProcessingService {
-    int zombieSpawnInterval = 15;
     @Override
     public void process(GameData gameData, World world) {
         spawnZombies(gameData, world);
@@ -32,9 +31,10 @@ public class ZombieProcessor implements IEntityProcessingService {
         // calculate the number of zombies to spawn based on game time
         int zombiesToSpawn = (int) Math.sqrt(gameData.getGameTime() / 10000) + 3;
 
+        int zombieSpawnInterval = 15;
         if ((gameData.getGameTime() % zombieSpawnInterval <= gameData.getDelta())) {
             for (int i = 0; i < zombiesToSpawn; i++) {
-                for (ValidLocation validLocation : getValidLocation()) {
+                for (ValidLocation validLocation : getValidLocations()) {
                     int[] spawnLocation = validLocation.generateSpawnLocation(world, gameData);
                     int x = spawnLocation[0];
                     int y = spawnLocation[1];
@@ -71,7 +71,7 @@ public class ZombieProcessor implements IEntityProcessingService {
     private Collection<? extends IZombieAI> getIZombieAIs() {
         return ServiceLoader.load(IZombieAI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
     }
-    protected Collection<? extends ValidLocation> getValidLocation() {
+    private Collection<? extends ValidLocation> getValidLocations() {
         return ServiceLoader.load(ValidLocation.class).stream().map(ServiceLoader.Provider::get).collect(toList());
     }
 }

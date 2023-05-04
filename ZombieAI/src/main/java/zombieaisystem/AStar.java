@@ -40,7 +40,7 @@ public class AStar {
 
     }
 
-    static class Node {
+    private static class Node {
         public String state;
         public Node parentNode;
         public int depth;
@@ -120,7 +120,7 @@ public class AStar {
         return null;
     }
 
-    public ArrayList<Node> expand(Node node) {
+    private ArrayList<Node> expand(Node node) {
         ArrayList<Node> successors = new ArrayList<>();
         List<String> children = successorFunction(node.state);
         if (children != null) {
@@ -132,19 +132,19 @@ public class AStar {
         return successors;
     }
 
-    public static void insert(Node node, ArrayList<Node> queue) {
+    private static void insert(Node node, ArrayList<Node> queue) {
         queue.add(node);
     }
 
-    public static Node removeFirst(ArrayList<Node> queue) {
+    private static Node removeFirst(ArrayList<Node> queue) {
         return queue.remove(0);
     }
 
-    public static List<String> successorFunction(String state) {
+    private static List<String> successorFunction(String state) {
         return STATE_SPACE.get(state);
     }
 
-    public static Map<String, List<String>> generateStateSpace(String[][] grid) {
+    private static Map<String, List<String>> generateStateSpace(String[][] grid) {
         Map<String, List<String>> stateSpace = new HashMap<>();
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[0].length; j++) {
@@ -179,7 +179,7 @@ public class AStar {
         return neighbors;
     }
 
-    public static Map<String, Double> generateHeuristics(String[][] grid, String GOAL_STATE) {
+    private static Map<String, Double> generateHeuristics(String[][] grid, String GOAL_STATE) {
         Map<String, Double> heuristics = new HashMap<>();
         String[] goalParts = GOAL_STATE.split(",");
         int dx = Integer.parseInt(goalParts[0]);
