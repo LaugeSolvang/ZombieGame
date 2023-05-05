@@ -8,6 +8,7 @@ import common.data.entities.bullet.BulletSPI;
 import common.data.entityparts.*;
 import common.services.IEntityProcessingService;
 
+
 public class BulletProcessor implements IEntityProcessingService, BulletSPI {
     @Override
     public void process(GameData gameData, World world) {

@@ -17,16 +17,16 @@ public class MovingPart implements EntityPart{
         this.maxSpeed = maxSpeed;
     }
 
-    public void setDeceleration(float deceleration) {
-        this.deceleration = deceleration;
+    public float getDeceleration() {
+        return deceleration;
     }
 
-    public void setAcceleration(float acceleration) {
-        this.acceleration = acceleration;
+    public float getAcceleration() {
+        return acceleration;
     }
 
-    public void setMaxSpeed(float maxSpeed) {
-        this.maxSpeed = maxSpeed;
+    public float getMaxSpeed() {
+        return maxSpeed;
     }
 
     public void setSpeed(float speed) {
