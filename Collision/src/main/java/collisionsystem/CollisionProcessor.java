@@ -125,6 +125,9 @@ public class CollisionProcessor implements IPostEntityProcessingService {
         if (!sameWeapon) {
             player.addWeaponToInventory(weapon);
         }
+        if (player.getWeapons().size() > 0 && !Objects.equals(player.getCurrentWeapon().getShootImplName(), weapon.getShootImplName())) {
+            world.removeEntity(weapon);
+        }
     }
     private void handleZombiePlayerCollision(Entity firstEntity, Entity secondEntity, World world) {
         Zombie zombie = (Zombie) (firstEntity instanceof Zombie ? firstEntity : secondEntity);

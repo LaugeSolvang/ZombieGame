@@ -15,11 +15,14 @@ import common.data.entityparts.TimerPart;
 import common.services.IEntityProcessingService;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.ServiceLoader;
 
 import static java.util.stream.Collectors.toList;
 
 public class WeaponProcessor implements IEntityProcessingService, IShoot {
+    String shootImplName = "weaponsystem.WeaponProcessor";
+
     @Override
     public void process(GameData gameData, World world) {
         updateWeaponDirection(world);
@@ -34,7 +37,7 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
 
             Weapon currentWeapon = player.getCurrentWeapon();
 
-            if (currentWeapon == null) {
+            if (currentWeapon == null || !Objects.equals(currentWeapon.getShootImplName(), shootImplName)) {
                 return;
             }
 
@@ -83,16 +86,13 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
                 weapon.reduceAmmon();
                 timerPart.setExpiration(weapon.getFireRate());
             }
-        } else if (weapon.getAmmo() == 0) {
-            player.getWeapons().remove(weapon);
-            world.removeEntity(weapon);
         }
     }
     private Entity createEntity(int x, int y) {
         int ammo = 20;
         float fireRate = 0.5F;
         int damage = 50;
-        Entity weapon = new Weapon("weaponsystem.WeaponProcessor", ammo, fireRate);
+        Entity weapon = new Weapon(shootImplName, ammo, fireRate);
 
         String path = "weapon.png";
         weapon.setPath(path);

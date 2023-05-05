@@ -27,8 +27,15 @@ public class Player extends Entity {
     }
 
     public void cycleWeapon(int direction) {
-        currentWeaponIndex = (currentWeaponIndex + direction + weapons.size()) % weapons.size();
+        if (weapons.size() == 0) {
+            currentWeaponIndex = 0;
+        } else {
+            currentWeaponIndex = (currentWeaponIndex + direction + weapons.size()) % weapons.size();
+        }
     }
 
+    public int getCurrentWeaponIndex() {
+        return currentWeaponIndex;
+    }
 }
 

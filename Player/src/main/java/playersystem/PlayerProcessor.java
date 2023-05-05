@@ -10,6 +10,7 @@ import common.data.entityparts.MovingPart;
 import common.data.entityparts.PositionPart;
 import common.services.IEntityProcessingService;
 
+import java.util.List;
 import java.util.ServiceLoader;
 
 import static common.data.GameKeys.*;
@@ -23,7 +24,7 @@ public class PlayerProcessor implements IEntityProcessingService {
 
             processMovement(gameData, player);
             processWeapon(gameData, world, player);
-            processWeaponSwitching(gameData, player);
+            processWeaponSwitching(gameData, world, player);
         }
     }
 
@@ -51,26 +52,38 @@ public class PlayerProcessor implements IEntityProcessingService {
     
 
     private void processWeapon(GameData gameData, World world, Player player) {
-        if (!player.getWeapons().isEmpty()) {
+        List<Weapon> weapons = player.getWeapons();
+        if (!weapons.isEmpty()) {
             Weapon weapon = player.getCurrentWeapon();
-            PositionPart playerPosPart = player.getPart(PositionPart.class);
             PositionPart weaponPosPart = weapon.getPart(PositionPart.class);
-
+            PositionPart playerPosPart = player.getPart(PositionPart.class);
             weaponPosPart.setPosition(playerPosPart.getX(), playerPosPart.getY(), playerPosPart.getRadians());
 
             if (gameData.getKeys().isPressed(SPACE)) {
-                IShoot shootImpl = getShootImpl(weapon);
-                shootImpl.useWeapon(player, gameData, world);
+                if (weapon.getAmmo() == 0) {
+                    weapons.remove(weapon);
+                    world.removeEntity(weapon);
+                    player.cycleWeapon(1);
+                    world.addEntity(player.getCurrentWeapon());
+                } else {
+                    IShoot shootImpl = getShootImpl(player.getCurrentWeapon());
+                    shootImpl.useWeapon(player, gameData, world);
+                }
             }
         }
     }
 
-    private void processWeaponSwitching(GameData gameData, Player player) {
+    private void processWeaponSwitching(GameData gameData, World world, Player player) {
+        if (!(gameData.getKeys().isPressed(ONE) || gameData.getKeys().isPressed(TWO))) {
+            return;
+        }
+        world.removeEntity(player.getCurrentWeapon().getID());
         if (gameData.getKeys().isPressed(ONE)) {
             player.cycleWeapon(-1);
         } else if (gameData.getKeys().isPressed(TWO)) {
             player.cycleWeapon(1);
         }
+        world.addEntity(player.getCurrentWeapon());
     }
     private IShoot getShootImpl(Weapon weapon) {
         return ServiceLoader.load(IShoot.class).stream()

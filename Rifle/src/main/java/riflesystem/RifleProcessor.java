@@ -15,11 +15,13 @@ import common.data.entityparts.TimerPart;
 import common.services.IEntityProcessingService;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.ServiceLoader;
 
 import static java.util.stream.Collectors.toList;
 
 public class RifleProcessor implements IEntityProcessingService, IShoot {
+    String shootImplName = "riflesystem.RifleProcessor";
     @Override
     public void process(GameData gameData, World world) {
         updateWeaponDirection(world);
@@ -34,18 +36,12 @@ public class RifleProcessor implements IEntityProcessingService, IShoot {
 
             Weapon currentWeapon = player.getCurrentWeapon();
 
-            if (currentWeapon == null) {
+            if (currentWeapon == null || !Objects.equals(currentWeapon.getShootImplName(), shootImplName)) {
                 return;
             }
+            String path = "rifle.png";
+            currentWeapon.setPath(path);
 
-            if (movingPart.getDx() < 0) {
-                String path = "weapon-kopi.png";
-                currentWeapon.setPath(path);
-            }
-            if (movingPart.getDx() > 0) {
-                String path = "weapon.png";
-                currentWeapon.setPath(path);
-            }
         }
     }
     private void spawnWeapons(GameData gameData, World world) {
@@ -83,18 +79,15 @@ public class RifleProcessor implements IEntityProcessingService, IShoot {
                 weapon.reduceAmmon();
                 timerPart.setExpiration(weapon.getFireRate());
             }
-        } else if (weapon.getAmmo() == 0) {
-            player.getWeapons().remove(weapon);
-            world.removeEntity(weapon);
         }
     }
     private Entity createEntity(int x, int y) {
         int ammo = 200;
         float fireRate = 0.1F;
         int damage = 25;
-        Entity weapon = new Weapon("riflesystem.RifleProcessor", ammo, fireRate);
+        Entity weapon = new Weapon(shootImplName, ammo, fireRate);
 
-        String path = "weapon-kopi.png";
+        String path = "rifle.png";
         weapon.setPath(path);
 
         weapon.add(new PositionPart(x, y));
