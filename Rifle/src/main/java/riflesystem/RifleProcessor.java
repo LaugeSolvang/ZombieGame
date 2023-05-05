@@ -82,7 +82,7 @@ public class RifleProcessor implements IEntityProcessingService, IShoot {
         }
     }
     private Entity createEntity(int x, int y) {
-        int ammo = 200;
+        int ammo = 60;
         float fireRate = 0.1F;
         int damage = 25;
         Entity weapon = new Weapon(shootImplName, ammo, fireRate);
