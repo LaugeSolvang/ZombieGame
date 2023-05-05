@@ -52,6 +52,9 @@
                                 <resource>
                                     <directory>../Map/src/main/resources</directory>
                                 </resource>
+                                <resource>
+                                    <directory>../Rifle/src/main/resources</directory>
+                                </resource>
                             </resources>
                         </configuration>
                     </execution>

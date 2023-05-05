@@ -73,6 +73,8 @@ public class MovingPart implements EntityPart{
         float x = positionPart.getX();
         float y = positionPart.getY();
         float dt = gameData.getDelta();
+        float radians = positionPart.getRadians();
+
 
         // update speed based on acceleration
         if (down) {
@@ -148,5 +150,11 @@ public class MovingPart implements EntityPart{
 
         positionPart.setX(x);
         positionPart.setY(y);
+
+        // update radians if moving
+        if (dx != 0 || dy != 0) {
+            radians = (float) Math.atan2(dy, dx);
+        }
+        positionPart.setRadians(radians);
     }
 }

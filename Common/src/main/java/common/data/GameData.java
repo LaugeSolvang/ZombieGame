@@ -5,7 +5,7 @@ public class GameData {
     private float gameTime;
     private int displayWidth;
     private int displayHeight;
-    private static final int tileSize = 32;
+    public static final int TILE_SIZE = 32;
     private final GameKeys keys = new GameKeys();
     public GameKeys getKeys() {
         return keys;
@@ -44,6 +44,6 @@ public class GameData {
     }
 
     public int getTileSize() {
-        return tileSize;
+        return TILE_SIZE;
     }
 }
