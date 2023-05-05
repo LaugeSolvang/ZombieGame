@@ -15,7 +15,10 @@ import java.util.ServiceLoader;
 
 import static common.data.GameKeys.*;
 
-
+/**
+ The PlayerProcessor class is responsible for processing the player's movement, weapon usage, and weapon switching.
+ It is an implementation of the IEntityProcessingService interface.
+ */
 public class PlayerProcessor implements IEntityProcessingService {
     @Override
     public void process(GameData gameData, World world) {
@@ -28,7 +31,12 @@ public class PlayerProcessor implements IEntityProcessingService {
 
         }
     }
-
+    /**
+     Processes the player's movement based on the current input keys pressed.
+     and updates the players path to the correct image
+     @param gameData The game data containing information about the game state.
+     @param player The player entity whose movement is being processed.
+     */
     private void processMovement(GameData gameData, Player player) {
         MovingPart movingPart = player.getPart(MovingPart.class);
         movingPart.setLeft(gameData.getKeys().isDown(LEFT));
@@ -50,8 +58,13 @@ public class PlayerProcessor implements IEntityProcessingService {
             player.setPath(path);
         }
     }
-    
 
+    /**
+     Processes the player's weapon usage and updates the weapons position based on the player's position.
+     @param gameData The game data containing information about the game state.
+     @param world The game world containing all entities.
+     @param player The player entity whose weapon usage is being processed.
+     */
     private void processWeapon(GameData gameData, World world, Player player) {
         List<Weapon> weapons = player.getWeapons();
         if (!weapons.isEmpty()) {
@@ -76,6 +89,12 @@ public class PlayerProcessor implements IEntityProcessingService {
         }
     }
 
+    /**
+     Processes the player's weapon switching based on the input keys pressed.
+     @param gameData The game data containing information about the game state.
+     @param world The game world containing all entities.
+     @param player The player entity whose weapon switching is being processed.
+     */
     private void processWeaponSwitching(GameData gameData, World world, Player player) {
         if (!(gameData.getKeys().isPressed(ONE) || gameData.getKeys().isPressed(TWO))) {
             return;
@@ -88,6 +107,12 @@ public class PlayerProcessor implements IEntityProcessingService {
         }
         world.addEntity(player.getCurrentWeapon());
     }
+    /**
+     Retrieves the IShoot implementation for the provided weapon.
+     @param weapon The weapon whose IShoot implementation is needed.
+     @return The IShoot implementation for the weapon.
+     @throws RuntimeException If the shoot implementation is not found.
+     */
     private IShoot getShootImpl(Weapon weapon) {
         return ServiceLoader.load(IShoot.class).stream()
                 .map(ServiceLoader.Provider::get)
