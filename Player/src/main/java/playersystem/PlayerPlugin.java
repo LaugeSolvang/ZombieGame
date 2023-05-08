@@ -10,11 +10,10 @@ import common.data.entityparts.PositionPart;
 import common.services.IGamePluginService;
 
 public class PlayerPlugin implements IGamePluginService {
-    private Entity player;
 
     @Override
     public void start(GameData gameData, World world) {
-        player = createPlayer(gameData);
+        Entity player = createPlayer(gameData);
         world.addEntity(player);
     }
 
@@ -38,6 +37,8 @@ public class PlayerPlugin implements IGamePluginService {
     }
     @Override
     public void stop(GameData gameData, World world) {
-        world.removeEntity(player);
+        for (Entity player : world.getEntities(Player.class)) {
+            world.removeEntity(player);
+        }
     }
 }

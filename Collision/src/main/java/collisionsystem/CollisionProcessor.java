@@ -21,15 +21,26 @@ import java.util.Objects;
 public class CollisionProcessor implements IPostEntityProcessingService {
     @Override
     public void process(GameData gameData, World world) {
-        // Loop through all pairs of entities in the world
+        // Create a quadtree to partition the world
+        Quadtree<Entity> quadtree = new Quadtree<>(0,0,0,45,23);
+
+        for (Entity entity : world.getEntities()) {
+            PositionPart positionPart = entity.getPart(PositionPart.class);
+            quadtree.insert(entity, positionPart.getX(), positionPart.getY(), positionPart.getWidth(), positionPart.getHeight());
+        }
+
         for (Entity firstEntity : world.getEntities()) {
-            for (Entity secondEntity : world.getEntities()) {
+            PositionPart firstPosition = firstEntity.getPart(PositionPart.class);
+            List<Entity> nearbyEntities = quadtree.retrieve(firstEntity, firstPosition.getX(), firstPosition.getY(), firstPosition.getWidth(), firstPosition.getHeight());
+
+            for (Entity secondEntity : nearbyEntities) {
                 // Skip the iteration if the entities are identical
                 if (firstEntity.getID().equals(secondEntity.getID())) {
                     continue;
                 }
+
                 // Check for collision between the two different entities
-                if (isColliding(firstEntity.getPart(PositionPart.class), secondEntity.getPart(PositionPart.class))) {
+                if (isColliding(firstPosition, secondEntity.getPart(PositionPart.class))) {
                     handleCollision(firstEntity, secondEntity, gameData, world);
                 }
             }
@@ -37,6 +48,7 @@ public class CollisionProcessor implements IPostEntityProcessingService {
     }
 
     private boolean isColliding(PositionPart firstPosition, PositionPart secondPosition) {
+
         //Get the position and dimensions of the first entity
         float firstX = firstPosition.getX(), firstY = firstPosition.getY();
         float firstWidth = firstPosition.getWidth(), firstHeight = firstPosition.getHeight();

@@ -33,27 +33,30 @@ public class AIProcessor implements IPostEntityProcessingService, IZombieAI {
         String[][] map = world.getMap();
         PositionPart playerPosition = player.getPart(PositionPart.class);
 
-        for (int i = 0; i < 18; i++) {
-            int indexToUpdate = (startIndex + i) % zombies.size(); // Calculate the index of the zombie to update.
+        System.out.println(zombies.size());
+        for (int i = 0; i < 1; i++) {
+            int indexToUpdate = (startIndex+i) % zombies.size(); // Calculate the index of the zombie to update.
             Zombie zombie = zombies.get(indexToUpdate);
 
             PositionPart zombiePosition = zombie.getPart(PositionPart.class);
 
             AStar aStar = new AStar();
             int tileSize = gameData.getTileSize();
+
             String INITIAL_STATE = (int)(zombiePosition.getX() / tileSize) + "," + (int)(zombiePosition.getY() / tileSize);
             String GOAL_STATE = (int)(playerPosition.getX() / tileSize) + "," + (int)(playerPosition.getY() / tileSize);
             zombie.setPathFinding(aStar.treeSearch(map, INITIAL_STATE, GOAL_STATE));
         }
     }
-
     @Override
     public void moveTowards(GameData gameData, Entity zombie) {
         PositionPart zombiePosition = zombie.getPart(PositionPart.class);
         MovingPart zombieMovement = zombie.getPart(MovingPart.class);
 
         List<int[]> pathFinding = ((Zombie) zombie).getPathFinding();
-        if (pathFinding == null) {return;}
+        if (pathFinding == null) {
+            return;
+        }
 
         float currentX = (int) zombiePosition.getX();
         float currentY = (int) zombiePosition.getY();
