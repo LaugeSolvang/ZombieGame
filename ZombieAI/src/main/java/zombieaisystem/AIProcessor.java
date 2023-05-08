@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AIProcessor implements IPostEntityProcessingService, IZombieAI {
+    AStar aStar = new AStar();
     @Override
     public void process(GameData gameData, World world) {
         List<Zombie> zombies = new ArrayList<>();
@@ -40,7 +41,6 @@ public class AIProcessor implements IPostEntityProcessingService, IZombieAI {
 
             PositionPart zombiePosition = zombie.getPart(PositionPart.class);
 
-            AStar aStar = new AStar();
             int tileSize = gameData.getTileSize();
 
             String INITIAL_STATE = (int)(zombiePosition.getX() / tileSize) + "," + (int)(zombiePosition.getY() / tileSize);

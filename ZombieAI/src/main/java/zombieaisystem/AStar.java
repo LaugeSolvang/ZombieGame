@@ -87,13 +87,13 @@ public class AStar {
             HEURISTICS = generateHeuristics(grid, GOAL_STATE);
         }
 
-        ArrayList<Node> fringe = new ArrayList<>();
+        PriorityQueue<Node> fringe = new PriorityQueue<>(Comparator.comparingDouble(x -> x.cost + HEURISTICS.get(x.state)));
         Node initialNode = new Node(INITIAL_STATE, null, 0, 0);
         Set<String> visited = new HashSet<>();
         visited.add(initialNode.state);
-        insert(initialNode, fringe);
+        fringe.add(initialNode);
         while (!fringe.isEmpty()) {
-            Node node = removeFirst(fringe);
+            Node node = fringe.poll();
             if (node.state.equals(GOAL_STATE)) {
                 return nodePathToIntList(node.path());
             }
@@ -102,10 +102,9 @@ public class AStar {
                 if (!visited.contains(child.state)) {
                     visited.add(child.state);
                     child.cost = node.cost + 1;
-                    insert(child, fringe);
+                    fringe.add(child);
                 }
             }
-            fringe.sort(Comparator.comparingDouble(x -> HEURISTICS.get(x.state)));
         }
         return null;
     }
@@ -125,11 +124,6 @@ public class AStar {
     private static void insert(Node node, ArrayList<Node> queue) {
         queue.add(node);
     }
-
-    private static Node removeFirst(ArrayList<Node> queue) {
-        return queue.remove(0);
-    }
-
     private static List<String> successorFunction(String state) {
         return STATE_SPACE.get(state);
     }
