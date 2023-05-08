@@ -26,8 +26,6 @@ class BulletProcessorTest {
         weapon = new Entity();
         weapon.add(new PositionPart(5, 5, 0));
         weapon.add(new DamagePart(10));
-        weapon.add(new LifePart(1));
-        weapon.add(new MovingPart(100, 200, 100));
     }
 
     @Test
@@ -39,8 +37,8 @@ class BulletProcessorTest {
 
         PositionPart positionPart = bullet.getPart(PositionPart.class);
         assertNotNull(positionPart);
-        assertEquals(7.5f, positionPart.getX());
-        assertEquals(7.5f, positionPart.getY());
+        assertEquals(5f, positionPart.getX());
+        assertEquals(5f, positionPart.getY());
 
         LifePart lifePart = bullet.getPart(LifePart.class);
         assertNotNull(lifePart);
@@ -48,7 +46,9 @@ class BulletProcessorTest {
 
         MovingPart movingPart = bullet.getPart(MovingPart.class);
         assertNotNull(movingPart);
-        //assertTrue(movingPart.isRight());
+        assertEquals(2000F, movingPart.getAcceleration());
+        assertEquals(0F, movingPart.getDeceleration());
+        assertEquals(500F, movingPart.getMaxSpeed());
 
         TimerPart timerPart = bullet.getPart(TimerPart.class);
         assertNotNull(timerPart);
@@ -74,5 +74,44 @@ class BulletProcessorTest {
         bulletProcessor.process(gameData, world);
 
         assertFalse(world.getEntities().contains(bullet));
+    }
+    @Test
+    void setBulletDirectionTest() {
+        // Test right direction
+        testBulletDirection(0, true, false, false, false);
+
+        // Test up-right direction
+        testBulletDirection((float) (Math.PI / 4), true, true, false, false);
+
+        // Test up direction
+        testBulletDirection((float) (Math.PI / 2), false, true, false, false);
+
+        // Test up-left direction
+        testBulletDirection((float) (3 * Math.PI / 4), false, true, true, false);
+
+        // Test left direction
+        testBulletDirection((float) Math.PI, false, false, true, false);
+
+        // Test down-left direction
+        testBulletDirection((float) (-3 * Math.PI / 4), false, false, true, true);
+
+        // Test down direction
+        testBulletDirection((float) (-Math.PI / 2), false, false, false, true);
+
+        // Test down-right direction
+        testBulletDirection((float) (-Math.PI / 4), true, false, false, true);
+    }
+
+    private void testBulletDirection(float radians, boolean right, boolean up, boolean left, boolean down) {
+        PositionPart weaponPos = weapon.getPart(PositionPart.class);
+        weaponPos.setRadians(radians);
+        Entity bullet = bulletProcessor.createBullet(weapon, gameData);
+
+        MovingPart movingPart = bullet.getPart(MovingPart.class);
+        assertNotNull(movingPart);
+        assertEquals(right, movingPart.isRight());
+        assertEquals(up, movingPart.isUp());
+        assertEquals(left, movingPart.isLeft());
+        assertEquals(down, movingPart.isDown());
     }
 }

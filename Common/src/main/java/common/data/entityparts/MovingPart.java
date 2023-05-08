@@ -34,6 +34,22 @@ public class MovingPart implements EntityPart{
         this.maxSpeed = speed;
     }
 
+    public boolean isLeft() {
+        return left;
+    }
+
+    public boolean isRight() {
+        return right;
+    }
+
+    public boolean isUp() {
+        return up;
+    }
+
+    public boolean isDown() {
+        return down;
+    }
+
     public void setLeft(boolean left) {
         this.left = left;
     }

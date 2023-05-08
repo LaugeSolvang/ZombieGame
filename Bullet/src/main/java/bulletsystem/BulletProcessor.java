@@ -62,25 +62,26 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
     private void setBulletDirection(PositionPart posPart, Entity bullet) {
         MovingPart movingPart = bullet.getPart(MovingPart.class);
         float radians = posPart.getRadians();
+        float piEighth = (float) Math.PI / 8;
 
-        if (radians >= -3.14f/8 && radians <= 3.14f/8) {
+        if (radians >= -piEighth && radians <= piEighth) {
             movingPart.setRight(true);
-        } else if (radians > 3.14f/8 && radians < 3*3.14f/8) {
+        } else if (radians > piEighth && radians < 3*piEighth) {
             movingPart.setUp(true);
             movingPart.setRight(true);
-        } else if (radians >= 3*3.14f/8 && radians <= 5*3.14f/8) {
+        } else if (radians >= 3*piEighth && radians <= 5*piEighth) {
             movingPart.setUp(true);
-        } else if (radians > 5*3.14f/8 && radians < 7*3.14f/8) {
+        } else if (radians > 5*piEighth && radians < 7*piEighth) {
             movingPart.setUp(true);
             movingPart.setLeft(true);
-        } else if (radians >= 7*3.14f/8 || radians <= -7*3.14f/8) {
+        } else if (radians >= 7*piEighth || radians <= -7*piEighth) {
             movingPart.setLeft(true);
-        } else if (radians < -5*3.14f/8) {
+        } else if (radians < -5*piEighth) {
             movingPart.setDown(true);
             movingPart.setLeft(true);
-        } else if (radians <= -3*3.14f/8) {
+        } else if (radians <= -3*piEighth) {
             movingPart.setDown(true);
-        } else if (radians < -3.14f/8) {
+        } else if (radians < -piEighth) {
             movingPart.setDown(true);
             movingPart.setRight(true);
         }

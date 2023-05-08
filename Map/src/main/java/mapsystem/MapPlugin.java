@@ -9,13 +9,13 @@ import common.services.IGamePluginService;
 
 public class MapPlugin implements IGamePluginService {
     private String[][] map;
+
     @Override
     public void start(GameData gameData, World world)  {
         //Create a map with strings per 32x32 pixels of the whole display
         int mapWidth = gameData.getDisplayWidth() / 32;
         int mapHeight = gameData.getDisplayHeight() / 32;
         map = new String[mapWidth][mapHeight];
-
         // Spawn obstructions around the perimeter of the game
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[0].length; j++) {
@@ -26,7 +26,6 @@ public class MapPlugin implements IGamePluginService {
                 }
             }
         }
-
         world.setMap(map);
     }
 
@@ -58,6 +57,12 @@ public class MapPlugin implements IGamePluginService {
     }
     @Override
     public void stop(GameData gameData, World world) {
-
+        for (Entity obstruction : world.getEntities(Obstruction.class)) {
+            world.removeEntity(obstruction);
+        }
+        int mapWidth = gameData.getDisplayWidth() / 32;
+        int mapHeight = gameData.getDisplayHeight() / 32;
+        map = new String[mapWidth][mapHeight];
+        world.setMap(map);
     }
 }
