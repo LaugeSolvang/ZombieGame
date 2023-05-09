@@ -19,6 +19,8 @@ import managers.SpriteCache;
 import java.util.Collection;
 import java.util.ServiceLoader;
 
+import static common.data.GameKeys.ENTER;
+import static common.data.GameKeys.ESCAPE;
 import static java.util.stream.Collectors.toList;
 
 public class Game implements ApplicationListener {
@@ -41,6 +43,7 @@ public class Game implements ApplicationListener {
 
         for (IGamePluginService iGamePlugin : getPluginServices()) {
             iGamePlugin.start(gameData, world);
+            System.out.println(iGamePlugin.getClass());
         }
     }
 
@@ -50,6 +53,8 @@ public class Game implements ApplicationListener {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         gameData.setDelta(Gdx.graphics.getDeltaTime());
+
+        deleteEntity();
 
         update();
 
@@ -66,7 +71,20 @@ public class Game implements ApplicationListener {
             postEntityProcessorService.process(gameData, world);
         }
 
+
         gameData.setGameTime(Math.max(gameData.getGameTime() + gameData.getDelta(), 0.18F));
+    }
+
+    private void deleteEntity() {
+        for (IGamePluginService iGamePlugin : getPluginServices()) {
+            if (gameData.getKeys().isDown(ESCAPE) && (iGamePlugin.getClass().getName().equals("playersystem.PlayerPlugin"))) {
+                iGamePlugin.stop(gameData, world);
+            }
+            if (gameData.getKeys().isDown(ENTER) && (iGamePlugin.getClass().getName().equals("mapsystem.MapPlugin"))) {
+                iGamePlugin.stop(gameData, world);
+                System.out.println("Map");
+            }
+        }
     }
 
     private void draw() {

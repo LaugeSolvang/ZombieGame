@@ -14,10 +14,8 @@ public class RiflePlugin implements IGamePluginService {
 
     @Override
     public void stop(GameData gameData, World world) {
-        for (Entity e : world.getEntities()) {
-            if (e.getClass() == Weapon.class) {
-                world.removeEntity(e);
-            }
+        for (Entity bullet : world.getEntities(Weapon.class)) {
+            world.removeEntity(bullet);
         }
     }
 }

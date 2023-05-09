@@ -29,11 +29,6 @@ public class MovingPart implements EntityPart{
         return maxSpeed;
     }
 
-    public void setSpeed(float speed) {
-        this.acceleration = speed;
-        this.maxSpeed = speed;
-    }
-
     public boolean isLeft() {
         return left;
     }
@@ -81,88 +76,52 @@ public class MovingPart implements EntityPart{
         this.dy = dy;
     }
 
+    private float applyDeceleration(float value, float deceleration, float dt) {
+        if (value > 0) {
+            value -= deceleration * dt;
+            if (value < 0) {
+                value = 0;
+            }
+        } else if (value < 0) {
+            value += deceleration * dt;
+            if (value > 0) {
+                value = 0;
+            }
+        }
+        return value;
+    }
 
     @Override
     public void process(GameData gameData, Entity entity) {
-
         PositionPart positionPart = entity.getPart(PositionPart.class);
         float x = positionPart.getX();
         float y = positionPart.getY();
         float dt = gameData.getDelta();
         float radians = positionPart.getRadians();
 
+        if (down) dy -= acceleration * dt;
+        if (up) dy += acceleration * dt;
+        if (left) dx -= acceleration * dt;
+        if (right) dx += acceleration * dt;
 
-        // update speed based on acceleration
-        if (down) {
-            dy -= acceleration * dt;
-        }
-
-        if (up) {
-            dy += acceleration * dt;
-        }
-
-        if (left) {
-            dx -= acceleration * dt;
-        }
-
-        if (right) {
-            dx += acceleration * dt;
-        }
-
-        // calculate current speed
         float speed = (float) Math.sqrt(dx * dx + dy * dy);
 
-        // limit speed to maximum
         if (speed > maxSpeed) {
             dx = (dx / speed) * maxSpeed;
             dy = (dy / speed) * maxSpeed;
         }
 
-        // update position based on speed and delta time
+        if (!up && !down) dy = applyDeceleration(dy, deceleration, dt);
+        if (!left && !right) dx = applyDeceleration(dx, deceleration, dt);
+
         x += dx * dt;
         y += dy * dt;
 
-        // apply deceleration if no movement keys are pressed
-        if (!up && !down) {
-            if (dy > 0) {
-                dy -= deceleration * dt;
-                if (dy < 0) {
-                    dy = 0;
-                }
-            } else if (dy < 0) {
-                dy += deceleration * dt;
-                if (dy > 0) {
-                    dy = 0;
-                }
-            }
-        }
+        if (x > gameData.getDisplayWidth()) x = 0;
+        else if (x < 0) x = gameData.getDisplayWidth();
 
-        if (!left && !right) {
-            if (dx > 0) {
-                dx -= deceleration * dt;
-                if (dx < 0) {
-                    dx = 0;
-                }
-            } else if (dx < 0) {
-                dx += deceleration * dt;
-                if (dx > 0) {
-                    dx = 0;
-                }
-            }
-        }
-
-        // set position
-        if (x > gameData.getDisplayWidth()) {
-            x = 0;
-        } else if (x < 0) {
-            x = gameData.getDisplayWidth();
-        }
-
-        if (y > gameData.getDisplayHeight()) {
-            y = 0;
-        } else if (y < 0) {
-            y = gameData.getDisplayHeight();
-        }
+        if (y > gameData.getDisplayHeight()) y = 0;
+        else if (y < 0) y = gameData.getDisplayHeight();
 
         positionPart.setX(x);
         positionPart.setY(y);
@@ -172,5 +131,6 @@ public class MovingPart implements EntityPart{
             radians = (float) Math.atan2(dy, dx);
         }
         positionPart.setRadians(radians);
+
     }
 }

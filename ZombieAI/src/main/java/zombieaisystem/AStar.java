@@ -4,26 +4,16 @@ import java.util.*;
 
 public class AStar {
     public static void main(String[] args) {
-        String[][] map = new String[30][15];
+        String[][] map = new String[45][23];
+        AStar astar = new AStar();
 
-        //Spawn obstructions around the perimeter of the game
-        for (int i = 0; i < map.length; i++) {
-            for (int j = 0; j < map[0].length; j++) {
-                if (i == 0 || j == 0 || i == map.length - 1 || j == map[0].length - 1) {
-                    map[i][j] = "obstruction";
-                }
-            }
-        }
 
-        System.out.println((int)Math.ceil(1.0F));
-
-        /*
         long totalDuration = 0;
 
         for (int i = 0; i < 30; i++) {
             long startTime = System.nanoTime();
 
-            astar.treeSearch(map, "1,1", "10,10");
+            astar.treeSearch(map, "26,10", "28,5");
 
             long endTime = System.nanoTime();
             long duration = (endTime - startTime);  // in nanoseconds
@@ -33,9 +23,9 @@ public class AStar {
         long averageDuration = totalDuration / 30;
         System.out.println("Average execution time: " + averageDuration + " ns");
 
-        System.out.println(Arrays.deepToString(astar.treeSearch(map, "1,1", "10,10")));
+        System.out.println(Arrays.deepToString(new List[]{astar.treeSearch(map, "26,10", "28,5")}));
 
-         */
+
 
 
     }
@@ -97,13 +87,13 @@ public class AStar {
             HEURISTICS = generateHeuristics(grid, GOAL_STATE);
         }
 
-        ArrayList<Node> fringe = new ArrayList<>();
+        PriorityQueue<Node> fringe = new PriorityQueue<>(Comparator.comparingDouble(x -> x.cost + HEURISTICS.get(x.state)));
         Node initialNode = new Node(INITIAL_STATE, null, 0, 0);
         Set<String> visited = new HashSet<>();
         visited.add(initialNode.state);
-        insert(initialNode, fringe);
+        fringe.add(initialNode);
         while (!fringe.isEmpty()) {
-            Node node = removeFirst(fringe);
+            Node node = fringe.poll();
             if (node.state.equals(GOAL_STATE)) {
                 return nodePathToIntList(node.path());
             }
@@ -112,10 +102,9 @@ public class AStar {
                 if (!visited.contains(child.state)) {
                     visited.add(child.state);
                     child.cost = node.cost + 1;
-                    insert(child, fringe);
+                    fringe.add(child);
                 }
             }
-            fringe.sort(Comparator.comparingDouble(x -> HEURISTICS.get(x.state)));
         }
         return null;
     }
@@ -135,11 +124,6 @@ public class AStar {
     private static void insert(Node node, ArrayList<Node> queue) {
         queue.add(node);
     }
-
-    private static Node removeFirst(ArrayList<Node> queue) {
-        return queue.remove(0);
-    }
-
     private static List<String> successorFunction(String state) {
         return STATE_SPACE.get(state);
     }
@@ -170,7 +154,8 @@ public class AStar {
             if (newX < 0 || newX >= grid.length || newY < 0 || newY >= grid[0].length) {
                 continue;
             }
-            if (Objects.equals(grid[newX][newY], "obstruction")||Objects.equals(grid[newX][newY+1], "obstruction")) {
+            if (newY < grid[newX].length - 1 &&
+                    (Objects.equals(grid[newX][newY], "obstruction") || Objects.equals(grid[newX][newY + 1], "obstruction"))) {
                 continue;
             }
 
