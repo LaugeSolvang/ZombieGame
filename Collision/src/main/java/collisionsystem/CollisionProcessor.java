@@ -131,7 +131,6 @@ public class CollisionProcessor implements IPostEntityProcessingService {
                 secondWeapon.setAmmo(weapon.getAmmo()+secondWeapon.getAmmo());
                 world.removeEntity(weapon);
                 sameWeapon = true;
-                System.out.println("hi");
             }
         }
         if (!sameWeapon) {
@@ -158,7 +157,6 @@ public class CollisionProcessor implements IPostEntityProcessingService {
         LifePart lifePart = entity.getPart(LifePart.class);
         if (lifePart.getLife() > 0) {
             lifePart.setLife(lifePart.getLife() - damagePart.getDamage());
-            lifePart.setIsHit(true);
             if (lifePart.getLife() <= 0) {
                 // Remove entity from the world if its life is 0 or less
                 world.removeEntity(entity);

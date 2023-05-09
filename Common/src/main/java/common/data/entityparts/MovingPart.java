@@ -6,7 +6,6 @@ import common.data.GameData;
 
 public class MovingPart implements EntityPart{
     private float dx, dy;
-
     private float deceleration, acceleration;
     private float maxSpeed;
     private boolean left, right, up, down;
