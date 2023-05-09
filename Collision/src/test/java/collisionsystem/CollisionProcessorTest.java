@@ -100,7 +100,7 @@ class CollisionProcessorTest {
         for (Entity playerEntity: world.getEntities(Player.class)) {
             LifePart playerEntityLifePart = playerEntity.getPart(LifePart.class);
             System.out.println(playerEntityLifePart.getLife());
-            assertEquals(playerEntityLifePart.getLife() - life, -1);
+            assertEquals(playerEntityLifePart.getLife() - life, -10);
         }
     }
 
