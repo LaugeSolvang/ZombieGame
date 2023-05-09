@@ -34,8 +34,7 @@ public class AIProcessor implements IPostEntityProcessingService, IZombieAI {
         String[][] map = world.getMap();
         PositionPart playerPosition = player.getPart(PositionPart.class);
 
-        System.out.println(zombies.size());
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 4; i++) {
             int indexToUpdate = (startIndex+i) % zombies.size(); // Calculate the index of the zombie to update.
             Zombie zombie = zombies.get(indexToUpdate);
 
