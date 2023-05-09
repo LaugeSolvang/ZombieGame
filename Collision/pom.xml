@@ -18,30 +18,33 @@
             <version>1.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.example</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>Common</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.example</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>Player</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.example</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>Map</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.9.3</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.6.1</version>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0</version>
             </plugin>
         </plugins>
     </build>

@@ -8,31 +8,13 @@
         <artifactId>ZombieGameTest</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-
     <artifactId>Weapon</artifactId>
     <packaging>jar</packaging>
-
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-        </resources>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.6.1</version>
-            </plugin>
-        </plugins>
-    </build>
     <dependencies>
         <dependency>
-            <groupId>org.example</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>Common</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
-
 </project>

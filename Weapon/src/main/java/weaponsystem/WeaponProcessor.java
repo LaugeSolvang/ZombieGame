@@ -54,7 +54,7 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
     private void spawnWeapons(GameData gameData, World world) {
         int tileSize = gameData.getTileSize();
         // calculate the number of weapons to spawn based on game time
-        int weaponsToSpawn = (int) Math.sqrt(gameData.getGameTime() / 10000) + 2;
+        int weaponsToSpawn = (int) Math.sqrt(gameData.getGameTime() / 10000) + 1;
 
         int weaponSpawnInterval = 30;
         if ((gameData.getGameTime() % weaponSpawnInterval <= gameData.getDelta())) {
