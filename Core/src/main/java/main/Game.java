@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import common.data.Entity;
@@ -49,7 +50,7 @@ public class Game implements ApplicationListener {
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClearColor(160/255f, 160/255f, 160/255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         gameData.setDelta(Gdx.graphics.getDeltaTime());
@@ -88,7 +89,12 @@ public class Game implements ApplicationListener {
     }
 
     private void draw() {
+        BitmapFont font;
+        font = new BitmapFont();
+        CharSequence string1 = "Score:";
+
         sb.begin();
+        font.draw(sb, string1,40,700);
         //Draw all sprites, update the sprites position beforehand
         for (Entity entity : world.getEntities()) {
             Sprite sprite = SpriteCache.getSprite(entity.getPath());
