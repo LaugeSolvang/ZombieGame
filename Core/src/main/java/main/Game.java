@@ -4,12 +4,14 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import common.data.Entity;
 import common.data.GameData;
 import common.data.World;
 import common.data.entityparts.PositionPart;
+import common.data.entityparts.ScorePart;
 import common.services.IEntityProcessingService;
 import common.services.IGamePluginService;
 import common.services.IPostEntityProcessingService;
@@ -49,7 +51,7 @@ public class Game implements ApplicationListener {
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClearColor(160/255f, 160/255f, 160/255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         gameData.setDelta(Gdx.graphics.getDeltaTime());
@@ -88,7 +90,16 @@ public class Game implements ApplicationListener {
     }
 
     private void draw() {
+        //no idea how this works in detail, but it creates something that allows you to display text in-game
+        BitmapFont font;
+        font = new BitmapFont();
+        CharSequence scoreStr = "Score: " + ScorePart.getScore();
+        CharSequence lifeStr = "Life: ";
+
         sb.begin();
+        //this actually displays said text
+        font.draw(sb, scoreStr,40,700);
+        font.draw(sb, lifeStr, 1350, 700);
         //Draw all sprites, update the sprites position beforehand
         for (Entity entity : world.getEntities()) {
             Sprite sprite = SpriteCache.getSprite(entity.getPath());

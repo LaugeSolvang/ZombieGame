@@ -8,10 +8,7 @@ import common.data.entities.bullet.Bullet;
 import common.data.entities.player.Player;
 import common.data.entities.weapon.Weapon;
 import common.data.entities.zombie.Zombie;
-import common.data.entityparts.DamagePart;
-import common.data.entityparts.LifePart;
-import common.data.entityparts.MovingPart;
-import common.data.entityparts.PositionPart;
+import common.data.entityparts.*;
 import common.services.IPostEntityProcessingService;
 import common.data.entities.obstruction.Obstruction;
 
@@ -160,6 +157,10 @@ public class CollisionProcessor implements IPostEntityProcessingService {
             if (lifePart.getLife() <= 0) {
                 // Remove entity from the world if its life is 0 or less
                 world.removeEntity(entity);
+                if (entity instanceof Zombie ){
+                    ScorePart.updateScore();
+                    //if the entity that died is a zombie, the score will be updated
+                }
             }
         }
     }

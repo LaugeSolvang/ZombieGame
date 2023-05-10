@@ -39,8 +39,15 @@ public class RifleProcessor implements IEntityProcessingService, IShoot {
             if (currentWeapon == null || !Objects.equals(currentWeapon.getShootImplName(), shootImplName)) {
                 return;
             }
-            String path = "rifle.png";
-            currentWeapon.setPath(path);
+
+            if (movingPart.getDx() < 0) {
+                String path = "rifle-kopi.png";
+                currentWeapon.setPath(path);
+            }
+            if (movingPart.getDx() > 0) {
+                String path = "rifle.png";
+                currentWeapon.setPath(path);
+            }
 
         }
     }
