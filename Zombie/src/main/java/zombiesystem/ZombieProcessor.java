@@ -15,11 +15,13 @@ import common.services.IEntityProcessingService;
 import java.util.Collection;
 import java.util.ServiceLoader;
 
+import static common.data.GameData.TILE_SIZE;
 import static java.util.stream.Collectors.toList;
 
 
 public class ZombieProcessor implements IEntityProcessingService {
     private float zombieTime = 0.0f;
+    private final int ZOMBIE_SPAWN_INTERVAL = 15;
 
     @Override
     public void process(GameData gameData, World world) {
@@ -35,20 +37,17 @@ public class ZombieProcessor implements IEntityProcessingService {
     }
 
     private void spawnZombies(GameData gameData, World world) {
-        int tileSize = gameData.getTileSize();
-
         // calculate the number of zombies to spawn based on game time
         int zombiesToSpawn = (int) Math.sqrt(zombieTime) + 3;
 
-        int zombieSpawnInterval = 15;
-        if ((zombieTime % zombieSpawnInterval <= (gameData.getDelta()))) {
+        if ((zombieTime % ZOMBIE_SPAWN_INTERVAL <= (gameData.getDelta()))) {
             zombieTime += 0.1;
             for (int i = 0; i < zombiesToSpawn; i++) {
                 for (ValidLocation validLocation : getValidLocations()) {
                     int[] spawnLocation = validLocation.generateSpawnLocation(world, gameData);
-                    int x = spawnLocation[0];
-                    int y = spawnLocation[1];
-                    world.addEntity(createEntity(x*tileSize,y*tileSize));
+                    int x = spawnLocation[0] * TILE_SIZE;
+                    int y = spawnLocation[1] * TILE_SIZE;
+                    world.addEntity(createEntity(x,y));
                 }
             }
         }

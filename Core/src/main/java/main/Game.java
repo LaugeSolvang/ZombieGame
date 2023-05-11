@@ -77,14 +77,13 @@ public class Game implements ApplicationListener {
             postEntityProcessorService.process(gameData, world);
         }
 
-
         gameData.setGameTime(Math.max(gameData.getGameTime() + gameData.getDelta(), 0.18F));
     }
 
     private void deleteEntities() {
         for (IGamePluginService iGamePlugin : getPluginServices()) {
             if (gameData.getKeys().isPressed(ESCAPE) && (iGamePlugin.getClass().getName().equals("zombiesystem.ZombiePlugin"))) {
-                if (gameData.isActivePlugin("zombiesystem.ZombiePlugin")) {
+                if (gameData.isActivePlugin(iGamePlugin.getClass().getName())) {
                     iGamePlugin.stop(gameData, world);
                 } else {
                     iGamePlugin.start(gameData, world);

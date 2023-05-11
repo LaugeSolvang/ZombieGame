@@ -13,6 +13,8 @@ import common.services.IPostEntityProcessingService;
 import java.util.ArrayList;
 import java.util.List;
 
+import static common.data.GameData.TILE_SIZE;
+
 public class AIProcessor implements IPostEntityProcessingService, IZombieAI {
     AStar aStar = new AStar();
     float AITime = 0.0F;
@@ -43,10 +45,8 @@ public class AIProcessor implements IPostEntityProcessingService, IZombieAI {
 
             PositionPart zombiePosition = zombie.getPart(PositionPart.class);
 
-            int tileSize = gameData.getTileSize();
-
-            String INITIAL_STATE = (int)(zombiePosition.getX() / tileSize) + "," + (int)(zombiePosition.getY() / tileSize);
-            String GOAL_STATE = (int)(playerPosition.getX() / tileSize) + "," + (int)(playerPosition.getY() / tileSize);
+            String INITIAL_STATE = (int)(zombiePosition.getX() / TILE_SIZE) + "," + (int)(zombiePosition.getY() / TILE_SIZE);
+            String GOAL_STATE = (int)(playerPosition.getX() / TILE_SIZE) + "," + (int)(playerPosition.getY() / TILE_SIZE);
             zombie.setPathFinding(aStar.treeSearch(map, INITIAL_STATE, GOAL_STATE));
             if (zombie.getPathFinding() == null) {
                 map = new String[45][23];
@@ -83,32 +83,33 @@ public class AIProcessor implements IPostEntityProcessingService, IZombieAI {
         int targetY;
 
         if (pathFinding.size() <= 2) {
-            targetX = pathFinding.get(pathFinding.size() - 1)[0] * gameData.getTileSize();
-            targetY = pathFinding.get(pathFinding.size() - 1)[1] * gameData.getTileSize();
+            targetX = pathFinding.get(pathFinding.size() - 1)[0] * TILE_SIZE;
+            targetY = pathFinding.get(pathFinding.size() - 1)[1] * TILE_SIZE;
         } else {
-            targetX = pathFinding.get(2)[0] * gameData.getTileSize();
-            targetY = pathFinding.get(2)[1] * gameData.getTileSize();
+            targetX = pathFinding.get(2)[0] * TILE_SIZE;
+            targetY = pathFinding.get(2)[1] * TILE_SIZE;
 
             if (targetX == currentX && targetY == currentY) {
                 pathFinding.remove(2);
                 if (pathFinding.size() >= 3) {
-                    targetX = pathFinding.get(2)[0] * gameData.getTileSize();
-                    targetY = pathFinding.get(2)[1] * gameData.getTileSize();
+                    targetX = pathFinding.get(2)[0] * TILE_SIZE;
+                    targetY = pathFinding.get(2)[1] * TILE_SIZE;
                 }
             }
         }
 
         float diffX = targetX - currentX;
         float diffY = targetY - currentY;
+        float delta = gameData.getDelta();
 
-        if (Math.abs(diffX) <= Math.abs(zombieMovement.getDx()*gameData.getDelta())) {
+        if (Math.abs(diffX) <= Math.abs(zombieMovement.getDx() * delta)) {
             zombieMovement.setDx(0);
             zombiePosition.setX(currentX);
         } else {
             zombieMovement.setRight(diffX > 0);
             zombieMovement.setLeft(diffX < 0);
         }
-        if (Math.abs(diffY) <= Math.abs(zombieMovement.getDy()*gameData.getDelta())) {
+        if (Math.abs(diffY) <= Math.abs(zombieMovement.getDy() * delta)) {
             zombieMovement.setDy(0);
             zombiePosition.setY(currentY);
         } else {

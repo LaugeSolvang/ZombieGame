@@ -24,10 +24,6 @@ public class AStar {
         System.out.println("Average execution time: " + averageDuration + " ns");
 
         System.out.println(Arrays.deepToString(new List[]{astar.treeSearch(map, "26,10", "28,5")}));
-
-
-
-
     }
 
     private static class Node {

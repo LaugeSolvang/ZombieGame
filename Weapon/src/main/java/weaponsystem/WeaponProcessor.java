@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.ServiceLoader;
 
+import static common.data.GameData.TILE_SIZE;
 import static java.util.stream.Collectors.toList;
 
 public class WeaponProcessor implements IEntityProcessingService, IShoot {
@@ -52,7 +53,6 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
         }
     }
     private void spawnWeapons(GameData gameData, World world) {
-        int tileSize = gameData.getTileSize();
         // calculate the number of weapons to spawn based on game time
         int weaponsToSpawn = (int) Math.sqrt(gameData.getGameTime() / 10000) + 1;
 
@@ -61,9 +61,9 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
             for (ValidLocation validLocation : getValidLocation()) {
                 for (int i = 0; i < weaponsToSpawn; i++) {
                     int[] spawnLocation = validLocation.generateSpawnLocation(world, gameData);
-                    int x = spawnLocation[0];
-                    int y = spawnLocation[1];
-                    world.addEntity(createEntity(x*tileSize,y*tileSize));
+                    int x = spawnLocation[0] * TILE_SIZE;
+                    int y = spawnLocation[1] * TILE_SIZE;
+                    world.addEntity(createEntity(x,y));
                 }
             }
         }
