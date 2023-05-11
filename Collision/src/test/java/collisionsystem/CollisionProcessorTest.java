@@ -34,7 +34,6 @@ class CollisionProcessorTest {
     void testWeaponPlayerCollision() {
         Weapon weapon = (Weapon)createWeapon("TestWeaponImpl",5, 5, 10);
 
-        System.out.println(weapon.getAmmo());
         Player player = (Player)createPlayer(5, 5);
         world.addEntity(weapon);
         world.addEntity(player);
@@ -47,7 +46,7 @@ class CollisionProcessorTest {
     }
 
     @Test
-    void testWeaponPlayerCollision_sameWeaponType() {
+    void testWeaponPlayerCollisionSameWeaponType() {
         Weapon weapon1 = (Weapon) createWeapon("TestWeaponImpl",5, 5, 10);
         Weapon weapon2 = (Weapon) createWeapon("TestWeaponImpl",5, 5, 20);
         Player player = (Player) createPlayer(5, 5);
@@ -123,7 +122,6 @@ class CollisionProcessorTest {
 
             assertEquals(zombieEntityLifePart.getLife()- zombieLifePart.getLife(), -1);
         }
-        System.out.println(zombieLifePart.getLife());
 
         assertFalse(world.getEntities().contains(bullet), "Bullet should be removed after collision");
     }

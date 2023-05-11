@@ -1,5 +1,9 @@
 package common.data;
 
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class GameData {
     private float delta;
     private float gameTime;
@@ -7,6 +11,8 @@ public class GameData {
     private int displayHeight;
     public static final int TILE_SIZE = 32;
     private final GameKeys keys = new GameKeys();
+    private final Map<String, Boolean> activePlugins = new HashMap<>();
+
     public GameKeys getKeys() {
         return keys;
     }
@@ -45,5 +51,13 @@ public class GameData {
 
     public int getTileSize() {
         return TILE_SIZE;
+    }
+
+    public void setActivePlugin(String pluginKey, boolean isActive) {
+        activePlugins.put(pluginKey, isActive);
+    }
+
+    public boolean isActivePlugin(String pluginKey) {
+        return activePlugins.getOrDefault(pluginKey, false);
     }
 }

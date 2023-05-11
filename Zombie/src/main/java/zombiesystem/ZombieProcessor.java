@@ -19,20 +19,30 @@ import static java.util.stream.Collectors.toList;
 
 
 public class ZombieProcessor implements IEntityProcessingService {
+    private float zombieTime = 0.0f;
+
     @Override
     public void process(GameData gameData, World world) {
+        if (!gameData.isActivePlugin(ZombiePlugin.class.getName())) {
+            zombieTime = 14.8F;
+            return;
+        }
+        zombieTime += gameData.getDelta();
+
         spawnZombies(gameData, world);
         moveZombies(gameData, world);
+
     }
 
     private void spawnZombies(GameData gameData, World world) {
         int tileSize = gameData.getTileSize();
 
         // calculate the number of zombies to spawn based on game time
-        int zombiesToSpawn = (int) Math.sqrt(gameData.getGameTime() / 10000) + 3;
+        int zombiesToSpawn = (int) Math.sqrt(zombieTime) + 3;
 
         int zombieSpawnInterval = 15;
-        if ((gameData.getGameTime() % zombieSpawnInterval <= gameData.getDelta())) {
+        if ((zombieTime % zombieSpawnInterval <= (gameData.getDelta()))) {
+            zombieTime += 0.1;
             for (int i = 0; i < zombiesToSpawn; i++) {
                 for (ValidLocation validLocation : getValidLocations()) {
                     int[] spawnLocation = validLocation.generateSpawnLocation(world, gameData);
