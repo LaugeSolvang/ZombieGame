@@ -23,41 +23,46 @@ import static java.util.stream.Collectors.toList;
 
 public class WeaponProcessor implements IEntityProcessingService, IShoot {
     String shootImplName = "weaponsystem.WeaponProcessor";
+    private float weaponTime = 0.0f;
+    private final int WEAPON_SPAWN_INTERVAL = 30;
+
 
     @Override
     public void process(GameData gameData, World world) {
-        updateWeaponDirection(world);
+        for (Entity playerEntity : world.getEntities(Player.class)) {
+            Player player = (Player)playerEntity;
+            Entity weaponEntity = player.getInventory().getCurrentWeapon();
+            if (weaponEntity != null) {
+                updateWeaponDirection(playerEntity, weaponEntity);
+                updateTimer(gameData, weaponEntity);
+            }
+        }
         spawnWeapons(gameData, world);
-        updateTimer(gameData, world);
     }
 
-    private void updateWeaponDirection(World world) {
-        for (Entity playerEntity : world.getEntities(Player.class)) {
-            Player player = (Player) playerEntity;
-            MovingPart movingPart = player.getPart(MovingPart.class);
+    private void updateWeaponDirection(Entity playerEntity, Entity weaponEntity) {
+        MovingPart movingPart = playerEntity.getPart(MovingPart.class);
+        Weapon weapon = (Weapon) weaponEntity;
 
-            Weapon currentWeapon = player.getCurrentWeapon();
+        if (weapon == null || !Objects.equals(weapon.getShootImplName(), shootImplName)) {
+            return;
+        }
 
-            if (currentWeapon == null || !Objects.equals(currentWeapon.getShootImplName(), shootImplName)) {
-                return;
-            }
-
-            if (movingPart.getDx() < 0) {
-                String path = "weapon-kopi.png";
-                currentWeapon.setPath(path);
-            }
-            if (movingPart.getDx() > 0) {
-                String path = "weapon.png";
-                currentWeapon.setPath(path);
-            }
+        if (movingPart.getDx() < 0) {
+            String path = "weapon-kopi.png";
+            weapon.setPath(path);
+        }
+        if (movingPart.getDx() > 0) {
+            String path = "weapon.png";
+            weapon.setPath(path);
         }
     }
     private void spawnWeapons(GameData gameData, World world) {
         // calculate the number of weapons to spawn based on game time
-        int weaponsToSpawn = (int) Math.sqrt(gameData.getGameTime() / 10000) + 1;
+        int weaponsToSpawn = (int) Math.sqrt(weaponTime / 4) + 1;
 
-        int weaponSpawnInterval = 30;
-        if ((gameData.getGameTime() % weaponSpawnInterval <= gameData.getDelta())) {
+        if (weaponTime % WEAPON_SPAWN_INTERVAL <= gameData.getDelta()) {
+            weaponTime += 0.1;
             for (ValidLocation validLocation : getValidLocation()) {
                 for (int i = 0; i < weaponsToSpawn; i++) {
                     int[] spawnLocation = validLocation.generateSpawnLocation(world, gameData);
@@ -68,18 +73,15 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
             }
         }
     }
-    private void updateTimer(GameData gameData, World world) {
-        for (Entity weaponEntity : world.getEntities(Weapon.class)) {
-            Weapon weapon = (Weapon) weaponEntity;
-            TimerPart timerPart = weapon.getPart(TimerPart.class);
-            timerPart.process(gameData, weaponEntity);
-        }
+    private void updateTimer(GameData gameData, Entity weapon) {
+        TimerPart timerPart = weapon.getPart(TimerPart.class);
+        timerPart.process(gameData, weapon);
     }
 
     @Override
     public void useWeapon(Player player, GameData gameData, World world) {
-        TimerPart timerPart = player.getCurrentWeapon().getPart(TimerPart.class);
-        Weapon weapon = player.getCurrentWeapon();
+        Weapon weapon = player.getInventory().getCurrentWeapon();
+        TimerPart timerPart = weapon.getPart(TimerPart.class);
         if (timerPart.getExpiration() <= 0 && weapon.getAmmo() > 0) {
             for (BulletSPI bullet : getBulletSPIs()) {
                 world.addEntity(bullet.createBullet(weapon, gameData));
@@ -101,7 +103,7 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
         weapon.add(new TimerPart(0));
         weapon.add(new DamagePart(damage));
 
-        return weapon;    
+        return weapon;
     }
     private Collection<? extends BulletSPI> getBulletSPIs() {
         return ServiceLoader.load(BulletSPI.class).stream().map(ServiceLoader.Provider::get).collect(toList());

@@ -115,7 +115,7 @@ public class CollisionProcessor implements IPostEntityProcessingService {
     private void handleWeaponCollision(Entity firstEntity, Entity secondEntity, World world) {
         Weapon weapon = (Weapon) (firstEntity instanceof Weapon ? firstEntity : secondEntity);
         Player player = (Player) (weapon == firstEntity ? secondEntity : firstEntity);
-        List<Weapon> weaponList = player.getWeapons();
+        List<Weapon> weaponList = player.getInventory().getWeapons();
 
         for (Weapon secondWeapon :weaponList) {
             if (Objects.equals(weapon.getID(), secondWeapon.getID())) {
@@ -131,9 +131,9 @@ public class CollisionProcessor implements IPostEntityProcessingService {
             }
         }
         if (!sameWeapon) {
-            player.addWeaponToInventory(weapon);
+            player.getInventory().addWeapon(world, weapon);
         }
-        if (player.getWeapons().size() > 0 && !Objects.equals(player.getCurrentWeapon().getShootImplName(), weapon.getShootImplName())) {
+        if (player.getInventory().getWeapons().size() > 0 && !Objects.equals(player.getInventory().getCurrentWeapon().getShootImplName(), weapon.getShootImplName())) {
             world.removeEntity(weapon);
         }
     }

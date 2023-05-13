@@ -15,7 +15,6 @@ public class GameKeys {
     public static final int SHIFT = 7;
     public static final int ONE = 8;
     public static final int TWO = 9;
-
     public GameKeys() {
         keys = new boolean[NUM_KEYS];
         pkeys = new boolean[NUM_KEYS];
