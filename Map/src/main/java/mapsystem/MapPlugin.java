@@ -6,8 +6,12 @@ import common.data.World;
 import common.data.entities.obstruction.Obstruction;
 import common.data.entityparts.PositionPart;
 import common.services.IGamePluginService;
+import common.services.KeyPressListener;
 
-public class MapPlugin implements IGamePluginService {
+import static common.data.GameKeys.NINE;
+
+public class MapPlugin implements IGamePluginService, KeyPressListener {
+    boolean isActive = true;
     private String[][] map;
 
     @Override
@@ -64,5 +68,18 @@ public class MapPlugin implements IGamePluginService {
         int mapHeight = gameData.getDisplayHeight() / 32;
         map = new String[mapWidth][mapHeight];
         world.setMap(map);
+    }
+
+    @Override
+    public void onKeyPressed(int key, GameData gameData, World world) {
+        if (key == NINE) {
+            if (isActive) {
+                isActive = false;
+                stop(gameData, world);
+            } else {
+                isActive = true;
+                start(gameData, world);
+            }
+        }
     }
 }

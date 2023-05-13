@@ -15,24 +15,25 @@ import common.data.entityparts.ScorePart;
 import common.services.IEntityProcessingService;
 import common.services.IGamePluginService;
 import common.services.IPostEntityProcessingService;
+import common.services.KeyPressListener;
 import managers.GameInputProcessor;
 import managers.SpriteCache;
 
 import java.util.Collection;
 import java.util.ServiceLoader;
 
-import static common.data.GameKeys.ENTER;
-import static common.data.GameKeys.ESCAPE;
+import static common.data.GameKeys.*;
 import static java.util.stream.Collectors.toList;
 
 public class Game implements ApplicationListener {
     private SpriteBatch sb;
+    private BitmapFont font;
     private final GameData gameData = new GameData();
     private final World world = new World();
-
     private final Collection<? extends IEntityProcessingService> entityProcessingServices = getEntityProcessingServices();
     private final Collection<? extends IPostEntityProcessingService> postEntityProcessingServices = getPostEntityProcessingServices();
     private final Collection<? extends IGamePluginService> gamePluginServices = getPluginServices();
+    private final Collection<? extends KeyPressListener> keyPressListeners = getKeyPressListeners();
 
     @Override
     public void create() {
@@ -43,6 +44,7 @@ public class Game implements ApplicationListener {
         cam.translate((float) gameData.getDisplayWidth() / 2, (float) gameData.getDisplayHeight() / 2);
         cam.update();
 
+        font = new BitmapFont();
         sb = new SpriteBatch();
 
         Gdx.input.setInputProcessor(new GameInputProcessor(gameData));
@@ -60,7 +62,7 @@ public class Game implements ApplicationListener {
 
         gameData.setDelta(Gdx.graphics.getDeltaTime());
 
-        deleteEntities();
+        checkForUserInput();
 
         update();
 
@@ -80,25 +82,29 @@ public class Game implements ApplicationListener {
         gameData.setGameTime(Math.max(gameData.getGameTime() + gameData.getDelta(), 0.18F));
     }
 
-    private void deleteEntities() {
-        for (IGamePluginService iGamePlugin : getPluginServices()) {
-            if (gameData.getKeys().isPressed(ESCAPE) && (iGamePlugin.getClass().getName().equals("zombiesystem.ZombiePlugin"))) {
-                if (gameData.isActivePlugin(iGamePlugin.getClass().getName())) {
-                    iGamePlugin.stop(gameData, world);
-                } else {
-                    iGamePlugin.start(gameData, world);
-                }
-            }
-            if (gameData.getKeys().isDown(ENTER) && (iGamePlugin.getClass().getName().equals("mapsystem.MapPlugin"))) {
-                iGamePlugin.stop(gameData, world);
-            }
+    private void checkForUserInput() {
+        if (gameData.getKeys().isPressed(ESCAPE)) {
+            emitKeyPressEvent(ESCAPE);
+        }
+        if (gameData.getKeys().isPressed(ENTER)) {
+            emitKeyPressEvent(ENTER);
+        }
+        if (gameData.getKeys().isPressed(TAB)) {
+            emitKeyPressEvent(TAB);
+        }
+        if (gameData.getKeys().isPressed(DEL)) {
+            emitKeyPressEvent(DEL);
+        }
+        if (gameData.getKeys().isPressed(EIGHT)) {
+            emitKeyPressEvent(EIGHT);
+        }
+        if (gameData.getKeys().isPressed(NINE)) {
+            emitKeyPressEvent(NINE);
         }
     }
 
     private void draw() {
         //no idea how this works in detail, but it creates something that allows you to display text in-game
-        BitmapFont font;
-        font = new BitmapFont();
         CharSequence scoreStr = "Score: " + ScorePart.getScore();
         CharSequence lifeStr = "Life: ";
 
@@ -117,7 +123,6 @@ public class Game implements ApplicationListener {
         }
         sb.end();
     }
-
     @Override
     public void resize(int i, int i1) {
 
@@ -138,6 +143,11 @@ public class Game implements ApplicationListener {
 
     }
 
+    private void emitKeyPressEvent(int key) {
+        for (KeyPressListener listener : keyPressListeners) {
+            listener.onKeyPressed(key, gameData, world);
+        }
+    }
     private Collection<? extends IGamePluginService> getPluginServices() {
         return ServiceLoader.load(IGamePluginService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
     }
@@ -148,5 +158,9 @@ public class Game implements ApplicationListener {
 
     private Collection<? extends IPostEntityProcessingService> getPostEntityProcessingServices() {
         return ServiceLoader.load(IPostEntityProcessingService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+    }
+
+    private Collection<? extends KeyPressListener> getKeyPressListeners() {
+        return ServiceLoader.load(KeyPressListener.class).stream().map(ServiceLoader.Provider::get).collect(toList());
     }
 }

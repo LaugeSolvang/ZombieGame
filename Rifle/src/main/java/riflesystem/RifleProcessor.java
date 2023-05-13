@@ -28,6 +28,11 @@ public class RifleProcessor implements IEntityProcessingService, IShoot {
 
     @Override
     public void process(GameData gameData, World world) {
+        if (!gameData.isActivePlugin(RiflePlugin.class.getName())) {
+            rifleTime = 0;
+            return;
+        }
+
         for (Entity playerEntity : world.getEntities(Player.class)) {
             Player player = (Player)playerEntity;
             Entity weaponEntity = player.getInventory().getCurrentWeapon();
@@ -81,10 +86,8 @@ public class RifleProcessor implements IEntityProcessingService, IShoot {
     public void useWeapon(Player player, GameData gameData, World world) {
         Weapon weapon = player.getInventory().getCurrentWeapon();
         TimerPart timerPart = weapon.getPart(TimerPart.class);
-        System.out.println("Timer:"+timerPart.getExpiration()+"Ammo: "+weapon.getAmmo());
         if (timerPart.getExpiration() <= 0 && weapon.getAmmo() > 0) {
             for (BulletSPI bullet : getBulletSPIs()) {
-                System.out.println("works");
                 world.addEntity(bullet.createBullet(weapon, gameData));
                 weapon.reduceAmmon();
                 timerPart.setExpiration(weapon.getFireRate());
