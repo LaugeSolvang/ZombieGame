@@ -86,10 +86,8 @@ public class RifleProcessor implements IEntityProcessingService, IShoot {
     public void useWeapon(Player player, GameData gameData, World world) {
         Weapon weapon = player.getInventory().getCurrentWeapon();
         TimerPart timerPart = weapon.getPart(TimerPart.class);
-        System.out.println("Timer:"+timerPart.getExpiration()+"Ammo: "+weapon.getAmmo());
         if (timerPart.getExpiration() <= 0 && weapon.getAmmo() > 0) {
             for (BulletSPI bullet : getBulletSPIs()) {
-                System.out.println("works");
                 world.addEntity(bullet.createBullet(weapon, gameData));
                 weapon.reduceAmmon();
                 timerPart.setExpiration(weapon.getFireRate());

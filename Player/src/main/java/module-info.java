@@ -8,5 +8,6 @@ module Player {
     requires Common;
     provides IEntityProcessingService with playersystem.PlayerProcessor;
     provides IGamePluginService with playersystem.PlayerPlugin;
+    provides KeyPressListener with playersystem.PlayerPlugin;
     uses IShoot;
 }

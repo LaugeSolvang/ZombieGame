@@ -116,7 +116,7 @@ public class Game implements ApplicationListener {
         for (Entity entity : world.getEntities()) {
             Sprite sprite = SpriteCache.getSprite(entity.getPath());
             PositionPart positionPart = entity.getPart(PositionPart.class);
-            positionPart.setDimension(positionPart.getWidth(), positionPart.getHeight());
+            positionPart.setDimension(sprite.getWidth(), sprite.getHeight());
             sprite.setPosition(positionPart.getX(), positionPart.getY());
 
             sprite.draw(sb);

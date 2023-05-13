@@ -13,6 +13,11 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
     @Override
     public void process(GameData gameData, World world) {
         for (Entity bullet : world.getEntities(Bullet.class)) {
+            if (!gameData.isActivePlugin(BulletPlugin.class.getName())) {
+                world.removeEntity(bullet);
+                return;
+            }
+
             PositionPart positionPart = bullet.getPart(PositionPart.class);
             MovingPart movingPart = bullet.getPart(MovingPart.class);
             TimerPart timerPart = bullet.getPart(TimerPart.class);

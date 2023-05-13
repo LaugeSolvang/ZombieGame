@@ -8,7 +8,10 @@ import common.data.entityparts.PositionPart;
 import common.services.IGamePluginService;
 import common.services.KeyPressListener;
 
+import static common.data.GameKeys.NINE;
+
 public class MapPlugin implements IGamePluginService, KeyPressListener {
+    boolean isActive = true;
     private String[][] map;
 
     @Override
@@ -69,6 +72,14 @@ public class MapPlugin implements IGamePluginService, KeyPressListener {
 
     @Override
     public void onKeyPressed(int key, GameData gameData, World world) {
-
+        if (key == NINE) {
+            if (isActive) {
+                isActive = false;
+                stop(gameData, world);
+            } else {
+                isActive = true;
+                start(gameData, world);
+            }
+        }
     }
 }

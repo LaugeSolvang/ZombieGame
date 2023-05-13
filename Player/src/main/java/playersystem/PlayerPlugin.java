@@ -10,10 +10,14 @@ import common.data.entityparts.LifePart;
 import common.data.entityparts.MovingPart;
 import common.data.entityparts.PositionPart;
 import common.services.IGamePluginService;
+import common.services.KeyPressListener;
 
 import java.util.List;
 
-public class PlayerPlugin implements IGamePluginService {
+import static common.data.GameKeys.DEL;
+
+public class PlayerPlugin implements IGamePluginService, KeyPressListener {
+    boolean isActive = true;
 
     @Override
     public void start(GameData gameData, World world) {
@@ -64,4 +68,18 @@ public class PlayerPlugin implements IGamePluginService {
             world.removeEntity(player);
         }
     }
+
+    @Override
+    public void onKeyPressed(int key, GameData gameData, World world) {
+        if (key == DEL) {
+            if (isActive) {
+                isActive = false;
+                stop(gameData, world);
+            } else {
+                isActive = true;
+                start(gameData, world);
+            }
+        }
+    }
+
 }

@@ -6,4 +6,3 @@ import common.data.World;
 public interface KeyPressListener {
     void onKeyPressed(int key, GameData gameData, World world);
 }
-
