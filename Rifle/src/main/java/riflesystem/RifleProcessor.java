@@ -28,6 +28,11 @@ public class RifleProcessor implements IEntityProcessingService, IShoot {
 
     @Override
     public void process(GameData gameData, World world) {
+        if (!gameData.isActivePlugin(RiflePlugin.class.getName())) {
+            rifleTime = 0;
+            return;
+        }
+
         for (Entity playerEntity : world.getEntities(Player.class)) {
             Player player = (Player)playerEntity;
             Entity weaponEntity = player.getInventory().getCurrentWeapon();

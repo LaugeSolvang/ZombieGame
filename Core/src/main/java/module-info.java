@@ -6,6 +6,7 @@ module Core{
     uses common.services.IGamePluginService;
     uses common.services.IEntityProcessingService;
     uses common.services.IPostEntityProcessingService;
+    uses common.services.KeyPressListener;
 
 
 }

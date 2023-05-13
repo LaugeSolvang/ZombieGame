@@ -38,6 +38,7 @@ public class CollisionProcessor implements IPostEntityProcessingService {
 
                 // Check for collision between the two different entities
                 if (isColliding(firstPosition, secondEntity.getPart(PositionPart.class))) {
+                    System.out.println("collision");
                     handleCollision(firstEntity, secondEntity, gameData, world);
                 }
             }

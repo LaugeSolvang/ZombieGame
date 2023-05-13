@@ -1,6 +1,7 @@
 import common.data.entities.weapon.IShoot;
 import common.services.IEntityProcessingService;
 import common.services.IGamePluginService;
+import common.services.KeyPressListener;
 
 module Player {
     exports playersystem;

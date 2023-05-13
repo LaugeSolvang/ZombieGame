@@ -26,7 +26,7 @@ public class ZombieProcessor implements IEntityProcessingService {
     @Override
     public void process(GameData gameData, World world) {
         if (!gameData.isActivePlugin(ZombiePlugin.class.getName())) {
-            zombieTime = 14.8F;
+            zombieTime = 0F;
             return;
         }
         zombieTime += gameData.getDelta();

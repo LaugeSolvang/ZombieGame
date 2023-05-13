@@ -6,8 +6,9 @@ import common.data.World;
 import common.data.entities.obstruction.Obstruction;
 import common.data.entityparts.PositionPart;
 import common.services.IGamePluginService;
+import common.services.KeyPressListener;
 
-public class MapPlugin implements IGamePluginService {
+public class MapPlugin implements IGamePluginService, KeyPressListener {
     private String[][] map;
 
     @Override
@@ -64,5 +65,10 @@ public class MapPlugin implements IGamePluginService {
         int mapHeight = gameData.getDisplayHeight() / 32;
         map = new String[mapWidth][mapHeight];
         world.setMap(map);
+    }
+
+    @Override
+    public void onKeyPressed(int key, GameData gameData, World world) {
+
     }
 }

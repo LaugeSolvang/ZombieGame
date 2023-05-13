@@ -43,6 +43,18 @@ public class GameInputProcessor extends InputAdapter {
         if(k == Keys.NUM_2 || k == Keys.NUMPAD_2) {
             gameData.getKeys().setKey(GameKeys.TWO, true);
         }
+        if (k == Keys.TAB) {
+            gameData.getKeys().setKey(GameKeys.TAB, true);
+        }
+        if (k == Keys.DEL) {
+            gameData.getKeys().setKey(GameKeys.DEL, true);
+        }
+        if(k == Keys.NUM_8 || k == Keys.NUMPAD_8) {
+            gameData.getKeys().setKey(GameKeys.EIGHT, true);
+        }
+        if(k == Keys.NUM_9 || k == Keys.NUMPAD_9) {
+            gameData.getKeys().setKey(GameKeys.NINE, true);
+        }
         return true;
     }
 
@@ -76,6 +88,18 @@ public class GameInputProcessor extends InputAdapter {
         }
         if(k == Keys.NUM_2 || k == Keys.NUMPAD_2) {
             gameData.getKeys().setKey(GameKeys.TWO, false);
+        }
+        if (k == Keys.TAB) {
+            gameData.getKeys().setKey(GameKeys.TAB, false);
+        }
+        if (k == Keys.DEL) {
+            gameData.getKeys().setKey(GameKeys.DEL, false);
+        }
+        if(k == Keys.NUM_8 || k == Keys.NUMPAD_8) {
+            gameData.getKeys().setKey(GameKeys.EIGHT, false);
+        }
+        if(k == Keys.NUM_9 || k == Keys.NUMPAD_9) {
+            gameData.getKeys().setKey(GameKeys.NINE, false);
         }
         return true;
     }
