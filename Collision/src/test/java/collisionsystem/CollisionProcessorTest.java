@@ -34,7 +34,6 @@ class CollisionProcessorTest {
     void testWeaponPlayerCollision() {
         Weapon weapon = (Weapon)createWeapon("TestWeaponImpl",5, 5, 10);
 
-        System.out.println(weapon.getAmmo());
         Player player = (Player)createPlayer(5, 5);
         world.addEntity(weapon);
         world.addEntity(player);
@@ -43,16 +42,16 @@ class CollisionProcessorTest {
 
         processor.process(gameData, world);
 
-        assertTrue(player.getWeapons().contains(weapon), "Player should have picked up the weapon");
+        assertTrue(player.getInventory().getWeapons().contains(weapon), "Player should have picked up the weapon");
     }
 
     @Test
-    void testWeaponPlayerCollision_sameWeaponType() {
+    void testWeaponPlayerCollisionSameWeaponType() {
         Weapon weapon1 = (Weapon) createWeapon("TestWeaponImpl",5, 5, 10);
         Weapon weapon2 = (Weapon) createWeapon("TestWeaponImpl",5, 5, 20);
         Player player = (Player) createPlayer(5, 5);
 
-        player.addWeaponToInventory(weapon1);
+        player.getInventory().addWeapon(world, weapon1);
         world.addEntity(weapon2);
         world.addEntity(player);
 
@@ -61,7 +60,7 @@ class CollisionProcessorTest {
         processor.process(gameData, world);
 
         assertFalse(world.getEntities().contains(weapon2), "Weapon should be removed after collision");
-        assertTrue(player.getWeapons().contains(weapon1), "Player should have the first weapon");
+        assertTrue(player.getInventory().getWeapons().contains(weapon1), "Player should have the first weapon");
         assertEquals(30, weapon1.getAmmo(), "Ammo should be summed after collision with same weapon type");
     }
 
@@ -71,7 +70,7 @@ class CollisionProcessorTest {
         Weapon weapon2 = (Weapon) createWeapon("TestWeaponImpl2",5, 5,  20);
         Player player = (Player) createPlayer(5, 5);
 
-        player.addWeaponToInventory(weapon1);
+        player.getInventory().addWeapon(world, weapon1);
         world.addEntity(weapon2);
         world.addEntity(player);
 
@@ -80,8 +79,8 @@ class CollisionProcessorTest {
         processor.process(gameData, world);
 
         assertFalse(world.getEntities().contains(weapon2), "Weapon should be removed after collision");
-        assertTrue(player.getWeapons().contains(weapon1), "Player should have the first weapon");
-        assertTrue(player.getWeapons().contains(weapon2), "Player should have the second weapon");
+        assertTrue(player.getInventory().getWeapons().contains(weapon1), "Player should have the first weapon");
+        assertTrue(player.getInventory().getWeapons().contains(weapon2), "Player should have the second weapon");
     }
 
     @Test
@@ -123,7 +122,6 @@ class CollisionProcessorTest {
 
             assertEquals(zombieEntityLifePart.getLife()- zombieLifePart.getLife(), -1);
         }
-        System.out.println(zombieLifePart.getLife());
 
         assertFalse(world.getEntities().contains(bullet), "Bullet should be removed after collision");
     }

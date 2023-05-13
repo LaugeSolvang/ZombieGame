@@ -18,70 +18,73 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.ServiceLoader;
 
+import static common.data.GameData.TILE_SIZE;
 import static java.util.stream.Collectors.toList;
 
 public class RifleProcessor implements IEntityProcessingService, IShoot {
     String shootImplName = "riflesystem.RifleProcessor";
+    private float rifleTime = 0.0f;
+    private final int RIFLE_SPAWN_INTERVAL = 30;
+
     @Override
     public void process(GameData gameData, World world) {
-        updateWeaponDirection(world);
+        for (Entity playerEntity : world.getEntities(Player.class)) {
+            Player player = (Player)playerEntity;
+            Entity weaponEntity = player.getInventory().getCurrentWeapon();
+            if (weaponEntity != null) {
+                updateWeaponDirection(playerEntity, weaponEntity);
+                updateTimer(gameData, weaponEntity);
+            }
+        }
         spawnWeapons(gameData, world);
-        updateTimer(gameData, world);
     }
 
-    private void updateWeaponDirection(World world) {
-        for (Entity playerEntity : world.getEntities(Player.class)) {
-            Player player = (Player) playerEntity;
-            MovingPart movingPart = player.getPart(MovingPart.class);
+    private void updateWeaponDirection(Entity playerEntity, Entity weaponEntity) {
+        MovingPart movingPart = playerEntity.getPart(MovingPart.class);
+        Weapon weapon = (Weapon) weaponEntity;
 
-            Weapon currentWeapon = player.getCurrentWeapon();
+        if (weapon == null || !Objects.equals(weapon.getShootImplName(), shootImplName)) {
+            return;
+        }
 
-            if (currentWeapon == null || !Objects.equals(currentWeapon.getShootImplName(), shootImplName)) {
-                return;
-            }
-
-            if (movingPart.getDx() < 0) {
-                String path = "rifle-kopi.png";
-                currentWeapon.setPath(path);
-            }
-            if (movingPart.getDx() > 0) {
-                String path = "rifle.png";
-                currentWeapon.setPath(path);
-            }
-
+        if (movingPart.getDx() < 0) {
+            String path = "rifle-kopi.png";
+            weapon.setPath(path);
+        }
+        if (movingPart.getDx() > 0) {
+            String path = "rifle.png";
+            weapon.setPath(path);
         }
     }
     private void spawnWeapons(GameData gameData, World world) {
-        int tileSize = gameData.getTileSize();
         // calculate the number of weapons to spawn based on game time
-        int weaponsToSpawn = (int) Math.sqrt(gameData.getGameTime() / 10000) + 2;
+        int weaponsToSpawn = (int) Math.sqrt(rifleTime / 4) + 1;
 
-        int weaponSpawnInterval = 30;
-        if ((gameData.getGameTime() % weaponSpawnInterval <= gameData.getDelta())) {
+        if (rifleTime % RIFLE_SPAWN_INTERVAL <= gameData.getDelta()) {
+            rifleTime += 0.1;
             for (ValidLocation validLocation : getValidLocation()) {
                 for (int i = 0; i < weaponsToSpawn; i++) {
                     int[] spawnLocation = validLocation.generateSpawnLocation(world, gameData);
                     int x = spawnLocation[0];
                     int y = spawnLocation[1];
-                    world.addEntity(createEntity(x*tileSize,y*tileSize));
+                    world.addEntity(createEntity(x*TILE_SIZE,y*TILE_SIZE));
                 }
             }
         }
     }
-    private void updateTimer(GameData gameData, World world) {
-        for (Entity weaponEntity : world.getEntities(Weapon.class)) {
-            Weapon weapon = (Weapon) weaponEntity;
-            TimerPart timerPart = weapon.getPart(TimerPart.class);
-            timerPart.process(gameData, weaponEntity);
-        }
+    private void updateTimer(GameData gameData, Entity weapon) {
+        TimerPart timerPart = weapon.getPart(TimerPart.class);
+        timerPart.process(gameData, weapon);
     }
 
     @Override
     public void useWeapon(Player player, GameData gameData, World world) {
-        TimerPart timerPart = player.getCurrentWeapon().getPart(TimerPart.class);
-        Weapon weapon = player.getCurrentWeapon();
+        Weapon weapon = player.getInventory().getCurrentWeapon();
+        TimerPart timerPart = weapon.getPart(TimerPart.class);
+        System.out.println("Timer:"+timerPart.getExpiration()+"Ammo: "+weapon.getAmmo());
         if (timerPart.getExpiration() <= 0 && weapon.getAmmo() > 0) {
             for (BulletSPI bullet : getBulletSPIs()) {
+                System.out.println("works");
                 world.addEntity(bullet.createBullet(weapon, gameData));
                 weapon.reduceAmmon();
                 timerPart.setExpiration(weapon.getFireRate());

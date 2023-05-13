@@ -3,6 +3,7 @@ package playersystem;
 import common.data.Entity;
 import common.data.GameData;
 import common.data.World;
+import common.data.entities.player.Inventory;
 import common.data.entities.player.Player;
 import common.data.entities.weapon.IShoot;
 import common.data.entities.weapon.Weapon;
@@ -25,7 +26,6 @@ public class PlayerProcessor implements IEntityProcessingService {
             processMovement(gameData, player);
             processWeapon(gameData, world, player);
             processWeaponSwitching(gameData, world, player);
-
         }
     }
 
@@ -50,10 +50,11 @@ public class PlayerProcessor implements IEntityProcessingService {
             player.setPath(path);
         }
     }
-    
+
 
     private void processWeapon(GameData gameData, World world, Player player) {
-        List<Weapon> weapons = player.getWeapons();
+        Inventory inventory = player.getInventory();
+        List<Weapon> weapons = inventory.getWeapons();
         if (!weapons.isEmpty()) {
             PositionPart playerPosPart = player.getPart(PositionPart.class);
             for (Weapon weapon: weapons) {
@@ -61,15 +62,13 @@ public class PlayerProcessor implements IEntityProcessingService {
                 weaponPosPart.setPosition(playerPosPart.getX(), playerPosPart.getY(), playerPosPart.getRadians());
             }
 
-            Weapon weapon = player.getCurrentWeapon();
+            Weapon weapon = inventory.getCurrentWeapon();
             if (gameData.getKeys().isPressed(SPACE)) {
                 if (weapon.getAmmo() == 0) {
-                    weapons.remove(weapon);
-                    world.removeEntity(weapon);
-                    player.cycleWeapon(1);
-                    world.addEntity(player.getCurrentWeapon());
+                    inventory.cycleWeapon(world, 1);
+                    inventory.removeWeapon(weapon);
                 } else {
-                    IShoot shootImpl = getShootImpl(player.getCurrentWeapon());
+                    IShoot shootImpl = getShootImpl(inventory.getCurrentWeapon());
                     shootImpl.useWeapon(player, gameData, world);
                 }
             }
@@ -77,16 +76,17 @@ public class PlayerProcessor implements IEntityProcessingService {
     }
 
     private void processWeaponSwitching(GameData gameData, World world, Player player) {
-        if (!(gameData.getKeys().isPressed(ONE) || gameData.getKeys().isPressed(TWO))) {
+        Inventory inventory = player.getInventory();
+        if (inventory.getCurrentWeapon() == null) {
             return;
         }
-        world.removeEntity(player.getCurrentWeapon().getID());
+
+        // Switch to the next or previous weapon
         if (gameData.getKeys().isPressed(ONE)) {
-            player.cycleWeapon(-1);
+            inventory.cycleWeapon(world, -1);
         } else if (gameData.getKeys().isPressed(TWO)) {
-            player.cycleWeapon(1);
+            inventory.cycleWeapon(world, 1);
         }
-        world.addEntity(player.getCurrentWeapon());
     }
     private IShoot getShootImpl(Weapon weapon) {
         return ServiceLoader.load(IShoot.class).stream()

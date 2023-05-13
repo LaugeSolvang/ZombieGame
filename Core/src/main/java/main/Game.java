@@ -30,6 +30,10 @@ public class Game implements ApplicationListener {
     private final GameData gameData = new GameData();
     private final World world = new World();
 
+    private final Collection<? extends IEntityProcessingService> entityProcessingServices = getEntityProcessingServices();
+    private final Collection<? extends IPostEntityProcessingService> postEntityProcessingServices = getPostEntityProcessingServices();
+    private final Collection<? extends IGamePluginService> gamePluginServices = getPluginServices();
+
     @Override
     public void create() {
         gameData.setDisplayWidth(Gdx.graphics.getWidth());
@@ -43,7 +47,7 @@ public class Game implements ApplicationListener {
 
         Gdx.input.setInputProcessor(new GameInputProcessor(gameData));
 
-        for (IGamePluginService iGamePlugin : getPluginServices()) {
+        for (IGamePluginService iGamePlugin : gamePluginServices) {
             iGamePlugin.start(gameData, world);
             System.out.println(iGamePlugin.getClass());
         }
@@ -56,7 +60,7 @@ public class Game implements ApplicationListener {
 
         gameData.setDelta(Gdx.graphics.getDeltaTime());
 
-        deleteEntity();
+        deleteEntities();
 
         update();
 
@@ -66,25 +70,27 @@ public class Game implements ApplicationListener {
     }
 
     private void update() {
-        for (IEntityProcessingService entityProcessorService : getEntityProcessingServices()) {
+        for (IEntityProcessingService entityProcessorService : entityProcessingServices) {
             entityProcessorService.process(gameData, world);
         }
-        for (IPostEntityProcessingService postEntityProcessorService : getPostEntityProcessingServices()) {
+        for (IPostEntityProcessingService postEntityProcessorService : postEntityProcessingServices) {
             postEntityProcessorService.process(gameData, world);
         }
-
 
         gameData.setGameTime(Math.max(gameData.getGameTime() + gameData.getDelta(), 0.18F));
     }
 
-    private void deleteEntity() {
+    private void deleteEntities() {
         for (IGamePluginService iGamePlugin : getPluginServices()) {
-            if (gameData.getKeys().isDown(ESCAPE) && (iGamePlugin.getClass().getName().equals("playersystem.PlayerPlugin"))) {
-                iGamePlugin.stop(gameData, world);
+            if (gameData.getKeys().isPressed(ESCAPE) && (iGamePlugin.getClass().getName().equals("zombiesystem.ZombiePlugin"))) {
+                if (gameData.isActivePlugin(iGamePlugin.getClass().getName())) {
+                    iGamePlugin.stop(gameData, world);
+                } else {
+                    iGamePlugin.start(gameData, world);
+                }
             }
             if (gameData.getKeys().isDown(ENTER) && (iGamePlugin.getClass().getName().equals("mapsystem.MapPlugin"))) {
                 iGamePlugin.stop(gameData, world);
-                System.out.println("Map");
             }
         }
     }

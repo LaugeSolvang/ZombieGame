@@ -31,20 +31,31 @@ public class MapProcessor implements ValidLocation {
         } while (!isValidLocation(map, playerPosPart, x, y));
         return new int[]{x, y};
     }
-    private boolean isValidLocation(String[][] map, PositionPart positionPart, int x, int y) {
+    private boolean isValidLocation(String[][] map, PositionPart playerPosPart, int x, int y) {
         int xStart = Math.max(x - 1, 0);
         int xEnd = Math.min(x + 1, map.length - 1);
         int yStart = Math.max(y - 1, 0);
         int yEnd = Math.min(y + 2, map[0].length - 1);
-        int pX = (int)(positionPart.getX()/TILE_SIZE);
-        int py = (int)(positionPart.getY()/TILE_SIZE);
 
+        //3x3 grid checking for obstructions
         for (int i = xStart; i <= xEnd; i++) {
             for (int j = yStart; j <= yEnd; j++) {
                 if (Objects.equals(map[i][j], "obstruction")) {
                     return false;
-                } else if (pX == i && py == j) {
-                    System.out.println("spawned on player");
+                }
+            }
+        }
+        xStart = Math.max(x - 5, 0);
+        xEnd = Math.min(x + 5, map.length - 1);
+        yStart = Math.max(y - 5, 0);
+        yEnd = Math.min(y + 6, map[0].length - 1);
+        int pX = (int)(playerPosPart.getX()/TILE_SIZE);
+        int py = (int)(playerPosPart.getY()/TILE_SIZE);
+
+        //10x10 grid checking for player
+        for (int i = xStart; i <= xEnd; i++) {
+            for (int j = yStart; j <= yEnd; j++) {
+                if (pX == i && py == j) {
                     return false;
                 }
             }

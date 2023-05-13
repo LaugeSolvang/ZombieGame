@@ -3,11 +3,15 @@ package playersystem;
 import common.data.Entity;
 import common.data.GameData;
 import common.data.World;
+import common.data.entities.player.Inventory;
 import common.data.entities.player.Player;
+import common.data.entities.weapon.Weapon;
 import common.data.entityparts.LifePart;
 import common.data.entityparts.MovingPart;
 import common.data.entityparts.PositionPart;
 import common.services.IGamePluginService;
+
+import java.util.List;
 
 public class PlayerPlugin implements IGamePluginService {
 
@@ -37,7 +41,26 @@ public class PlayerPlugin implements IGamePluginService {
     }
     @Override
     public void stop(GameData gameData, World world) {
-        for (Entity player : world.getEntities(Player.class)) {
+        for (Entity playerEntity: world.getEntities(Player.class)) {
+            Player player = (Player) playerEntity;
+            Inventory inventory = player.getInventory();
+            List<Weapon> weapons = inventory.getWeapons();
+
+            // Drop all weapons in the world
+            for (Weapon weapon: weapons) {
+                // Set the position of the weapon to the player's position
+                PositionPart playerPos = player.getPart(PositionPart.class);
+                PositionPart weaponPos = weapon.getPart(PositionPart.class);
+                weaponPos.setPosition(playerPos.getX(), playerPos.getY(), playerPos.getRadians());
+
+                // Add the weapon to the world
+                world.addEntity(weapon);
+            }
+
+            // Clear the player's inventory
+            weapons.clear();
+
+            // Remove the player from the world
             world.removeEntity(player);
         }
     }
