@@ -11,6 +11,7 @@ import common.data.entityparts.MovingPart;
 import common.data.entityparts.PositionPart;
 import common.services.IGamePluginService;
 import common.services.KeyPressListener;
+import common.utility.ImageDimension;
 
 import java.util.List;
 
@@ -36,9 +37,10 @@ public class PlayerPlugin implements IGamePluginService, KeyPressListener {
         int life = 10000;
         String path = "player.png";
         player.setPath(path);
-
+        PositionPart positionPart = new PositionPart(x, y);
+        positionPart.setDimension(ImageDimension.getDimensions(path));
+        player.add(positionPart);
         player.add(new MovingPart(deceleration, acceleration, maxSpeed));
-        player.add(new PositionPart(x, y));
         player.add(new LifePart(life));
 
         return player;

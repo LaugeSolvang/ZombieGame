@@ -7,6 +7,7 @@ import common.data.entities.obstruction.Obstruction;
 import common.data.entityparts.PositionPart;
 import common.services.IGamePluginService;
 import common.services.KeyPressListener;
+import common.utility.ImageDimension;
 
 import static common.data.GameKeys.NINE;
 
@@ -55,7 +56,9 @@ public class MapPlugin implements IGamePluginService, KeyPressListener {
 
         String path = "obstruction.png";
         obstruction.setPath(path);
-        obstruction.add(new PositionPart(x, y));
+        PositionPart positionPart = new PositionPart(x, y);
+        positionPart.setDimension(ImageDimension.getDimensions(path));
+        obstruction.add(positionPart);
 
         return obstruction;
     }
