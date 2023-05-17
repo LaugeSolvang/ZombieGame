@@ -34,7 +34,7 @@ public class PlayerPlugin implements IGamePluginService, KeyPressListener {
         float x = gameData.getDisplayWidth() / 2;
         float y = gameData.getDisplayHeight() / 2;
         int life = 10000;
-        String path = "player.png";
+        String path = "Player/src/main/resources/player.png";
         player.setPath(path);
         PositionPart positionPart = new PositionPart(x, y);
         positionPart.setDimension(new int[]{31,61});

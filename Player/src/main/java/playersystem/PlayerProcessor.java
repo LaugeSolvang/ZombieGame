@@ -43,11 +43,11 @@ public class PlayerProcessor implements IEntityProcessingService {
 
         //makes the player face the direction they are going
         if (movingPart.getDx() < 0){
-            String path = "player.png";
+            String path = "Player/src/main/resources/player.png";
             player.setPath(path);
         }
         if (movingPart.getDx() > 0){
-            String path = "player-kopi.png";
+            String path = "Player/src/main/resources/player-kopi.png";
             player.setPath(path);
         }
     }

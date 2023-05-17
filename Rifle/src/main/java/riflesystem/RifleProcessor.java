@@ -51,11 +51,11 @@ public class RifleProcessor implements IEntityProcessingService, IShoot {
         }
 
         if (movingPart.getDx() < 0) {
-            String path = "rifle-kopi.png";
+            String path = "Rifle/src/main/resources/rifle-kopi.png";
             weapon.setPath(path);
         }
         if (movingPart.getDx() > 0) {
-            String path = "rifle.png";
+            String path = "Rifle/src/main/resources/rifle.png";
             weapon.setPath(path);
         }
     }
@@ -99,7 +99,7 @@ public class RifleProcessor implements IEntityProcessingService, IShoot {
         int damage = 25;
         Entity weapon = new Weapon(shootImplName, ammo, fireRate);
 
-        String path = "rifle.png";
+        String path = "Rifle/src/main/resources/rifle.png";
         weapon.setPath(path);
 
         PositionPart positionPart = new PositionPart(x, y);
