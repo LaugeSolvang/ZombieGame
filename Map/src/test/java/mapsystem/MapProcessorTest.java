@@ -1,30 +1,38 @@
 package mapsystem;
 
-import common.data.Entity;
 import common.data.GameData;
 import common.data.World;
-import common.data.entities.ValidLocation;
 import common.data.entities.bullet.Bullet;
 import common.data.entityparts.PositionPart;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
+import java.util.Objects;
 
+import static common.data.GameData.TILE_SIZE;
 import static org.junit.Assert.*;
 
 public class MapProcessorTest {
 
     private MapProcessor mapProcessor;
+    private String[][] map;
     private World world;
     private GameData gameData;
+    private PositionPart playerPosPart;
 
     @Before
     public void setUp() {
         mapProcessor = new MapProcessor();
         world = new World();
         gameData = new GameData();
+        playerPosPart = new PositionPart(400.f, 300.f);
+        map = new String[][] {
+                {"", "", "", ""},
+                {"", "obstruction", "", ""},
+                {"", "", "", ""},
+                {"", "", "", ""}
+        };
     }
 
     @Test
@@ -35,13 +43,13 @@ public class MapProcessorTest {
                 {"", "", "", ""},
                 {"", "", "", ""}
         };
+
         world.setMap(map);
         gameData.setDisplayWidth(800);
         gameData.setDisplayHeight(600);
 
         Bullet bullet = new Bullet();
-        PositionPart bulletPosPart = new PositionPart(400.0f, 300.0f);
-        bullet.add(bulletPosPart);
+        bullet.add(playerPosPart);
         world.addEntity(bullet);
 
         int[] spawnLocation = mapProcessor.generateSpawnLocation(world, gameData);
@@ -49,21 +57,25 @@ public class MapProcessorTest {
         assertNotNull(spawnLocation);
         assertTrue(spawnLocation[0] >= 0 && spawnLocation[0] < map.length);
         assertTrue(spawnLocation[1] >= 0 && spawnLocation[1] < map[0].length);
-        assertTrue(isValidLocation(map, bulletPosPart, spawnLocation[0], spawnLocation[1]));
+        assertTrue(isValidLocation(map, playerPosPart, spawnLocation[0], spawnLocation[1]));
     }
 
     @Test
-    public void testIsValidLocation() {
-        String[][] map = {
-                {"", "", "", ""},
-                {"", "obstruction", "", ""},
-                {"", "", "", ""},
-                {"", "", "", ""}
-        };
-        PositionPart playerPosPart = new PositionPart(400.0f, 300.0f);
+    public void testIsValidLocation_WhenObstruction_ReturnsFalse() {
 
-        assertFalse(isValidLocation(map, playerPosPart, 1, 1));
-        assertTrue(isValidLocation(map, playerPosPart, 2, 2));
+        // if there is an obstruction, test passes
+        boolean validLocation = isValidLocation(map, playerPosPart, 1, 1);
+
+        assertFalse(validLocation);
+    }
+
+    @Test
+    public void testIsValidLocation_WhenNoObstructions_ReturnsTrue() {
+
+        // if there is no obstruction, test passes
+        boolean validLocation = isValidLocation(map, playerPosPart, 1, 3);
+
+        assertTrue(validLocation);
     }
 
     private boolean isValidLocation(String[][] map, PositionPart playerPosPart, int x, int y) {
@@ -72,27 +84,25 @@ public class MapProcessorTest {
         int yStart = Math.max(y - 1, 0);
         int yEnd = Math.min(y + 2, map[0].length - 1);
 
-        // 3x3 grid checking for obstructions
+        //3x3 grid checking for obstructions
         for (int i = xStart; i <= xEnd; i++) {
             for (int j = yStart; j <= yEnd; j++) {
-                if (map[i][j].equals("obstruction")) {
+                if (Objects.equals(map[i][j], "obstruction")) {
                     return false;
                 }
             }
         }
-
         xStart = Math.max(x - 5, 0);
         xEnd = Math.min(x + 5, map.length - 1);
         yStart = Math.max(y - 5, 0);
         yEnd = Math.min(y + 6, map[0].length - 1);
-        int pX = (int) (playerPosPart.getX() / GameData.TILE_SIZE);
-        int pY = (int) (playerPosPart.getY() / GameData.TILE_SIZE);
+        int pX = (int)(playerPosPart.getX()/TILE_SIZE);
+        int py = (int)(playerPosPart.getY()/TILE_SIZE);
 
-        // 10x10 grid checking for player
+        //10x10 grid checking for player
         for (int i = xStart; i <= xEnd; i++) {
             for (int j = yStart; j <= yEnd; j++) {
-                if (pX == i &&
-                        pY == j) {
+                if (pX == i && py == j) {
                     return false;
                 }
             }

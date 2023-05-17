@@ -6,7 +6,6 @@ import common.data.entities.obstruction.Obstruction;
 import org.junit.Before;
 import org.junit.Test;
 
-import static common.data.GameKeys.NINE;
 import static org.junit.Assert.*;
 
 public class MapPluginTest {
@@ -27,10 +26,8 @@ public class MapPluginTest {
 
     @Test
     public void testStart_MapCreation() {
-        // Act
         mapPlugin.start(gameData, world);
 
-        // Assert
         assertNotNull(world.getMap());
         assertEquals(gameData.getDisplayWidth() / 32, world.getMap().length);
         assertEquals(gameData.getDisplayHeight() / 32, world.getMap()[0].length);
@@ -38,22 +35,17 @@ public class MapPluginTest {
 
     @Test
     public void testStart_ObstructionSpawned() {
-        // Act
         mapPlugin.start(gameData, world);
 
-        // Assert
         assertTrue(world.getEntities(Obstruction.class).size() > 0);
     }
 
     @Test
     public void testStop_ObstructionRemoved() {
-        // Arrange
         mapPlugin.start(gameData, world);
 
-        // Act
         mapPlugin.stop(gameData, world);
 
-        // Assert
         assertEquals(0, world.getEntities(Obstruction.class).size());
     }
 }
