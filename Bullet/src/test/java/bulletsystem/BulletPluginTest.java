@@ -59,7 +59,6 @@ class BulletPluginTest {
         assertEquals(2, world.getEntities().size());
         assertTrue(world.getEntities().contains(zombie1));
         assertTrue(world.getEntities().contains(zombie2));
-
     }
 
     @Test

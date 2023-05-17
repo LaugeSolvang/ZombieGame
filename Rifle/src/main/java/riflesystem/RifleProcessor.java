@@ -8,10 +8,7 @@ import common.data.entities.bullet.BulletSPI;
 import common.data.entities.player.Player;
 import common.data.entities.weapon.IShoot;
 import common.data.entities.weapon.Weapon;
-import common.data.entityparts.DamagePart;
-import common.data.entityparts.MovingPart;
-import common.data.entityparts.PositionPart;
-import common.data.entityparts.TimerPart;
+import common.data.entityparts.*;
 import common.services.IEntityProcessingService;
 
 import java.util.Collection;
@@ -35,7 +32,8 @@ public class RifleProcessor implements IEntityProcessingService, IShoot {
 
         for (Entity playerEntity : world.getEntities(Player.class)) {
             Player player = (Player)playerEntity;
-            Entity weaponEntity = player.getInventory().getCurrentWeapon();
+            InventoryPart inventory = player.getPart(InventoryPart.class);
+            Entity weaponEntity = inventory.getCurrentWeapon();
             if (weaponEntity != null) {
                 updateWeaponDirection(playerEntity, weaponEntity);
                 updateTimer(gameData, weaponEntity);
@@ -53,11 +51,11 @@ public class RifleProcessor implements IEntityProcessingService, IShoot {
         }
 
         if (movingPart.getDx() < 0) {
-            String path = "rifle-kopi.png";
+            String path = "Rifle/src/main/resources/rifle-kopi.png";
             weapon.setPath(path);
         }
         if (movingPart.getDx() > 0) {
-            String path = "rifle.png";
+            String path = "Rifle/src/main/resources/rifle.png";
             weapon.setPath(path);
         }
     }
@@ -84,7 +82,8 @@ public class RifleProcessor implements IEntityProcessingService, IShoot {
 
     @Override
     public void useWeapon(Player player, GameData gameData, World world) {
-        Weapon weapon = player.getInventory().getCurrentWeapon();
+        InventoryPart inventory = player.getPart(InventoryPart.class);
+        Weapon weapon = inventory.getCurrentWeapon();
         TimerPart timerPart = weapon.getPart(TimerPart.class);
         if (timerPart.getExpiration() <= 0 && weapon.getAmmo() > 0) {
             for (BulletSPI bullet : getBulletSPIs()) {
@@ -100,10 +99,12 @@ public class RifleProcessor implements IEntityProcessingService, IShoot {
         int damage = 25;
         Entity weapon = new Weapon(shootImplName, ammo, fireRate);
 
-        String path = "rifle.png";
+        String path = "Rifle/src/main/resources/rifle.png";
         weapon.setPath(path);
 
-        weapon.add(new PositionPart(x, y));
+        PositionPart positionPart = new PositionPart(x, y);
+        positionPart.setDimension(new int[]{32,32});
+        weapon.add(positionPart);
         weapon.add(new TimerPart(0));
         weapon.add(new DamagePart(damage));
 

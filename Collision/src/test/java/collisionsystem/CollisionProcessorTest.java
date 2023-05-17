@@ -11,6 +11,7 @@ import common.data.entities.weapon.Weapon;
 import common.data.entities.player.Player;
 
 import common.data.entityparts.DamagePart;
+import common.data.entityparts.InventoryPart;
 import common.data.entityparts.LifePart;
 import common.data.entityparts.PositionPart;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +36,7 @@ class CollisionProcessorTest {
         Weapon weapon = (Weapon)createWeapon("TestWeaponImpl",5, 5, 10);
 
         Player player = (Player)createPlayer(5, 5);
+        InventoryPart inventory = player.getPart(InventoryPart.class);
         world.addEntity(weapon);
         world.addEntity(player);
 
@@ -42,7 +44,7 @@ class CollisionProcessorTest {
 
         processor.process(gameData, world);
 
-        assertTrue(player.getInventory().getWeapons().contains(weapon), "Player should have picked up the weapon");
+        assertTrue(inventory.getWeapons().contains(weapon), "Player should have picked up the weapon");
     }
 
     @Test
@@ -51,7 +53,8 @@ class CollisionProcessorTest {
         Weapon weapon2 = (Weapon) createWeapon("TestWeaponImpl",5, 5, 20);
         Player player = (Player) createPlayer(5, 5);
 
-        player.getInventory().addWeapon(world, weapon1);
+        InventoryPart inventory = player.getPart(InventoryPart.class);
+        inventory.addWeapon(world, weapon1);
         world.addEntity(weapon2);
         world.addEntity(player);
 
@@ -60,7 +63,7 @@ class CollisionProcessorTest {
         processor.process(gameData, world);
 
         assertFalse(world.getEntities().contains(weapon2), "Weapon should be removed after collision");
-        assertTrue(player.getInventory().getWeapons().contains(weapon1), "Player should have the first weapon");
+        assertTrue(inventory.getWeapons().contains(weapon1), "Player should have the first weapon");
         assertEquals(30, weapon1.getAmmo(), "Ammo should be summed after collision with same weapon type");
     }
 
@@ -70,7 +73,8 @@ class CollisionProcessorTest {
         Weapon weapon2 = (Weapon) createWeapon("TestWeaponImpl2",5, 5,  20);
         Player player = (Player) createPlayer(5, 5);
 
-        player.getInventory().addWeapon(world, weapon1);
+        InventoryPart inventory = player.getPart(InventoryPart.class);
+        inventory.addWeapon(world, weapon1);
         world.addEntity(weapon2);
         world.addEntity(player);
 
@@ -79,8 +83,8 @@ class CollisionProcessorTest {
         processor.process(gameData, world);
 
         assertFalse(world.getEntities().contains(weapon2), "Weapon should be removed after collision");
-        assertTrue(player.getInventory().getWeapons().contains(weapon1), "Player should have the first weapon");
-        assertTrue(player.getInventory().getWeapons().contains(weapon2), "Player should have the second weapon");
+        assertTrue(inventory.getWeapons().contains(weapon1), "Player should have the first weapon");
+        assertTrue(inventory.getWeapons().contains(weapon2), "Player should have the second weapon");
     }
 
     @Test
@@ -153,6 +157,7 @@ class CollisionProcessorTest {
         Entity player = new Player();
         player.add(new PositionPart(x, y, 3, 3));
         player.add(new LifePart(100));
+        player.add(new InventoryPart());
         return player;
     }
 }
