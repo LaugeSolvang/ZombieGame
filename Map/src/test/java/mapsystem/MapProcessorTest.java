@@ -5,23 +5,22 @@ import common.data.World;
 import common.data.entities.bullet.Bullet;
 import common.data.entityparts.PositionPart;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Objects;
 
 import static common.data.GameData.TILE_SIZE;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MapProcessorTest {
-
     private MapProcessor mapProcessor;
     private String[][] map;
     private World world;
     private GameData gameData;
     private PositionPart playerPosPart;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         mapProcessor = new MapProcessor();
         world = new World();
@@ -37,7 +36,7 @@ public class MapProcessorTest {
 
     @Test
     public void testGenerateSpawnLocation() {
-        String[][] map = {
+        map = new String[][]{
                 {"", "", "", ""},
                 {"", "", "", ""},
                 {"", "", "", ""},

@@ -3,10 +3,11 @@ package mapsystem;
 import common.data.GameData;
 import common.data.World;
 import common.data.entities.obstruction.Obstruction;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 public class MapPluginTest {
 
@@ -14,7 +15,7 @@ public class MapPluginTest {
     private GameData gameData;
     private World world;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         mapPlugin = new MapPlugin();
         gameData = new GameData();

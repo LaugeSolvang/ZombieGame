@@ -11,8 +11,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BulletPluginTest {
-
-
     private GameData gameData;
     private World world;
     private BulletPlugin plugin;

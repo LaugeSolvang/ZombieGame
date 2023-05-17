@@ -22,6 +22,8 @@ public class RifleProcessor implements IEntityProcessingService, IShoot {
     String shootImplName = "riflesystem.RifleProcessor";
     private float rifleTime = 0.0f;
     private final int RIFLE_SPAWN_INTERVAL = 30;
+    private Collection<? extends ValidLocation> validLocations = getValidLocation();
+    private Collection<? extends BulletSPI> bulletSPIS = getBulletSPIs();
 
     @Override
     public void process(GameData gameData, World world) {
@@ -65,7 +67,7 @@ public class RifleProcessor implements IEntityProcessingService, IShoot {
 
         if (rifleTime % RIFLE_SPAWN_INTERVAL <= gameData.getDelta()) {
             rifleTime += 0.1;
-            for (ValidLocation validLocation : getValidLocation()) {
+            for (ValidLocation validLocation : validLocations) {
                 for (int i = 0; i < weaponsToSpawn; i++) {
                     int[] spawnLocation = validLocation.generateSpawnLocation(world, gameData);
                     int x = spawnLocation[0];
@@ -86,7 +88,7 @@ public class RifleProcessor implements IEntityProcessingService, IShoot {
         Weapon weapon = inventory.getCurrentWeapon();
         TimerPart timerPart = weapon.getPart(TimerPart.class);
         if (timerPart.getExpiration() <= 0 && weapon.getAmmo() > 0) {
-            for (BulletSPI bullet : getBulletSPIs()) {
+            for (BulletSPI bullet : bulletSPIS) {
                 world.addEntity(bullet.createBullet(weapon, gameData));
                 weapon.reduceAmmon();
                 timerPart.setExpiration(weapon.getFireRate());
@@ -115,5 +117,12 @@ public class RifleProcessor implements IEntityProcessingService, IShoot {
     }
     private Collection<? extends ValidLocation> getValidLocation() {
         return ServiceLoader.load(ValidLocation.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+    }
+    public void setValidLocations(Collection<? extends ValidLocation> validLocations) {
+        this.validLocations = validLocations;
+    }
+
+    public void setBulletSPIS(Collection<? extends BulletSPI> bulletSPIS) {
+        this.bulletSPIS = bulletSPIS;
     }
 }
