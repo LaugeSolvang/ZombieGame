@@ -1,4 +1,5 @@
 module Core{
+    exports main;
     requires Common;
     requires com.badlogic.gdx;
     requires java.desktop;

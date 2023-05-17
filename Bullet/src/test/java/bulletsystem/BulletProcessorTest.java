@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class BulletProcessorTest {
 
     private BulletProcessor bulletProcessor;
+    private BulletPlugin bulletPlugin;
     private GameData gameData;
     private World world;
     private Entity weapon;
@@ -21,6 +22,7 @@ class BulletProcessorTest {
     @BeforeEach
     public void setUp() {
         bulletProcessor = new BulletProcessor();
+        bulletPlugin = new BulletPlugin();
         gameData = new GameData();
         world = new World();
         weapon = new Entity();
@@ -62,16 +64,21 @@ class BulletProcessorTest {
     @Test
     public void testProcess() {
         Entity bullet = bulletProcessor.createBullet(weapon, gameData);
+        assertTrue(world.getEntities().isEmpty());
+
         world.addEntity(bullet);
-
         bulletProcessor.process(gameData, world);
+        assertFalse(world.getEntities().contains(bullet));
 
-        assertFalse(world.getEntities().isEmpty());
+        world.addEntity(bullet);
+        bulletPlugin.start(gameData, world);
+        bulletProcessor.process(gameData, world);
         assertTrue(world.getEntities().contains(bullet));
 
         TimerPart timerPart = bullet.getPart(TimerPart.class);
         timerPart.setExpiration(-1);
         bulletProcessor.process(gameData, world);
+        System.out.println(world.getEntities().contains(bullet));
 
         assertFalse(world.getEntities().contains(bullet));
     }

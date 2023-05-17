@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class ImageDimension {
+public final class ImageDimension {
     private static final String ASSET_PATH = "Common/src/main/resources/sprites/";
 
     public static int[] getDimensions(String imagePath) {

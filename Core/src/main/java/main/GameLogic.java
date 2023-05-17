@@ -28,23 +28,23 @@ public class GameLogic {
         this.keyPressListeners = keyPressListeners;
     }
 
-    void startPluginServices(GameData gameData, World world) {
+    public void startPluginServices(GameData gameData, World world) {
         for (IGamePluginService iGamePlugin : gamePluginServices) {
             iGamePlugin.start(gameData, world);
         }
     }
 
-    void update(GameData gameData, World world) {
+    public void update(GameData gameData, World world) {
         for (IEntityProcessingService entityProcessorService : entityProcessingServices) {
             entityProcessorService.process(gameData, world);
         }
         for (IPostEntityProcessingService postEntityProcessorService : postEntityProcessingServices) {
             postEntityProcessorService.process(gameData, world);
         }
-            gameData.setGameTime(Math.max(gameData.getGameTime() + gameData.getDelta(), 0.18F));
+            gameData.setGameTime((gameData.getGameTime() + gameData.getDelta()));
     }
 
-    void checkForUserInput(GameData gameData, World world) {
+    public void checkForUserInput(GameData gameData, World world) {
         if (gameData.getKeys().isPressed(ESCAPE)) {
             emitKeyPressEvent(ESCAPE, gameData, world);
         }

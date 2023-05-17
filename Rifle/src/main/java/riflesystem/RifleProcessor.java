@@ -13,7 +13,6 @@ import common.data.entityparts.MovingPart;
 import common.data.entityparts.PositionPart;
 import common.data.entityparts.TimerPart;
 import common.services.IEntityProcessingService;
-import common.utility.ImageDimension;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -105,7 +104,7 @@ public class RifleProcessor implements IEntityProcessingService, IShoot {
         weapon.setPath(path);
 
         PositionPart positionPart = new PositionPart(x, y);
-        positionPart.setDimension(ImageDimension.getDimensions(path));
+        positionPart.setDimension(new int[]{32,32});
         weapon.add(positionPart);
         weapon.add(new TimerPart(0));
         weapon.add(new DamagePart(damage));

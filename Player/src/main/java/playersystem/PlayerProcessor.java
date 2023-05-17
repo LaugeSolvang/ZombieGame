@@ -18,6 +18,7 @@ import static common.data.GameKeys.*;
 
 
 public class PlayerProcessor implements IEntityProcessingService {
+    private IShoot shootImpl = null;
     @Override
     public void process(GameData gameData, World world) {
         for (Entity playerEntity : world.getEntities(Player.class)) {
@@ -68,7 +69,8 @@ public class PlayerProcessor implements IEntityProcessingService {
                     inventory.cycleWeapon(world, 1);
                     inventory.removeWeapon(weapon);
                 } else {
-                    IShoot shootImpl = getShootImpl(inventory.getCurrentWeapon());
+                    IShoot newShootImpl =  getShootImpl(inventory.getCurrentWeapon());
+                    if (newShootImpl != null) {shootImpl = newShootImpl;}
                     shootImpl.useWeapon(player, gameData, world);
                 }
             }
@@ -93,6 +95,10 @@ public class PlayerProcessor implements IEntityProcessingService {
                 .map(ServiceLoader.Provider::get)
                 .filter(s -> s.getClass().getName().equals(weapon.getShootImplName()))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Could not find shoot implementation: " + weapon.getShootImplName()));
+                .orElse(null);
+    }
+
+    public void setShootImpl(IShoot shootImpl) {
+        this.shootImpl = shootImpl;
     }
 }

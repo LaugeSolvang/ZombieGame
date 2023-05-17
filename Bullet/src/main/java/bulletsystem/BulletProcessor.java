@@ -7,7 +7,6 @@ import common.data.entities.bullet.Bullet;
 import common.data.entities.bullet.BulletSPI;
 import common.data.entityparts.*;
 import common.services.IEntityProcessingService;
-import common.utility.ImageDimension;
 
 
 public class BulletProcessor implements IEntityProcessingService, BulletSPI {
@@ -53,7 +52,7 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
         float x = weaponPos.getX() + weaponPos.getHeight() / 2;
         float y = weaponPos.getY() + weaponPos.getWidth() / 2;
         PositionPart positionPart = new PositionPart(x, y);
-        positionPart.setDimension(ImageDimension.getDimensions(path));
+        positionPart.setDimension(new int[]{3,3});
         bullet.add(positionPart);
         bullet.setPath(path);
         bullet.setRadius(2);

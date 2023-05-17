@@ -13,7 +13,6 @@ import common.data.entityparts.MovingPart;
 import common.data.entityparts.PositionPart;
 import common.data.entityparts.TimerPart;
 import common.services.IEntityProcessingService;
-import common.utility.ImageDimension;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -26,12 +25,11 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
     String shootImplName = "weaponsystem.WeaponProcessor";
     private float weaponTime = 0.0f;
     private final int WEAPON_SPAWN_INTERVAL = 30;
-
-
+    private Collection<? extends ValidLocation> validLocations = getValidLocation();
     @Override
     public void process(GameData gameData, World world) {
         if (!gameData.isActivePlugin(WeaponPlugin.class.getName())) {
-            weaponTime = 0;
+            weaponTime = 0.2F;
             return;
         }
 
@@ -69,7 +67,7 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
 
         if (weaponTime % WEAPON_SPAWN_INTERVAL <= gameData.getDelta()) {
             weaponTime += 0.1;
-            for (ValidLocation validLocation : getValidLocation()) {
+            for (ValidLocation validLocation : validLocations) {
                 for (int i = 0; i < weaponsToSpawn; i++) {
                     int[] spawnLocation = validLocation.generateSpawnLocation(world, gameData);
                     int x = spawnLocation[0] * TILE_SIZE;
@@ -106,7 +104,7 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
         weapon.setPath(path);
 
         PositionPart positionPart = new PositionPart(x, y);
-        positionPart.setDimension(ImageDimension.getDimensions(path));
+        positionPart.setDimension(new int[]{32,32});
         weapon.add(positionPart);
         weapon.add(new TimerPart(0));
         weapon.add(new DamagePart(damage));
@@ -118,5 +116,8 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
     }
     private Collection<? extends ValidLocation> getValidLocation() {
         return ServiceLoader.load(ValidLocation.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+    }
+    public void setValidLocations(Collection<? extends ValidLocation> validLocations) {
+        this.validLocations = validLocations;
     }
 }

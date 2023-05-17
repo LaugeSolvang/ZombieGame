@@ -11,7 +11,6 @@ import common.data.entityparts.LifePart;
 import common.data.entityparts.MovingPart;
 import common.data.entityparts.PositionPart;
 import common.services.IEntityProcessingService;
-import common.utility.ImageDimension;
 
 import java.util.Collection;
 import java.util.ServiceLoader;
@@ -72,7 +71,7 @@ public class ZombieProcessor implements IEntityProcessingService {
         zombie.setPath(path);
 
         PositionPart positionPart = new PositionPart(x, y);
-        positionPart.setDimension(ImageDimension.getDimensions(path));
+        positionPart.setDimension(new int[]{31,61});
         zombie.add(positionPart);
 
         zombie.add(new MovingPart(deceleration, acceleration, maxSpeed));
