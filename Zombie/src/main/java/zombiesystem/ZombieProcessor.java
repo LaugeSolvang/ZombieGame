@@ -22,6 +22,9 @@ import static java.util.stream.Collectors.toList;
 public class ZombieProcessor implements IEntityProcessingService {
     private float zombieTime = 0.0f;
     private final int ZOMBIE_SPAWN_INTERVAL = 15;
+    private Collection<? extends ValidLocation> validLocations = getValidLocations();
+    private Collection<? extends IZombieAI> iZombieAIS = getIZombieAIs();
+
 
     @Override
     public void process(GameData gameData, World world) {
@@ -43,7 +46,7 @@ public class ZombieProcessor implements IEntityProcessingService {
         if ((zombieTime % ZOMBIE_SPAWN_INTERVAL <= (gameData.getDelta()))) {
             zombieTime += 0.1;
             for (int i = 0; i < zombiesToSpawn; i++) {
-                for (ValidLocation validLocation : getValidLocations()) {
+                for (ValidLocation validLocation : validLocations) {
                     int[] spawnLocation = validLocation.generateSpawnLocation(world, gameData);
                     int x = spawnLocation[0] * TILE_SIZE;
                     int y = spawnLocation[1] * TILE_SIZE;
@@ -54,7 +57,7 @@ public class ZombieProcessor implements IEntityProcessingService {
     }
     private void moveZombies(GameData gameData, World world) {
         for (Entity zombie : world.getEntities(Zombie.class)) {
-            for (IZombieAI AI : getIZombieAIs()) {
+            for (IZombieAI AI : iZombieAIS) {
                 AI.moveTowards(gameData, zombie);
             }
             MovingPart movingPart = zombie.getPart(MovingPart.class);
@@ -96,5 +99,13 @@ public class ZombieProcessor implements IEntityProcessingService {
     }
     private Collection<? extends ValidLocation> getValidLocations() {
         return ServiceLoader.load(ValidLocation.class).stream().map(ServiceLoader.Provider::get).collect(toList());
+    }
+
+    public void setValidLocations(Collection<? extends ValidLocation> validLocations) {
+        this.validLocations = validLocations;
+    }
+
+    public void setiZombieAIS(Collection<? extends IZombieAI> iZombieAIS) {
+        this.iZombieAIS = iZombieAIS;
     }
 }
