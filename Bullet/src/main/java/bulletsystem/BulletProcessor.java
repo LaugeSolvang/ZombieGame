@@ -43,7 +43,7 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
     private void setBulletProperties(Entity bullet, Entity weapon) {
         PositionPart weaponPos = weapon.getPart(PositionPart.class);
 
-        String path = "bullet.png";
+        String path = "Bullet/src/main/resources/bullet.png";
         float deceleration = 0;
         float acceleration = 2000;
         float speed = 500;

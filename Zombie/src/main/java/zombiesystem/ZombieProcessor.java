@@ -57,6 +57,17 @@ public class ZombieProcessor implements IEntityProcessingService {
             for (IZombieAI AI : getIZombieAIs()) {
                 AI.moveTowards(gameData, zombie);
             }
+            MovingPart movingPart = zombie.getPart(MovingPart.class);
+            //makes the zombie face the direction they are going
+            if (movingPart.getDx() < 0){
+                String path = "Zombie/src/main/resources/zombie.png";
+                zombie.setPath(path);
+            }
+            if (movingPart.getDx() > 0){
+                String path = "Zombie/src/main/resources/zombie-kopi.png";
+                zombie.setPath(path);
+            }
+
         }
     }
     private Entity createEntity(int x, int y) {
@@ -67,7 +78,7 @@ public class ZombieProcessor implements IEntityProcessingService {
         float maxSpeed = 80;
         int life = 50;
         int damage = 1;
-        String path = "zombie.png";
+        String path = "Zombie/src/main/resources/zombie.png";
         zombie.setPath(path);
 
         PositionPart positionPart = new PositionPart(x, y);
