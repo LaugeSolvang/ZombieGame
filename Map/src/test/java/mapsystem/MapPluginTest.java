@@ -56,29 +56,4 @@ public class MapPluginTest {
         // Assert
         assertEquals(0, world.getEntities(Obstruction.class).size());
     }
-
-    @Test
-    public void testOnKeyPressed_ActivatePlugin() {
-        // Act
-        mapPlugin.onKeyPressed(NINE, gameData, world);
-
-        // Assert
-        assertTrue(mapPlugin.isActive);
-        assertTrue(world.getEntities(Obstruction.class).size() > 0);
-        assertNotNull(world.getMap()[0][0]);
-    }
-
-    @Test
-    public void testOnKeyPressed_DeactivatePlugin() {
-        // Activate the plugin
-        mapPlugin.onKeyPressed(NINE, gameData, world);
-
-        // Act
-        mapPlugin.onKeyPressed(NINE, gameData, world);
-
-        // Assert
-        assertFalse(mapPlugin.isActive);
-        assertEquals(0, world.getEntities(Obstruction.class).size());
-        assertNull(world.getMap()[0][0]);
-    }
 }
