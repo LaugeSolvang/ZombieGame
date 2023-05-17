@@ -12,28 +12,17 @@ import common.data.GameData;
 import common.data.World;
 import common.data.entityparts.PositionPart;
 import common.data.entityparts.ScorePart;
-import common.services.IEntityProcessingService;
-import common.services.IGamePluginService;
-import common.services.IPostEntityProcessingService;
-import common.services.KeyPressListener;
+import managers.ServiceLoaderUtils;
 import managers.GameInputProcessor;
 import managers.SpriteCache;
-
-import java.util.Collection;
-import java.util.ServiceLoader;
-
-import static common.data.GameKeys.*;
-import static java.util.stream.Collectors.toList;
 
 public class Game implements ApplicationListener {
     private SpriteBatch sb;
     private BitmapFont font;
     private final GameData gameData = new GameData();
     private final World world = new World();
-    private final Collection<? extends IEntityProcessingService> entityProcessingServices = getEntityProcessingServices();
-    private final Collection<? extends IPostEntityProcessingService> postEntityProcessingServices = getPostEntityProcessingServices();
-    private final Collection<? extends IGamePluginService> gamePluginServices = getPluginServices();
-    private final Collection<? extends KeyPressListener> keyPressListeners = getKeyPressListeners();
+    private GameLogic gameLogic;
+
 
     @Override
     public void create() {
@@ -47,12 +36,17 @@ public class Game implements ApplicationListener {
         font = new BitmapFont();
         sb = new SpriteBatch();
 
+        gameLogic = new GameLogic(
+                ServiceLoaderUtils.getPluginServices(),
+                ServiceLoaderUtils.getEntityProcessingServices(),
+                ServiceLoaderUtils.getPostEntityProcessingServices(),
+                ServiceLoaderUtils.getKeyPressListeners()
+        );
+
         Gdx.input.setInputProcessor(new GameInputProcessor(gameData));
 
-        for (IGamePluginService iGamePlugin : gamePluginServices) {
-            iGamePlugin.start(gameData, world);
-            System.out.println(iGamePlugin.getClass());
-        }
+
+        gameLogic.startPluginServices(gameData, world);
     }
 
     @Override
@@ -62,45 +56,13 @@ public class Game implements ApplicationListener {
 
         gameData.setDelta(Gdx.graphics.getDeltaTime());
 
-        checkForUserInput();
+        gameLogic.checkForUserInput(gameData, world);
 
-        update();
+        gameLogic.update(gameData, world);
 
         draw();
 
         gameData.getKeys().update();
-    }
-
-    private void update() {
-        for (IEntityProcessingService entityProcessorService : entityProcessingServices) {
-            entityProcessorService.process(gameData, world);
-        }
-        for (IPostEntityProcessingService postEntityProcessorService : postEntityProcessingServices) {
-            postEntityProcessorService.process(gameData, world);
-        }
-
-        gameData.setGameTime(Math.max(gameData.getGameTime() + gameData.getDelta(), 0.18F));
-    }
-
-    private void checkForUserInput() {
-        if (gameData.getKeys().isPressed(ESCAPE)) {
-            emitKeyPressEvent(ESCAPE);
-        }
-        if (gameData.getKeys().isPressed(ENTER)) {
-            emitKeyPressEvent(ENTER);
-        }
-        if (gameData.getKeys().isPressed(TAB)) {
-            emitKeyPressEvent(TAB);
-        }
-        if (gameData.getKeys().isPressed(DEL)) {
-            emitKeyPressEvent(DEL);
-        }
-        if (gameData.getKeys().isPressed(EIGHT)) {
-            emitKeyPressEvent(EIGHT);
-        }
-        if (gameData.getKeys().isPressed(NINE)) {
-            emitKeyPressEvent(NINE);
-        }
     }
 
     private void draw() {
@@ -116,7 +78,6 @@ public class Game implements ApplicationListener {
         for (Entity entity : world.getEntities()) {
             Sprite sprite = SpriteCache.getSprite(entity.getPath());
             PositionPart positionPart = entity.getPart(PositionPart.class);
-            positionPart.setDimension(sprite.getWidth(), sprite.getHeight());
             sprite.setPosition(positionPart.getX(), positionPart.getY());
 
             sprite.draw(sb);
@@ -141,26 +102,5 @@ public class Game implements ApplicationListener {
     @Override
     public void dispose() {
 
-    }
-
-    private void emitKeyPressEvent(int key) {
-        for (KeyPressListener listener : keyPressListeners) {
-            listener.onKeyPressed(key, gameData, world);
-        }
-    }
-    private Collection<? extends IGamePluginService> getPluginServices() {
-        return ServiceLoader.load(IGamePluginService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
-    }
-
-    private Collection<? extends IEntityProcessingService> getEntityProcessingServices() {
-        return ServiceLoader.load(IEntityProcessingService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
-    }
-
-    private Collection<? extends IPostEntityProcessingService> getPostEntityProcessingServices() {
-        return ServiceLoader.load(IPostEntityProcessingService.class).stream().map(ServiceLoader.Provider::get).collect(toList());
-    }
-
-    private Collection<? extends KeyPressListener> getKeyPressListeners() {
-        return ServiceLoader.load(KeyPressListener.class).stream().map(ServiceLoader.Provider::get).collect(toList());
     }
 }

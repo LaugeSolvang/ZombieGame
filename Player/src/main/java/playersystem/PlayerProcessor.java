@@ -3,10 +3,10 @@ package playersystem;
 import common.data.Entity;
 import common.data.GameData;
 import common.data.World;
-import common.data.entities.player.Inventory;
 import common.data.entities.player.Player;
 import common.data.entities.weapon.IShoot;
 import common.data.entities.weapon.Weapon;
+import common.data.entityparts.InventoryPart;
 import common.data.entityparts.MovingPart;
 import common.data.entityparts.PositionPart;
 import common.services.IEntityProcessingService;
@@ -18,6 +18,7 @@ import static common.data.GameKeys.*;
 
 
 public class PlayerProcessor implements IEntityProcessingService {
+    private IShoot shootImpl = null;
     @Override
     public void process(GameData gameData, World world) {
         for (Entity playerEntity : world.getEntities(Player.class)) {
@@ -53,7 +54,7 @@ public class PlayerProcessor implements IEntityProcessingService {
 
 
     private void processWeapon(GameData gameData, World world, Player player) {
-        Inventory inventory = player.getInventory();
+        InventoryPart inventory = player.getPart(InventoryPart.class);
         List<Weapon> weapons = inventory.getWeapons();
         if (!weapons.isEmpty()) {
             PositionPart playerPosPart = player.getPart(PositionPart.class);
@@ -68,7 +69,8 @@ public class PlayerProcessor implements IEntityProcessingService {
                     inventory.cycleWeapon(world, 1);
                     inventory.removeWeapon(weapon);
                 } else {
-                    IShoot shootImpl = getShootImpl(inventory.getCurrentWeapon());
+                    IShoot newShootImpl =  getShootImpl(inventory.getCurrentWeapon());
+                    if (newShootImpl != null) {shootImpl = newShootImpl;}
                     shootImpl.useWeapon(player, gameData, world);
                 }
             }
@@ -76,7 +78,7 @@ public class PlayerProcessor implements IEntityProcessingService {
     }
 
     private void processWeaponSwitching(GameData gameData, World world, Player player) {
-        Inventory inventory = player.getInventory();
+        InventoryPart inventory = player.getPart(InventoryPart.class);
         if (inventory.getCurrentWeapon() == null) {
             return;
         }
@@ -93,6 +95,10 @@ public class PlayerProcessor implements IEntityProcessingService {
                 .map(ServiceLoader.Provider::get)
                 .filter(s -> s.getClass().getName().equals(weapon.getShootImplName()))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Could not find shoot implementation: " + weapon.getShootImplName()));
+                .orElse(null);
+    }
+
+    public void setShootImpl(IShoot shootImpl) {
+        this.shootImpl = shootImpl;
     }
 }

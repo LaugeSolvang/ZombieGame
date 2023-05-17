@@ -70,8 +70,11 @@ public class ZombieProcessor implements IEntityProcessingService {
         String path = "zombie.png";
         zombie.setPath(path);
 
+        PositionPart positionPart = new PositionPart(x, y);
+        positionPart.setDimension(new int[]{31,61});
+        zombie.add(positionPart);
+
         zombie.add(new MovingPart(deceleration, acceleration, maxSpeed));
-        zombie.add(new PositionPart(x, y));
         zombie.add(new LifePart(life));
         zombie.add(new DamagePart(damage));
 

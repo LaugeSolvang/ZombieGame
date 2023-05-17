@@ -55,7 +55,9 @@ public class MapPlugin implements IGamePluginService, KeyPressListener {
 
         String path = "obstruction.png";
         obstruction.setPath(path);
-        obstruction.add(new PositionPart(x, y));
+        PositionPart positionPart = new PositionPart(x, y);
+        positionPart.setDimension(new int[]{32,32});
+        obstruction.add(positionPart);
 
         return obstruction;
     }

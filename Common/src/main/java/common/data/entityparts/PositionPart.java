@@ -61,9 +61,9 @@ public class PositionPart implements EntityPart{
         this.radians = radians;
     }
 
-    public void setDimension(float width, float height) {
-        this.width = width;
-        this.height = height;
+    public void setDimension(int[] dimensions) {
+        this.width = dimensions[0];
+        this.height = dimensions[1];
     }
 
     public float getRadians() {
