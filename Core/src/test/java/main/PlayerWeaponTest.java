@@ -8,6 +8,7 @@ import common.data.World;
 import common.data.entities.ValidLocation;
 import common.data.entities.player.Player;
 import common.data.entities.weapon.Weapon;
+import common.data.entityparts.InventoryPart;
 import common.services.IEntityProcessingService;
 import common.services.IGamePluginService;
 import common.services.IPostEntityProcessingService;
@@ -115,7 +116,8 @@ public class PlayerWeaponTest {
         gameLogic.update(gameData,world);
         for (Entity entity: world.getEntities(Player.class)) {
             Player player = (Player) entity;
-            assertNotNull(player.getInventory().getWeapons());
+            InventoryPart inventory = player.getPart(InventoryPart.class);
+            assertNotNull(inventory.getWeapons());
         }
     }
 }

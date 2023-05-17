@@ -3,10 +3,10 @@ package playersystem;
 import common.data.Entity;
 import common.data.GameData;
 import common.data.World;
-import common.data.entities.player.Inventory;
 import common.data.entities.player.Player;
 import common.data.entities.weapon.IShoot;
 import common.data.entities.weapon.Weapon;
+import common.data.entityparts.InventoryPart;
 import common.data.entityparts.MovingPart;
 import common.data.entityparts.PositionPart;
 import common.services.IEntityProcessingService;
@@ -54,7 +54,7 @@ public class PlayerProcessor implements IEntityProcessingService {
 
 
     private void processWeapon(GameData gameData, World world, Player player) {
-        Inventory inventory = player.getInventory();
+        InventoryPart inventory = player.getPart(InventoryPart.class);
         List<Weapon> weapons = inventory.getWeapons();
         if (!weapons.isEmpty()) {
             PositionPart playerPosPart = player.getPart(PositionPart.class);
@@ -78,7 +78,7 @@ public class PlayerProcessor implements IEntityProcessingService {
     }
 
     private void processWeaponSwitching(GameData gameData, World world, Player player) {
-        Inventory inventory = player.getInventory();
+        InventoryPart inventory = player.getPart(InventoryPart.class);
         if (inventory.getCurrentWeapon() == null) {
             return;
         }

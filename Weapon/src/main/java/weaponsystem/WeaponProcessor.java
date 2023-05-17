@@ -8,10 +8,7 @@ import common.data.entities.player.Player;
 import common.data.entities.ValidLocation;
 import common.data.entities.weapon.IShoot;
 import common.data.entities.weapon.Weapon;
-import common.data.entityparts.DamagePart;
-import common.data.entityparts.MovingPart;
-import common.data.entityparts.PositionPart;
-import common.data.entityparts.TimerPart;
+import common.data.entityparts.*;
 import common.services.IEntityProcessingService;
 
 import java.util.Collection;
@@ -35,7 +32,8 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
 
         for (Entity playerEntity : world.getEntities(Player.class)) {
             Player player = (Player)playerEntity;
-            Entity weaponEntity = player.getInventory().getCurrentWeapon();
+            InventoryPart inventory = player.getPart(InventoryPart.class);
+            Entity weaponEntity = inventory.getCurrentWeapon();
             if (weaponEntity != null) {
                 updateWeaponDirection(playerEntity, weaponEntity);
                 updateTimer(gameData, weaponEntity);
@@ -84,7 +82,8 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
 
     @Override
     public void useWeapon(Player player, GameData gameData, World world) {
-        Weapon weapon = player.getInventory().getCurrentWeapon();
+        InventoryPart inventory = player.getPart(InventoryPart.class);
+        Weapon weapon = inventory.getCurrentWeapon();
         TimerPart timerPart = weapon.getPart(TimerPart.class);
         if (timerPart.getExpiration() <= 0 && weapon.getAmmo() > 0) {
             for (BulletSPI bullet : getBulletSPIs()) {

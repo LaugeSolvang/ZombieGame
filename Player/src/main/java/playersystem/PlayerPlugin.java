@@ -3,9 +3,9 @@ package playersystem;
 import common.data.Entity;
 import common.data.GameData;
 import common.data.World;
-import common.data.entities.player.Inventory;
 import common.data.entities.player.Player;
 import common.data.entities.weapon.Weapon;
+import common.data.entityparts.InventoryPart;
 import common.data.entityparts.LifePart;
 import common.data.entityparts.MovingPart;
 import common.data.entityparts.PositionPart;
@@ -41,6 +41,7 @@ public class PlayerPlugin implements IGamePluginService, KeyPressListener {
         player.add(positionPart);
         player.add(new MovingPart(deceleration, acceleration, maxSpeed));
         player.add(new LifePart(life));
+        player.add(new InventoryPart());
 
         return player;
     }
@@ -48,7 +49,7 @@ public class PlayerPlugin implements IGamePluginService, KeyPressListener {
     public void stop(GameData gameData, World world) {
         for (Entity playerEntity: world.getEntities(Player.class)) {
             Player player = (Player) playerEntity;
-            Inventory inventory = player.getInventory();
+            InventoryPart inventory = player.getPart(InventoryPart.class);
             List<Weapon> weapons = inventory.getWeapons();
 
             // Drop all weapons in the world
