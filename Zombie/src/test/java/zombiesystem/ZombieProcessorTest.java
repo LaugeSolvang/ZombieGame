@@ -6,75 +6,134 @@ import common.data.World;
 import common.data.entities.ValidLocation;
 import common.data.entities.zombie.IZombieAI;
 import common.data.entities.zombie.Zombie;
-import common.data.entityparts.DamagePart;
-import common.data.entityparts.LifePart;
 import common.data.entityparts.MovingPart;
-import common.data.entityparts.PositionPart;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.ServiceLoader;
 
-import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class ZombieProcessorTest {
+    @Mock
+    private GameData gameData;
+
+    @Mock
+    private World world;
+
+    @Mock
+    private ValidLocation validLocation;
+
+    @Mock
+    private IZombieAI zombieAI;
 
     private ZombieProcessor zombieProcessor;
-    private GameData gameData;
-    private World world;
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
+
+        Collection<ValidLocation> validLocations = new ArrayList<>();
+        validLocations.add(validLocation);
+
+        Collection<IZombieAI> zombieAIs = new ArrayList<>();
+        zombieAIs.add(zombieAI);
+
         zombieProcessor = new ZombieProcessor();
-        gameData = new GameData();
-        world = new World();
+        zombieProcessor.setValidLocations(validLocations);
+        zombieProcessor.setiZombieAIS(zombieAIs);
     }
 
     @Test
-    public void testProcessInactivePlugin() {
-        gameData.setActivePlugin(ZombiePlugin.class.getName(), false);
+    public void testProcess_ZombiePluginNotActive_ShouldResetZombieTime() {
+        when(gameData.isActivePlugin(ZombiePlugin.class.getName())).thenReturn(false);
+        zombieProcessor.process(gameData, world);
 
-        zombieProcessor.zombieTime = 10.0f;
+        assert getPrivateField(zombieProcessor, "zombieTime").equals(0.0f);
+    }
+
+    @Test
+    public void testProcess_ZombiePluginActive_ShouldSpawnAndMoveZombies() {
+        when(gameData.isActivePlugin(ZombiePlugin.class.getName())).thenReturn(true);
+        when(gameData.getDelta()).thenReturn(0.1f);
+        when(validLocation.generateSpawnLocation(any(World.class), any(GameData.class))).thenReturn(new int[]{1, 1});
+        when(world.getEntities(Zombie.class)).thenReturn(new ArrayList<>());
 
         zombieProcessor.process(gameData, world);
 
-        assertEquals(0.0f, zombieProcessor.zombieTime, 0.0f);
+        verify(gameData).isActivePlugin(ZombiePlugin.class.getName());
+        verify(gameData).getDelta();
+        verify(validLocation).generateSpawnLocation(world, gameData);
+        verify(world).addEntity(any(Zombie.class));
+        verify(zombieAI).moveTowards(gameData, any(Zombie.class));
+        verify(world).getEntities(Zombie.class);
+        verifyNoMoreInteractions(gameData, world, validLocation, zombieAI);
     }
 
     @Test
-    public void testProcessSpawnZombies() {
-        gameData.setActivePlugin(ZombiePlugin.class.getName(), true);
-
-        zombieProcessor.zombieTime = 10.0f;
+    public void testSpawnZombies_ZombieTimeNotMultipleOfSpawnInterval_ShouldNotSpawnZombies() {
+        setPrivateField(zombieProcessor, "zombieTime", 10.0f);
+        when(gameData.getDelta()).thenReturn(0.1f);
 
         zombieProcessor.process(gameData, world);
 
-        int expectedZombiesToSpawn = (int) Math.sqrt(zombieProcessor.zombieTime) + 3;
-        int actualZombiesSpawned = world.getEntities(Zombie.class).size();
-        assertEquals(expectedZombiesToSpawn, actualZombiesSpawned);
+        verify(world, never()).addEntity(any(Zombie.class));
     }
 
     @Test
-    public void testProcessMoveZombies() {
-        IZombieAI zombieAI = mock(IZombieAI.class);
-        when(zombieAI.getWeight()).thenReturn(1.0f);
-        when(zombieAI.getPriority()).thenReturn(1);
-        when(zombieAI.moveTowards(any(GameData.class), any(Entity.class))).thenReturn(true);
-        ServiceLoader<IZombieAI> zombieAILoader = mock(ServiceLoader.class);
-        when(zombieAILoader.iterator()).thenReturn(Collections.singleton(zombieAI).iterator());
+    public void testSpawnZombies_ZombieTimeMultipleOfSpawnInterval_ShouldSpawnZombies() {
+        setPrivateField(zombieProcessor, "zombieTime", 15.0f);
+        when(gameData.getDelta()).thenReturn(0.1f);
+        when(validLocation.generateSpawnLocation(any(World.class), any(GameData.class))).thenReturn(new int[]{1, 1});
+        when(world.getEntities(Zombie.class)).thenReturn(new ArrayList<>());
 
-        ZombieProcessor zombieProcessorSpy = spy(zombieProcessor);
-        doReturn(zombieAILoader).when(zombieProcessorSpy).getIZombieAIs();
+        zombieProcessor.process(gameData, world);
 
-        Entity zombieEntity = new Zombie();
-        zombieEntity.add(new MovingPart(0, 0, 0));
-        world.addEntity(zombieEntity);
+        verify(validLocation).generateSpawnLocation(world, gameData);
+        verify(world, times(4)).addEntity(any(Zombie.class));
+        verifyNoMoreInteractions(gameData, world, validLocation);
+    }
 
-        zombieProcessorSpy.process(gameData, world);
+    @Test
+    public void testMoveZombies_ShouldMoveZombiesAndSetImagePath() {
+        ArrayList<Entity> zombies = new ArrayList<>();
+        Zombie zombie = mock(Zombie.class);
+        MovingPart movingPart = mock(MovingPart.class);
 
-        verify(zombieAI, times(1)).moveTowards(any(GameData.class), eq(zombieEntity));
+        zombies.add(zombie);
+        when(world.getEntities(Zombie.class)).thenReturn(zombies);
+        when(zombie.getPart(MovingPart.class)).thenReturn(movingPart);
+        when(movingPart.getDx()).thenReturn(1.0f);
+
+        zombieProcessor.process(gameData, world);
+
+        verify(zombie).setPath("Zombie/src/main/resources/zombie-kopi.png");
+        verifyNoMoreInteractions(world, zombie, movingPart);
+    }
+
+    private static Object getPrivateField(Object object, String fieldName) {
+        try {
+            Field field = object.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+            return field.get(object);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private static void setPrivateField(Object object, String fieldName, Object value) {
+        try {
+            Field field = object.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.set(object, value);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 }
