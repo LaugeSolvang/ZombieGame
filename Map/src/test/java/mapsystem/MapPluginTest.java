@@ -6,6 +6,7 @@ import common.data.entities.obstruction.Obstruction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static common.data.GameKeys.NINE;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -48,5 +49,20 @@ public class MapPluginTest {
         mapPlugin.stop(gameData, world);
 
         assertEquals(0, world.getEntities(Obstruction.class).size());
+    }
+    @Test
+    public void testOnKeyPressed() {
+        // Initially active
+        assertTrue(mapPlugin.isActive);
+
+        // Key press should deactivate
+        mapPlugin.onKeyPressed(NINE, gameData, world);
+        assertEquals(0, world.getEntities(Obstruction.class).size());
+        assertFalse(mapPlugin.isActive);
+
+        // Key press again should reactivate
+        mapPlugin.onKeyPressed(NINE, gameData, world);
+        assertTrue(mapPlugin.isActive);
+        assertTrue(world.getEntities(Obstruction.class).size() > 0);
     }
 }
