@@ -125,4 +125,7 @@ public class RifleProcessor implements IEntityProcessingService, IShoot {
     public void setBulletSPIS(Collection<? extends BulletSPI> bulletSPIS) {
         this.bulletSPIS = bulletSPIS;
     }
+    public float getRifleTime() {
+        return rifleTime;
+    }
 }

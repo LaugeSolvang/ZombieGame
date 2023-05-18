@@ -28,7 +28,7 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
     @Override
     public void process(GameData gameData, World world) {
         if (!gameData.isActivePlugin(WeaponPlugin.class.getName())) {
-            weaponTime = 0.2F;
+            weaponTime = 0;
             return;
         }
 
@@ -38,6 +38,7 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
             Entity weaponEntity = inventory.getCurrentWeapon();
             if (weaponEntity != null) {
                 updateWeaponDirection(playerEntity, weaponEntity);
+
                 updateTimer(gameData, weaponEntity);
             }
         }
