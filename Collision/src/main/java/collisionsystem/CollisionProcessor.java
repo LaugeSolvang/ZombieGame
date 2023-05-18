@@ -1,9 +1,6 @@
 package collisionsystem;
 
-import common.data.Entity;
-import common.data.GameData;
-import common.data.GameKeys;
-import common.data.World;
+import common.data.*;
 import common.data.entities.bullet.Bullet;
 import common.data.entities.player.Player;
 import common.data.entities.weapon.Weapon;
@@ -159,7 +156,7 @@ public class CollisionProcessor implements IPostEntityProcessingService {
                 // Remove entity from the world if its life is 0 or less
                 world.removeEntity(entity);
                 if (entity instanceof Zombie ){
-                    ScorePart.updateScore();
+                    Score.updateScore();
                     //if the entity that died is a zombie, the score will be updated
                 }
             }

@@ -23,10 +23,12 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
     private float weaponTime = 0.0f;
     private final int WEAPON_SPAWN_INTERVAL = 30;
     private Collection<? extends ValidLocation> validLocations = getValidLocation();
+    private Collection<? extends BulletSPI> bulletSPIS = getBulletSPIs();
+
     @Override
     public void process(GameData gameData, World world) {
         if (!gameData.isActivePlugin(WeaponPlugin.class.getName())) {
-            weaponTime = 0.2F;
+            weaponTime = 0;
             return;
         }
 
@@ -36,6 +38,7 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
             Entity weaponEntity = inventory.getCurrentWeapon();
             if (weaponEntity != null) {
                 updateWeaponDirection(playerEntity, weaponEntity);
+
                 updateTimer(gameData, weaponEntity);
             }
         }
@@ -86,7 +89,7 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
         Weapon weapon = inventory.getCurrentWeapon();
         TimerPart timerPart = weapon.getPart(TimerPart.class);
         if (timerPart.getExpiration() <= 0 && weapon.getAmmo() > 0) {
-            for (BulletSPI bullet : getBulletSPIs()) {
+            for (BulletSPI bullet : bulletSPIS) {
                 world.addEntity(bullet.createBullet(weapon, gameData));
                 weapon.reduceAmmon();
                 timerPart.setExpiration(weapon.getFireRate());
@@ -118,5 +121,9 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
     }
     public void setValidLocations(Collection<? extends ValidLocation> validLocations) {
         this.validLocations = validLocations;
+    }
+
+    public void setBulletSPIS(Collection<? extends BulletSPI> bulletSPIS) {
+        this.bulletSPIS = bulletSPIS;
     }
 }

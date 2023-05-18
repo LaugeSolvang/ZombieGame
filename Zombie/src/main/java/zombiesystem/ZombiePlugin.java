@@ -14,11 +14,13 @@ public class ZombiePlugin implements IGamePluginService, KeyPressListener {
 
     @Override
     public void start(GameData gameData, World world) {
+        isActive = true;
         gameData.setActivePlugin(this.getClass().getName(), isActive);
     }
 
     @Override
     public void stop(GameData gameData, World world) {
+        isActive = false;
         gameData.setActivePlugin(this.getClass().getName(), isActive);
         for (Entity e : world.getEntities()) {
             if (e.getClass() == Zombie.class) {
@@ -31,10 +33,8 @@ public class ZombiePlugin implements IGamePluginService, KeyPressListener {
     public void onKeyPressed(int key, GameData gameData, World world) {
         if (key == ESCAPE) {
             if (isActive) {
-                isActive = false;
                 stop(gameData, world);
             } else {
-                isActive = true;
                 start(gameData, world);
             }
         }
