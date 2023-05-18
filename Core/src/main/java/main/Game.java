@@ -11,7 +11,6 @@ import common.data.Entity;
 import common.data.GameData;
 import common.data.World;
 import common.data.entityparts.HealthPart;
-import common.data.entityparts.LifePart;
 import common.data.entityparts.PositionPart;
 import common.data.entityparts.ScorePart;
 import managers.ServiceLoaderUtils;
@@ -70,12 +69,13 @@ public class Game implements ApplicationListener {
     private void draw() {
         //no idea how this works in detail, but it creates something that allows you to display text in-game
         CharSequence scoreStr = "Score: " + ScorePart.getScore();
-        CharSequence lifeStr = "Life: " + HealthPart.getHealth();
+        //dividing by 100 gives a smaller number that looks better (than a big number like 10000)
+        CharSequence lifeStr = "Life: " + HealthPart.getHealth() / 100;
 
         sb.begin();
         //this actually displays said text
         font.draw(sb, scoreStr,40,700);
-        font.draw(sb, lifeStr, 1330, 700);
+        font.draw(sb, lifeStr, 1350, 700);
         //Draw all sprites, update the sprites position beforehand
         for (Entity entity : world.getEntities()) {
             Sprite sprite = SpriteCache.getSprite(entity.getPath());
