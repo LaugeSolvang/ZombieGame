@@ -9,12 +9,14 @@ import common.data.entities.zombie.Zombie;
 import common.data.entityparts.MovingPart;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -33,6 +35,8 @@ public class ZombieProcessorTest {
     private IZombieAI zombieAI;
 
     private ZombieProcessor zombieProcessor;
+    List<Entity> zombies;
+
 
     @Before
     public void setUp() {
@@ -47,6 +51,12 @@ public class ZombieProcessorTest {
         zombieProcessor = new ZombieProcessor();
         zombieProcessor.setValidLocations(validLocations);
         zombieProcessor.setiZombieAIS(zombieAIs);
+
+        zombies = new ArrayList<>();
+        Zombie zombie1 = new Zombie();
+        MovingPart movingPart = new MovingPart(1,1,1);
+        zombie1.add(movingPart);
+        zombies.add(zombie1);
     }
 
     @Test
@@ -62,15 +72,15 @@ public class ZombieProcessorTest {
         when(gameData.isActivePlugin(ZombiePlugin.class.getName())).thenReturn(true);
         when(gameData.getDelta()).thenReturn(0.1f);
         when(validLocation.generateSpawnLocation(any(World.class), any(GameData.class))).thenReturn(new int[]{1, 1});
-        when(world.getEntities(Zombie.class)).thenReturn(new ArrayList<>());
+        when(world.getEntities(Zombie.class)).thenReturn(zombies);
 
         zombieProcessor.process(gameData, world);
 
         verify(gameData).isActivePlugin(ZombiePlugin.class.getName());
-        verify(gameData).getDelta();
-        verify(validLocation).generateSpawnLocation(world, gameData);
-        verify(world).addEntity(any(Zombie.class));
-        verify(zombieAI).moveTowards(gameData, any(Zombie.class));
+        verify(gameData, times(2)).getDelta();
+        verify(validLocation, times(3)).generateSpawnLocation(world, gameData);
+        verify(world, times(3)).addEntity(any(Zombie.class));
+        verify(zombieAI).moveTowards(any(GameData.class), any(Zombie.class));
         verify(world).getEntities(Zombie.class);
         verifyNoMoreInteractions(gameData, world, validLocation, zombieAI);
     }
