@@ -142,6 +142,7 @@ public class CollisionProcessor implements IPostEntityProcessingService {
         Player player = (Player) (zombie == firstEntity ? secondEntity : firstEntity);
         DamagePart damagePart = zombie.getPart(DamagePart.class);
         reduceLife(player, world, damagePart);
+        HealthPart.updateHealth();
     }
     private void handleBulletZombieCollision(Entity firstEntity, Entity secondEntity, World world) {
         Bullet bullet = (Bullet) (firstEntity instanceof Bullet ? firstEntity : secondEntity);
