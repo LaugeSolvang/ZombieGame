@@ -11,8 +11,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BulletPluginTest {
-
-
     private GameData gameData;
     private World world;
     private BulletPlugin plugin;
@@ -59,7 +57,6 @@ class BulletPluginTest {
         assertEquals(2, world.getEntities().size());
         assertTrue(world.getEntities().contains(zombie1));
         assertTrue(world.getEntities().contains(zombie2));
-
     }
 
     @Test

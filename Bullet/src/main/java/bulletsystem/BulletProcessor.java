@@ -34,28 +34,26 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
 
     @Override
     public Entity createBullet(Entity weapon, GameData gameData) {
-        PositionPart weaponPos = weapon.getPart(PositionPart.class);
         Entity bullet = new Bullet();
-        setBulletPosition(weaponPos, bullet);
         setBulletProperties(bullet, weapon);
-        setBulletDirection(weaponPos, bullet);
+        setBulletDirection(weapon, bullet);
         return bullet;
     }
 
-    private void setBulletPosition(PositionPart weaponPos, Entity bullet) {
-        float x = weaponPos.getX() + weaponPos.getHeight() / 2;
-        float y = weaponPos.getY() + weaponPos.getWidth() / 2;
-        bullet.add(new PositionPart(x, y));
-    }
-
     private void setBulletProperties(Entity bullet, Entity weapon) {
-        String path = "bullet.png";
+        PositionPart weaponPos = weapon.getPart(PositionPart.class);
+
+        String path = "Bullet/src/main/resources/bullet.png";
         float deceleration = 0;
         float acceleration = 2000;
         float speed = 500;
         int life = 1;
         int timer = 1;
-
+        float x = weaponPos.getX() + weaponPos.getHeight() / 2;
+        float y = weaponPos.getY() + weaponPos.getWidth() / 2;
+        PositionPart positionPart = new PositionPart(x, y);
+        positionPart.setDimension(new int[]{3,3});
+        bullet.add(positionPart);
         bullet.setPath(path);
         bullet.setRadius(2);
         bullet.add(new LifePart(life));
@@ -64,9 +62,11 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
         bullet.add(weapon.getPart(DamagePart.class));
     }
 
-    private void setBulletDirection(PositionPart posPart, Entity bullet) {
+    private void setBulletDirection(Entity weapon, Entity bullet) {
+        PositionPart weaponPos = weapon.getPart(PositionPart.class);
+
         MovingPart movingPart = bullet.getPart(MovingPart.class);
-        float radians = posPart.getRadians();
+        float radians = weaponPos.getRadians();
         float piEighth = (float) Math.PI / 8;
 
         if (radians >= -piEighth && radians <= piEighth) {

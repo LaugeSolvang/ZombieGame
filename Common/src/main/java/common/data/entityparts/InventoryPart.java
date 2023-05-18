@@ -1,12 +1,15 @@
-package common.data.entities.player;
 
+package common.data.entityparts;
+
+import common.data.Entity;
+import common.data.GameData;
 import common.data.World;
 import common.data.entities.weapon.Weapon;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Inventory {
+public class InventoryPart implements EntityPart{
     private final List<Weapon> weapons = new ArrayList<>();
     private int currentWeaponIndex = 0;
 
@@ -53,5 +56,10 @@ public class Inventory {
         } else {
             weapons.remove(getWeapon(oldWeaponIndex));
         }
+    }
+
+    @Override
+    public void process(GameData gameData, Entity entity) {
+
     }
 }

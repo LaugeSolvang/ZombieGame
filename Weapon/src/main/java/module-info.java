@@ -6,6 +6,7 @@ import common.services.IGamePluginService;
 import common.services.KeyPressListener;
 
 module Weapon {
+    exports weaponsystem;
     requires Common;
     provides IEntityProcessingService with weaponsystem.WeaponProcessor;
     provides IGamePluginService with weaponsystem.WeaponPlugin;
