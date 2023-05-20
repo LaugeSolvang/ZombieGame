@@ -35,13 +35,6 @@ public class InventoryPart implements EntityPart{
         return weapons.get(currentWeaponIndex);
     }
 
-    public Weapon getWeapon(int index) {
-        if (weapons.isEmpty()) {
-            return null;
-        }
-        return weapons.get(index);
-    }
-
     public void cycleWeapon(World world, int direction) {
         Weapon currentWeapon = getCurrentWeapon();
         if (currentWeapon.getAmmo() == 0) {

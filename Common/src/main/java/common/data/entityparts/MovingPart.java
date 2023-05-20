@@ -130,6 +130,5 @@ public class MovingPart implements EntityPart{
             radians = (float) Math.atan2(dy, dx);
         }
         positionPart.setRadians(radians);
-
     }
 }

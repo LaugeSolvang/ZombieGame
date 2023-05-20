@@ -25,7 +25,6 @@ public class Game implements ApplicationListener {
     private final World world = new World();
     private GameLogic gameLogic;
 
-
     @Override
     public void create() {
         gameData.setDisplayWidth(Gdx.graphics.getWidth());

@@ -10,7 +10,6 @@ import common.data.entities.weapon.Weapon;
 import common.data.entityparts.InventoryPart;
 import common.data.entityparts.MovingPart;
 import common.data.entityparts.PositionPart;
-import common.services.IEntityProcessingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -58,7 +57,6 @@ class PlayerProcessorTest {
         inventoryPart.addWeapon(world, secondWeapon);
 
         player.add(inventoryPart);
-
 
         IShoot iShoot = Mockito.mock(IShoot.class);
         doAnswer(invocation -> {

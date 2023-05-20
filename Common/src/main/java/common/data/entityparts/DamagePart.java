@@ -13,10 +13,6 @@ public class DamagePart implements EntityPart {
         return damage;
     }
 
-    public void setDamage(int damage) {
-        this.damage = damage;
-    }
-
     @Override
     public void process(GameData gameData, Entity entity) {
 
