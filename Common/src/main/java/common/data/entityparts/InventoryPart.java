@@ -43,19 +43,19 @@ public class InventoryPart implements EntityPart{
     }
 
     public void cycleWeapon(World world, int direction) {
-        int oldWeaponIndex = currentWeaponIndex;
+        Weapon currentWeapon = getCurrentWeapon();
+        if (currentWeapon.getAmmo() == 0) {
+            world.removeEntity(currentWeapon);
+            weapons.remove(currentWeapon);
+        }
         if (weapons.size() == 0) {
             currentWeaponIndex = 0;
             return;
-        } else {
-            currentWeaponIndex = (currentWeaponIndex + direction + weapons.size()) % weapons.size();
         }
-        world.removeEntity(getWeapon(oldWeaponIndex));
-        if (getCurrentWeapon().getAmmo() != 0) {
-            world.addEntity(getCurrentWeapon());
-        } else {
-            weapons.remove(getWeapon(oldWeaponIndex));
-        }
+        world.removeEntity(currentWeapon);
+        currentWeaponIndex = (currentWeaponIndex + direction + weapons.size()) % weapons.size();
+        currentWeapon = getCurrentWeapon();
+        world.addEntity(currentWeapon);
     }
 
     @Override
