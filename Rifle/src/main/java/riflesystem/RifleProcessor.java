@@ -69,10 +69,8 @@ public class RifleProcessor implements IEntityProcessingService, IShoot {
 
         if (rifleTime % RIFLE_SPAWN_INTERVAL <= gameData.getDelta()) {
             rifleTime += 0.1;
-            System.out.println("hi");
             for (ValidLocation validLocation : validLocations) {
                 for (int i = 0; i < weaponsToSpawn; i++) {
-                    System.out.println("med");
                     int[] spawnLocation = validLocation.generateSpawnLocation(world, gameData);
                     int x = spawnLocation[0];
                     int y = spawnLocation[1];
