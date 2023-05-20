@@ -32,6 +32,8 @@ public class RifleProcessor implements IEntityProcessingService, IShoot {
             return;
         }
 
+        rifleTime += gameData.getDelta();
+
         for (Entity playerEntity : world.getEntities(Player.class)) {
             Player player = (Player)playerEntity;
             InventoryPart inventory = player.getPart(InventoryPart.class);
@@ -63,12 +65,14 @@ public class RifleProcessor implements IEntityProcessingService, IShoot {
     }
     private void spawnWeapons(GameData gameData, World world) {
         // calculate the number of weapons to spawn based on game time
-        int weaponsToSpawn = (int) Math.sqrt(rifleTime / 4) + 1;
+        int weaponsToSpawn = (int) Math.sqrt(rifleTime / 8) + 1;
 
         if (rifleTime % RIFLE_SPAWN_INTERVAL <= gameData.getDelta()) {
             rifleTime += 0.1;
+            System.out.println("hi");
             for (ValidLocation validLocation : validLocations) {
                 for (int i = 0; i < weaponsToSpawn; i++) {
+                    System.out.println("med");
                     int[] spawnLocation = validLocation.generateSpawnLocation(world, gameData);
                     int x = spawnLocation[0];
                     int y = spawnLocation[1];
@@ -121,7 +125,6 @@ public class RifleProcessor implements IEntityProcessingService, IShoot {
     public void setValidLocations(Collection<? extends ValidLocation> validLocations) {
         this.validLocations = validLocations;
     }
-
     public void setBulletSPIS(Collection<? extends BulletSPI> bulletSPIS) {
         this.bulletSPIS = bulletSPIS;
     }

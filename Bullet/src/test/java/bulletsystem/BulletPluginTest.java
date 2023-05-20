@@ -8,6 +8,7 @@ import common.data.entities.zombie.Zombie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static common.data.GameKeys.EIGHT;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BulletPluginTest {
@@ -60,12 +61,23 @@ class BulletPluginTest {
     }
 
     @Test
-    public void start_does_not_throw_exception() {
-        // Given
-
-        // When
+    public void playerPlugin_onKeyPress_activatesAndDeactivates() {
+        // Arrange
+        world.addEntity(new Bullet());
         plugin.start(gameData, world);
+        assertTrue(world.getEntities(Bullet.class).size() > 0);
 
-        // Then (no exception should be thrown)
+        // Act
+        plugin.onKeyPressed(EIGHT, gameData, world);
+
+        // Assert
+        assertFalse(plugin.isActive);
+        assertEquals(0, world.getEntities(Bullet.class).size());
+
+        // Act
+        plugin.onKeyPressed(EIGHT, gameData, world);
+
+        // Assert
+        assertTrue(plugin.isActive);
     }
 }

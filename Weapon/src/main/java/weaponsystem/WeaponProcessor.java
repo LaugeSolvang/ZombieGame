@@ -31,6 +31,7 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
             weaponTime = 0;
             return;
         }
+        weaponTime += gameData.getDelta();
 
         for (Entity playerEntity : world.getEntities(Player.class)) {
             Player player = (Player)playerEntity;
@@ -64,7 +65,7 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
     }
     private void spawnWeapons(GameData gameData, World world) {
         // calculate the number of weapons to spawn based on game time
-        int weaponsToSpawn = (int) Math.sqrt(weaponTime / 4) + 1;
+        int weaponsToSpawn = (int) Math.sqrt(weaponTime / 8) + 1;
 
         if (weaponTime % WEAPON_SPAWN_INTERVAL <= gameData.getDelta()) {
             weaponTime += 0.1;

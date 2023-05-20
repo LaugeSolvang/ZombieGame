@@ -31,6 +31,27 @@ class CollisionProcessorTest {
         world = new World();
     }
     @Test
+    void noCollision() {
+        Entity bullet = createBullet(100, 100, 100);
+        Entity bullet2 = createBullet(400, 100, 100);
+        Entity bullet3 = createBullet(200, 100, 100);
+        Entity bullet4 = createBullet(700, 100, 100);
+        Entity bullet5 = createBullet(0, 0, 100);
+
+        Entity obstruction = createObstruction(36, 225);
+        Entity obstruction2 = createObstruction(95, 423);
+        Entity obstruction3 = createObstruction(566, 789);
+        Entity obstruction4 = createObstruction(543, 27);
+        Entity obstruction5 = createObstruction(876, 55);
+        setupEntities(
+                bullet, bullet2, bullet3, bullet4, bullet5,
+                obstruction, obstruction2, obstruction3, obstruction4, obstruction5
+        );
+        processor.process(gameData, world);
+
+        assertEquals(10, world.getEntities().size(), "Bullet should not be removed after collision");
+    }
+    @Test
     void testBulletObstructionCollision() {
         Entity bullet = createBullet(5, 5, 100);
         Entity obstruction = createObstruction(5, 5);
@@ -134,7 +155,7 @@ class CollisionProcessorTest {
         processor.process(gameData, world);
 
         LifePart lifePart = player.getPart(LifePart.class);
-        assertEquals(96, lifePart.getLife());
+        assertEquals(92, lifePart.getLife());
     }
 
     @Test
@@ -186,6 +207,11 @@ class CollisionProcessorTest {
 
     // Helper methods to create entities
 
+    private void setupEntities(Entity... entities) {
+        for (Entity entity : entities) {
+            world.addEntity(entity);
+        }
+    }
     private Entity createBullet(float x, float y, int damage) {
         Entity bullet = new Bullet();
         bullet.add(new PositionPart(x, y, 3, 3));
