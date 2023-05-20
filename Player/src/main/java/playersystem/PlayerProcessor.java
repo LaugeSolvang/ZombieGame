@@ -42,6 +42,7 @@ public class PlayerProcessor implements IEntityProcessingService {
         positionPart.process(gameData, player);
 
         //makes the player face the direction they are going
+        float value = movingPart.getDx();
         if (movingPart.getDx() < 0){
             String path = "Player/src/main/resources/player.png";
             player.setPath(path);
