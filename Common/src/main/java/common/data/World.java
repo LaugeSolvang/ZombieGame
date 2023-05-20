@@ -24,10 +24,6 @@ public class World {
         return entity.getID();
     }
 
-    public void removeEntity(String entityID) {
-        entityMap.remove(entityID);
-    }
-
     public void removeEntity(Entity entity) {
         entityMap.remove(entity.getID());
     }
@@ -36,7 +32,8 @@ public class World {
         return entityMap.values();
     }
 
-    public <E extends Entity> List<Entity> getEntities(Class<E>... entityTypes) {
+    @SafeVarargs
+    public final <E extends Entity> List<Entity> getEntities(Class<E>... entityTypes) {
         List<Entity> r = new ArrayList<>();
         for (Entity e : getEntities()) {
             for (Class<E> entityType : entityTypes) {
@@ -46,9 +43,5 @@ public class World {
             }
         }
         return r;
-    }
-
-    public Entity getEntity(String ID) {
-        return entityMap.get(ID);
     }
 }

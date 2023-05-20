@@ -6,7 +6,6 @@ public class Weapon extends Entity {
     private final String shootImplName;
     private int ammo;
     private float fireRate;
-    private boolean equipped = false;
 
     public Weapon(String shootImplName, int ammo, float fireRate) {
         this.shootImplName = shootImplName;
@@ -32,12 +31,5 @@ public class Weapon extends Entity {
 
     public float getFireRate() {
         return fireRate;
-    }
-    public boolean isEquipped() {
-        return equipped;
-    }
-
-    public void setEquipped(boolean equipped) {
-        this.equipped = equipped;
     }
 }
