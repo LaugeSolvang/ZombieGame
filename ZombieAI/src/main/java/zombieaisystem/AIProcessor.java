@@ -16,8 +16,8 @@ import java.util.List;
 import static common.data.GameData.TILE_SIZE;
 
 public class AIProcessor implements IPostEntityProcessingService, IZombieAI {
-    AStar aStar = new AStar();
-    float AITime = 0.0F;
+    private AStar aStar = new AStar();
+    private float AITime = 0.0F;
     @Override
     public void process(GameData gameData, World world) {
         AITime += gameData.getDelta();
@@ -108,5 +108,9 @@ public class AIProcessor implements IPostEntityProcessingService, IZombieAI {
         zombieMovement.setDown(false);
         zombieMovement.setRight(false);
         zombieMovement.setLeft(false);
+    }
+
+    public void setAITime(float AITime) {
+        this.AITime = AITime;
     }
 }

@@ -123,8 +123,11 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
     public void setValidLocations(Collection<? extends ValidLocation> validLocations) {
         this.validLocations = validLocations;
     }
-
     public void setBulletSPIS(Collection<? extends BulletSPI> bulletSPIS) {
         this.bulletSPIS = bulletSPIS;
+    }
+
+    public float getWeaponTime() {
+        return weaponTime;
     }
 }
