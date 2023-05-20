@@ -16,6 +16,7 @@ public class MapPlugin implements IGamePluginService, KeyPressListener {
 
     @Override
     public void start(GameData gameData, World world)  {
+        isActive = true;
         //Create a map with strings per 32x32 pixels of the whole display
         int mapWidth = gameData.getDisplayWidth() / 32;
         int mapHeight = gameData.getDisplayHeight() / 32;
@@ -63,6 +64,7 @@ public class MapPlugin implements IGamePluginService, KeyPressListener {
     }
     @Override
     public void stop(GameData gameData, World world) {
+        isActive = false;
         for (Entity obstruction : world.getEntities(Obstruction.class)) {
             world.removeEntity(obstruction);
         }
@@ -76,10 +78,8 @@ public class MapPlugin implements IGamePluginService, KeyPressListener {
     public void onKeyPressed(int key, GameData gameData, World world) {
         if (key == NINE) {
             if (isActive) {
-                isActive = false;
                 stop(gameData, world);
             } else {
-                isActive = true;
                 start(gameData, world);
             }
         }

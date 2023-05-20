@@ -1,4 +1,4 @@
-package riflesystem;
+package weaponsystem;
 
 import common.data.Entity;
 import common.data.GameData;
@@ -12,19 +12,19 @@ import org.junit.jupiter.api.Test;
 import static common.data.GameKeys.ENTER;
 import static org.junit.jupiter.api.Assertions.*;
 
-class RiflePluginTest {
-    private static final String WEAPON_ID = "riflesystem.RifleProcessor";
+class WeaponPluginTest {
+    private static final String WEAPON_ID = "weaponsystem.WeaponProcessor";
     private static final int WEAPON_DAMAGE = 50;
     private static final int FIRE_RATE = 10;
 
-    private RiflePlugin riflePlugin;
+    private WeaponPlugin weaponPlugin;
     private GameData gameData;
     private World world;
     private Weapon weapon;
 
     @BeforeEach
     public void setUp() {
-        riflePlugin = new RiflePlugin();
+        weaponPlugin = new WeaponPlugin();
         gameData = new GameData();
         world = new World();
         weapon = new Weapon(WEAPON_ID, WEAPON_DAMAGE, FIRE_RATE);
@@ -37,16 +37,16 @@ class RiflePluginTest {
         assertTrue(world.getEntities(Weapon.class).size() > 0);
 
         // Act
-        riflePlugin.stop(gameData, world);
+        weaponPlugin.stop(gameData, world);
 
         // Assert
         assertEquals(0, world.getEntities(Weapon.class).size());
 
         // Act
-        riflePlugin.start(gameData, world);
+        weaponPlugin.start(gameData, world);
 
         // Assert
-        assertTrue(riflePlugin.isActive);
+        assertTrue(weaponPlugin.isActive);
     }
 
     @Test
@@ -57,34 +57,34 @@ class RiflePluginTest {
         setupPlayerWithWeapon();
 
         // Act
-        riflePlugin.stop(gameData, world);
+        weaponPlugin.stop(gameData, world);
 
         // Assert
         assertEquals(0, world.getEntities(Weapon.class).size());
-        assertFalse(riflePlugin.isActive);
+        assertFalse(weaponPlugin.isActive);
         assertTrue(playerInventoryIsEmpty());
     }
 
     @Test
     public void riflePlugin_onKeyPress_activatesAndDeactivates() {
         // Arrange
-        riflePlugin.start(gameData, world);
+        weaponPlugin.start(gameData, world);
         world.addEntity(weapon);
         assertTrue(world.getEntities(Weapon.class).size() > 0);
         setupPlayerWithWeapon();
 
         // Act
-        riflePlugin.onKeyPressed(ENTER, gameData, world);
+        weaponPlugin.onKeyPressed(ENTER, gameData, world);
 
         // Assert
         assertEquals(0, world.getEntities(Weapon.class).size());
         assertTrue(playerInventoryIsEmpty());
 
         // Act
-        riflePlugin.onKeyPressed(ENTER, gameData, world);
+        weaponPlugin.onKeyPressed(ENTER, gameData, world);
 
         // Assert
-        assertTrue(riflePlugin.isActive);
+        assertTrue(weaponPlugin.isActive);
         assertEquals(0, world.getEntities(Weapon.class).size());
         assertTrue(playerInventoryIsEmpty());
     }

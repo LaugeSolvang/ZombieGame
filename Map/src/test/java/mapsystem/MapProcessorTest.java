@@ -2,110 +2,106 @@ package mapsystem;
 
 import common.data.GameData;
 import common.data.World;
-import common.data.entities.bullet.Bullet;
+import common.data.entities.player.Player;
 import common.data.entityparts.PositionPart;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Objects;
+import java.util.Arrays;
 
 import static common.data.GameData.TILE_SIZE;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MapProcessorTest {
     private MapProcessor mapProcessor;
-    private String[][] map;
-    private World world;
     private GameData gameData;
-    private PositionPart playerPosPart;
+    private World world;
+    private Player player;
+    private String[][] emptyMap;
+    private String[][] obstructionMap;
+    private PositionPart positionPart;
+    private final int playerX = 15;
+    private final int playerY = 15;
 
     @BeforeEach
     public void setUp() {
         mapProcessor = new MapProcessor();
-        world = new World();
         gameData = new GameData();
-        playerPosPart = new PositionPart(400.f, 300.f);
-        map = new String[][] {
-                {"", "", "", ""},
-                {"", "obstruction", "", ""},
-                {"", "", "", ""},
-                {"", "", "", ""}
-        };
+        world = new World();
+        player = new Player();
+        positionPart = new PositionPart(TILE_SIZE*playerX, TILE_SIZE*playerY);
+        player.add(positionPart);
+        world.addEntity(player);
+        emptyMap = new String[20][20];
+        obstructionMap = new String[20][20];
+        for (int i = 0; i < emptyMap.length; i++) {
+            for (int j = 0; j < emptyMap[i].length; j++) {
+                if (i == 3 | i == 4 | i == 5 | i == 6 |
+                    j == 3 | j == 4 | j == 5 | j == 6) {
+                    emptyMap[i][j] = "obstruction";
+                }
+            }
+        }
+
     }
 
     @Test
-    public void testGenerateSpawnLocation() {
-        map = new String[][]{
-                {"", "", "", ""},
-                {"", "", "", ""},
-                {"", "", "", ""},
-                {"", "", "", ""}
-        };
+    public void generateSpawnLocation_withValidPlayerLocation_returnsValidSpawnLocation() {
+        //Arrange
+        world.setMap(obstructionMap);
 
-        world.setMap(map);
-        gameData.setDisplayWidth(800);
-        gameData.setDisplayHeight(600);
-
-        Bullet bullet = new Bullet();
-        bullet.add(playerPosPart);
-        world.addEntity(bullet);
-
+        // Act
         int[] spawnLocation = mapProcessor.generateSpawnLocation(world, gameData);
 
+        // Assert
         assertNotNull(spawnLocation);
-        assertTrue(spawnLocation[0] >= 0 && spawnLocation[0] < map.length);
-        assertTrue(spawnLocation[1] >= 0 && spawnLocation[1] < map[0].length);
-        assertTrue(isValidLocation(map, playerPosPart, spawnLocation[0], spawnLocation[1]));
+        assertEquals(2, spawnLocation.length);
+        assertTrue(mapProcessor.isValidLocation(obstructionMap, player.getPart(PositionPart.class), spawnLocation[0], spawnLocation[1]));
     }
-
     @Test
-    public void testIsValidLocation_WhenObstruction_ReturnsFalse() {
+    public void generateSpawnLocation_withInvalidPlayerLocation_returnsNull() {
+        // Arrange
+        world.setMap(emptyMap);
+        for (String[] strings : emptyMap) {
+            Arrays.fill(strings, "obstruction");
+        }
 
-        // if there is an obstruction, test passes
-        boolean validLocation = isValidLocation(map, playerPosPart, 1, 1);
+        // Act
+        int[] spawnLocation = mapProcessor.generateSpawnLocation(world, gameData);
 
-        assertFalse(validLocation);
+        // Assert
+        assertNull(spawnLocation);
     }
-
     @Test
-    public void testIsValidLocation_WhenNoObstructions_ReturnsTrue() {
+    public void isValidLocation_withValidLocation_returnsTrue() {
+        //Arrange
+        world.setMap(obstructionMap);
+        // Act
+        boolean isValid = mapProcessor.isValidLocation(obstructionMap, positionPart, 8, 8);
 
-        // if there is no obstruction, test passes
-        boolean validLocation = isValidLocation(map, playerPosPart, 1, 3);
-
-        assertTrue(validLocation);
+        // Assert
+        assertTrue(isValid);
     }
+    @Test
+    public void isValidLocation_withValidLocation_returnsFalse_player() {
+        //Arrange
+        world.setMap(obstructionMap);
+        // Act
+        boolean isValid = mapProcessor.isValidLocation(obstructionMap, positionPart, playerX-5, playerY-5);
 
-    private boolean isValidLocation(String[][] map, PositionPart playerPosPart, int x, int y) {
-        int xStart = Math.max(x - 1, 0);
-        int xEnd = Math.min(x + 1, map.length - 1);
-        int yStart = Math.max(y - 1, 0);
-        int yEnd = Math.min(y + 2, map[0].length - 1);
+        // Assert
+        assertFalse(isValid);
+    }
+    @Test
+    public void isValidLocation_withInvalidLocation_returnsFalse_obstruction() {
+        // Arrange
+        world.setMap(obstructionMap);
 
-        //3x3 grid checking for obstructions
-        for (int i = xStart; i <= xEnd; i++) {
-            for (int j = yStart; j <= yEnd; j++) {
-                if (Objects.equals(map[i][j], "obstruction")) {
-                    return false;
-                }
-            }
-        }
-        xStart = Math.max(x - 5, 0);
-        xEnd = Math.min(x + 5, map.length - 1);
-        yStart = Math.max(y - 5, 0);
-        yEnd = Math.min(y + 6, map[0].length - 1);
-        int pX = (int)(playerPosPart.getX()/TILE_SIZE);
-        int py = (int)(playerPosPart.getY()/TILE_SIZE);
+        // Act
+        boolean isValid = mapProcessor.isValidLocation(emptyMap, positionPart, 3, 3);
 
-        //10x10 grid checking for player
-        for (int i = xStart; i <= xEnd; i++) {
-            for (int j = yStart; j <= yEnd; j++) {
-                if (pX == i && py == j) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        // Assert
+        assertFalse(isValid);
     }
 }

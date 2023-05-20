@@ -3,28 +3,6 @@ package zombieaisystem;
 import java.util.*;
 
 public class AStar {
-    public static void main(String[] args) {
-        String[][] map = new String[45][23];
-        AStar astar = new AStar();
-
-
-        long totalDuration = 0;
-
-        for (int i = 0; i < 30; i++) {
-            long startTime = System.nanoTime();
-
-            astar.treeSearch(map, "26,10", "28,5");
-
-            long endTime = System.nanoTime();
-            long duration = (endTime - startTime);  // in nanoseconds
-            totalDuration += duration;
-        }
-
-        long averageDuration = totalDuration / 30;
-        System.out.println("Average execution time: " + averageDuration + " ns");
-
-        System.out.println(Arrays.deepToString(new List[]{astar.treeSearch(map, "26,10", "28,5")}));
-    }
 
     private static class Node {
         public String state;
@@ -48,15 +26,6 @@ public class AStar {
             }
             return path;
         }
-
-        @Override
-        public String toString() {
-            return "Node{" +
-                    "STATE='" + state + '\'' +
-                    ", DEPTH=" + depth +
-                    ", COST=" + cost +
-                    '}';
-        }
     }
 
     private static Map<String, List<String>> STATE_SPACE;
@@ -76,12 +45,8 @@ public class AStar {
 
 
     public List<int[]> treeSearch(String[][] grid, String INITIAL_STATE, String GOAL_STATE) {
-        if (STATE_SPACE == null) {
-            STATE_SPACE = generateStateSpace(grid);
-        }
-        if (HEURISTICS == null) {
-            HEURISTICS = generateHeuristics(grid, GOAL_STATE);
-        }
+        STATE_SPACE = generateStateSpace(grid);
+        HEURISTICS = generateHeuristics(grid, GOAL_STATE);
 
         PriorityQueue<Node> fringe = new PriorityQueue<>(Comparator.comparingDouble(x -> x.cost + HEURISTICS.get(x.state)));
         Node initialNode = new Node(INITIAL_STATE, null, 0, 0);

@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 public class MapPluginTest {
-
     private MapPlugin mapPlugin;
     private GameData gameData;
     private World world;
@@ -20,49 +19,61 @@ public class MapPluginTest {
     public void setUp() {
         mapPlugin = new MapPlugin();
         gameData = new GameData();
-        gameData.setDisplayWidth(640);
-        gameData.setDisplayHeight(480);
+        gameData.setDisplayHeight(736);
+        gameData.setDisplayWidth(1440);
         world = new World();
-        world.setMap(new String[gameData.getDisplayWidth() / 32][gameData.getDisplayHeight() / 32]);
     }
 
     @Test
-    public void testStart_MapCreation() {
+    public void mapPlugin_startAndStop_createsAndRemovesObstructions() {
+        // Arrange
         mapPlugin.start(gameData, world);
-
-        assertNotNull(world.getMap());
-        assertEquals(gameData.getDisplayWidth() / 32, world.getMap().length);
-        assertEquals(gameData.getDisplayHeight() / 32, world.getMap()[0].length);
-    }
-
-    @Test
-    public void testStart_ObstructionSpawned() {
-        mapPlugin.start(gameData, world);
-
         assertTrue(world.getEntities(Obstruction.class).size() > 0);
-    }
 
-    @Test
-    public void testStop_ObstructionRemoved() {
-        mapPlugin.start(gameData, world);
-
+        // Act
         mapPlugin.stop(gameData, world);
 
+        // Assert
         assertEquals(0, world.getEntities(Obstruction.class).size());
-    }
-    @Test
-    public void testOnKeyPressed() {
-        // Initially active
-        assertTrue(mapPlugin.isActive);
 
-        // Key press should deactivate
-        mapPlugin.onKeyPressed(NINE, gameData, world);
+        // Act
+        mapPlugin.start(gameData, world);
+
+        // Assert
+        assertTrue(mapPlugin.isActive);
+    }
+
+    @Test
+    public void mapPlugin_stop_removesObstructionsAndDeactivates() {
+        // Arrange
+        mapPlugin.start(gameData, world);
+        assertTrue(world.getEntities(Obstruction.class).size() > 0);
+
+        // Act
+        mapPlugin.stop(gameData, world);
+
+        // Assert
         assertEquals(0, world.getEntities(Obstruction.class).size());
         assertFalse(mapPlugin.isActive);
+    }
 
-        // Key press again should reactivate
-        mapPlugin.onKeyPressed(NINE, gameData, world);
-        assertTrue(mapPlugin.isActive);
+    @Test
+    public void mapPlugin_onKeyPress_activatesAndDeactivates() {
+        // Arrange
+        mapPlugin.start(gameData, world);
         assertTrue(world.getEntities(Obstruction.class).size() > 0);
+
+        // Act
+        mapPlugin.onKeyPressed(NINE, gameData, world);
+
+        // Assert
+        assertEquals(0, world.getEntities(Obstruction.class).size());
+
+        // Act
+        mapPlugin.onKeyPressed(NINE, gameData, world);
+
+        // Assert
+        assertTrue(mapPlugin.isActive);
+        assertEquals(168, world.getEntities(Obstruction.class).size());
     }
 }
