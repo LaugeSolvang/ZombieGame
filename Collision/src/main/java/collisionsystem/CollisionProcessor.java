@@ -139,19 +139,25 @@ public class CollisionProcessor implements IPostEntityProcessingService {
         Zombie zombie = (Zombie) (firstEntity instanceof Zombie ? firstEntity : secondEntity);
         Player player = (Player) (zombie == firstEntity ? secondEntity : firstEntity);
         DamagePart damagePart = zombie.getPart(DamagePart.class);
-        reduceLife(player, world, damagePart);
+        reduceLife(player, world, damagePart.getDamage()/2);
     }
     private void handleBulletZombieCollision(Entity firstEntity, Entity secondEntity, World world) {
         Bullet bullet = (Bullet) (firstEntity instanceof Bullet ? firstEntity : secondEntity);
         Zombie zombie = (Zombie) (bullet == firstEntity ? secondEntity : firstEntity);
         DamagePart damagePart = bullet.getPart(DamagePart.class);
-        reduceLife(zombie, world, damagePart);
+
+        if (bullet.hasHit()) {
+            return;
+        }
+        reduceLife(zombie, world, damagePart.getDamage());
+
+        bullet.setHasHit(true);
         world.removeEntity(bullet);
     }
-    private void reduceLife(Entity entity, World world, DamagePart damagePart) {
+    private void reduceLife(Entity entity, World world, int damage) {
         LifePart lifePart = entity.getPart(LifePart.class);
         if (lifePart.getLife() > 0) {
-            lifePart.setLife(lifePart.getLife() - damagePart.getDamage());
+            lifePart.setLife(lifePart.getLife() - damage);
             if (lifePart.getLife() <= 0) {
                 // Remove entity from the world if its life is 0 or less
                 world.removeEntity(entity);

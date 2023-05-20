@@ -6,14 +6,12 @@ import common.data.GameData;
 import common.data.GameKeys;
 import common.data.World;
 import common.data.entities.bullet.Bullet;
+import common.data.entities.obstruction.Obstruction;
 import common.data.entities.zombie.Zombie;
 import common.data.entities.weapon.Weapon;
 import common.data.entities.player.Player;
 
-import common.data.entityparts.DamagePart;
-import common.data.entityparts.InventoryPart;
-import common.data.entityparts.LifePart;
-import common.data.entityparts.PositionPart;
+import common.data.entityparts.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,18 +21,56 @@ class CollisionProcessorTest {
     private CollisionProcessor processor;
     private GameData gameData;
     private World world;
+    private final float delta = 1/60F;
 
     @BeforeEach
     void setUp() {
         processor = new CollisionProcessor();
         gameData = new GameData();
+        gameData.setDelta(delta);
         world = new World();
+    }
+    @Test
+    void testBulletObstructionCollision() {
+        Entity bullet = createBullet(5, 5, 100);
+        Entity obstruction = createObstruction(5, 5);
+
+        world.addEntity(bullet);
+        world.addEntity(obstruction);
+
+        processor.process(gameData, world);
+
+        assertFalse(world.getEntities().contains(bullet), "Bullet should be removed after collision");
+        assertTrue(world.getEntities().contains(obstruction), "Obstruction should not be removed after collision");
+    }
+    @Test
+    void testPlayerObstructionCollision() {
+        float speed = 1;
+        Player player = (Player) createPlayer(5, 5);
+        Entity obstruction = createObstruction(5, 5);
+
+        PositionPart playerPosition = player.getPart(PositionPart.class);
+        float oldX = playerPosition.getX();
+        float oldY = playerPosition.getY();
+        MovingPart playerMovement = player.getPart(MovingPart.class);
+        playerMovement.setDx(speed);
+        playerMovement.setDy(speed);
+
+        world.addEntity(player);
+        world.addEntity(obstruction);
+
+
+        processor.process(gameData, world);
+
+        assertEquals(oldX - delta * speed, playerPosition.getX(), 0.004, "Player's X position should change after collision");
+        assertEquals(oldY - delta * speed, playerPosition.getY(), 0.004,"Player's Y position should change after collision");
+        assertEquals(speed*delta*speed*delta, playerMovement.getDx(), 0.004,"Player's horizontal velocity should be set to 0 after collision");
+        assertEquals(speed*delta*speed*delta, playerMovement.getDy(), 0.004,"Player's vertical velocity should be set to 0 after collision");
     }
 
     @Test
     void testWeaponPlayerCollision() {
         Weapon weapon = (Weapon)createWeapon("TestWeaponImpl",5, 5, 10);
-
         Player player = (Player)createPlayer(5, 5);
         InventoryPart inventory = player.getPart(InventoryPart.class);
         world.addEntity(weapon);
@@ -89,61 +125,79 @@ class CollisionProcessorTest {
 
     @Test
     void testZombiePlayerCollision() {
-        Entity zombie = createZombie(5, 5);
         Entity player = createPlayer(5, 5);
+        Entity zombie = createZombie(5, 5);
 
-        world.addEntity(zombie);
         world.addEntity(player);
-        LifePart playerLifePart = player.getPart(LifePart.class);
-        int life = playerLifePart.getLife();
-        System.out.println(life);
+        world.addEntity(zombie);
 
         processor.process(gameData, world);
 
-        for (Entity playerEntity: world.getEntities(Player.class)) {
-            LifePart playerEntityLifePart = playerEntity.getPart(LifePart.class);
-            System.out.println(playerEntityLifePart.getLife());
-            assertEquals(playerEntityLifePart.getLife() - life, -10);
-        }
+        LifePart lifePart = player.getPart(LifePart.class);
+        assertEquals(96, lifePart.getLife());
     }
 
     @Test
-    void testBulletZombieCollision() {
-        Entity bullet = createBullet(5, 5);
+    void testBulletZombieCollision_NoDeath() {
+        Entity bullet = createBullet(5, 5, 50);
         Entity zombie = createZombie(5, 5);
 
         world.addEntity(bullet);
         world.addEntity(zombie);
 
-        LifePart zombieLifePart = zombie.getPart(LifePart.class);
+        processor.process(gameData, world);
+
+        LifePart zombieEntityLifePart = zombie.getPart(LifePart.class);
+        assertEquals(zombieEntityLifePart.getLife(), 50);
+        assertTrue(world.getEntities().contains(zombie), "Zombie should not be removed after collision");
+        assertFalse(world.getEntities().contains(bullet), "Bullet should be removed after collision");
+    }
+    @Test
+    void testBulletZombieCollision_Death() {
+        Entity bullet = createBullet(5, 5, 100);
+        Entity zombie = createZombie(5, 5);
+
+        world.addEntity(bullet);
+        world.addEntity(zombie);
 
         processor.process(gameData, world);
 
-        for (Entity playerEntity: world.getEntities(Zombie.class)) {
-            LifePart zombieEntityLifePart = playerEntity.getPart(LifePart.class);
-            System.out.println(zombieLifePart.getLife());
-
-
-            assertEquals(zombieEntityLifePart.getLife()- zombieLifePart.getLife(), -1);
-        }
-
+        LifePart zombieEntityLifePart = zombie.getPart(LifePart.class);
+        assertEquals(zombieEntityLifePart.getLife(), 0);
+        assertFalse(world.getEntities().contains(zombie), "Zombie should be removed after collision");
         assertFalse(world.getEntities().contains(bullet), "Bullet should be removed after collision");
+    }
+    @Test
+    void testBulletZombieCollision_Multiple() {
+        Entity bullet = createBullet(5, 5, 100);
+        Entity zombie = createZombie(5, 5);
+        Entity zombie2 = createZombie(5, 5);
+
+        world.addEntity(bullet);
+        world.addEntity(zombie);
+        world.addEntity(zombie2);
+
+        assertEquals(3, world.getEntities().size(), "Zombie and bullet should not be removed before collision");
+
+        processor.process(gameData, world);
+
+        assertEquals(1, world.getEntities().size(), "Zombie and bullet should be removed after collision");
     }
 
     // Helper methods to create entities
 
-    private Entity createBullet(float x, float y) {
+    private Entity createBullet(float x, float y, int damage) {
         Entity bullet = new Bullet();
         bullet.add(new PositionPart(x, y, 3, 3));
-        bullet.add(new DamagePart(10));
+        bullet.add(new DamagePart(damage));
         return bullet;
     }
 
     private Entity createZombie(float x, float y) {
         Entity zombie = new Zombie();
         zombie.add(new PositionPart(x, y, 2, 2));
-        zombie.add(new DamagePart(5));
-        zombie.add(new LifePart(10));
+        zombie.add(new DamagePart(4));
+        zombie.add(new LifePart(100));
         return zombie;
     }
 
@@ -156,8 +210,14 @@ class CollisionProcessorTest {
     private Entity createPlayer(float x, float y) {
         Entity player = new Player();
         player.add(new PositionPart(x, y, 3, 3));
+        player.add(new MovingPart(100,100,100));
         player.add(new LifePart(100));
         player.add(new InventoryPart());
         return player;
+    }
+    private Entity createObstruction(float x, float y) {
+        Entity obstruction = new Obstruction();
+        obstruction.add(new PositionPart(x, y, 2, 2));
+        return obstruction;
     }
 }
