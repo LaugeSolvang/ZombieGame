@@ -5,5 +5,4 @@ import common.services.KeyPressListener;
 module ZombieAI {
     requires Common;
     provides IPostEntityProcessingService with zombieaisystem.AIProcessor;
-    provides IZombieAI with zombieaisystem.AIProcessor;
 }

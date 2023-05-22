@@ -21,7 +21,7 @@ import static java.util.stream.Collectors.toList;
 public class RifleProcessor implements IEntityProcessingService, IShoot {
     String shootImplName = "riflesystem.RifleProcessor";
     private float rifleTime = 0.0f;
-    private final int RIFLE_SPAWN_INTERVAL = 30;
+    private final int RIFLE_SPAWN_INTERVAL = 60;
     private Collection<? extends ValidLocation> validLocations = getValidLocation();
     private Collection<? extends BulletSPI> bulletSPIS = getBulletSPIs();
 
