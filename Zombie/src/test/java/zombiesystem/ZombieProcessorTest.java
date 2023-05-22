@@ -4,14 +4,16 @@ import common.data.Entity;
 import common.data.GameData;
 import common.data.World;
 import common.data.entities.ValidLocation;
-import common.data.entities.zombie.IZombieAI;
 import common.data.entities.zombie.Zombie;
 import common.data.entityparts.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
+import static common.data.GameData.TILE_SIZE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -21,10 +23,12 @@ class ZombieProcessorTest {
     private GameData gameData;
     private World world;
     private ZombiePlugin zombiePlugin;
-    private ValidLocation validLocation;
-    private IZombieAI iZombieAI;
+    private Zombie zombie;
+    private PositionPart zombiePositionPart;
+    private MovingPart zombieMovingPart;
     private static final int EXPECTED_X = 23;
     private static final int EXPECTED_Y = 11;
+    private static final float delta = 1/60F;
 
 
     @BeforeEach
@@ -32,23 +36,20 @@ class ZombieProcessorTest {
         zombieProcessor = new ZombieProcessor();
         zombiePlugin = new ZombiePlugin();
         gameData = new GameData();
-        gameData.setDelta(1/60F);
+        gameData.setDelta(delta);
+        gameData.setDisplayWidth(800);
+        gameData.setDisplayHeight(800);
         world = new World();
         zombiePlugin = new ZombiePlugin();
         zombiePlugin.start(gameData, world);
-        validLocation = mock(ValidLocation.class);
-        iZombieAI = mock(IZombieAI.class);
-
+        ValidLocation validLocation = mock(ValidLocation.class);
         zombieProcessor.setValidLocations(Collections.singleton(validLocation));
-        zombieProcessor.setiZombieAIS(Collections.singleton(iZombieAI));
         when(validLocation.generateSpawnLocation(any(World.class), any(GameData.class))).thenReturn(new int[]{EXPECTED_X, EXPECTED_Y});
-        doAnswer(invocation -> {
-            Entity zombie = invocation.getArgument(1);
-            MovingPart movingPart = zombie.getPart(MovingPart.class);
-            movingPart.setDx(2);
-            return null;  // return is needed even though this is for a void method
-        }).when(iZombieAI).moveTowards(any(GameData.class),any(Entity.class));
-
+        zombie = new Zombie();
+        zombiePositionPart = new PositionPart(400,400,31,63);
+        zombieMovingPart = new MovingPart(10,100,100);
+        zombie.add(zombiePositionPart);
+        zombie.add(zombieMovingPart);
     }
 
     @Test
@@ -71,7 +72,7 @@ class ZombieProcessorTest {
             assertNotNull(damagePart);
             PositionPart positionPart = zombie.getPart(PositionPart.class);
             assertNotNull(positionPart);
-            assertEquals(zombie.getPath(), "Zombie/src/main/resources/zombie-kopi.png");
+            assertEquals(zombie.getPath(), "Zombie/src/main/resources/zombie.png");
         }
     }
     @Test
@@ -86,6 +87,74 @@ class ZombieProcessorTest {
 
         // Assert
         assertEquals(postProcessZombieCount, initialZombieCount);
+    }
+
+    @Test
+    public void testMoveTowardsWithPathSizeLessThanTwo() {
+        // Create a path with size less than or equal to 2
+        List<int[]> pathFinding = new ArrayList<>();
+        pathFinding.add(new int[]{11, 12});
+        pathFinding.add(new int[]{12, 12});
+
+        // Assuming that Zombie's setPathFinding() method sets the path
+        zombie.setPathFinding(pathFinding);
+
+        // Process move towards
+        zombieProcessor.process(gameData,world);
+        // Check if the targetX and targetY are correctly assigned
+        assertEquals(400 + zombieMovingPart.getDx()*delta, zombiePositionPart.getX(),0.003);
+        assertEquals(400 + zombieMovingPart.getDy()*delta, zombiePositionPart.getY(),0.003);
+    }
+    @Test
+    public void testMoveTowardsWithPathSizeLessThan() {
+        // Create a path with size less than or equal to 2
+        List<int[]> pathFinding = new ArrayList<>();
+        pathFinding.add(new int[]{11, 11});
+        pathFinding.add(new int[]{11, 12});
+        pathFinding.add(new int[]{12, 12});
+        pathFinding.add(new int[]{12, 13});
+
+        // Assuming that Zombie's setPathFinding() method sets the path
+        world.addEntity(zombie);
+        zombie.setPathFinding(pathFinding);
+        zombiePositionPart.setPosition(12*TILE_SIZE, 12*TILE_SIZE);
+
+
+        // Process move towards
+        zombieProcessor.process(gameData, world);
+
+        // Check if the targetX and targetY are correctly assigned
+        assertEquals(12*TILE_SIZE + zombieMovingPart.getDx()*delta, zombiePositionPart.getX(),0.003);
+        assertEquals(12*TILE_SIZE + zombieMovingPart.getDy()*delta, zombiePositionPart.getY(),0.003);
+    }
+    @Test
+    public void testMoveTowardsWithPathSizeLess() {
+        // Create a path with size less than or equal to 2
+        List<int[]> pathFinding = new ArrayList<>();
+        pathFinding.add(new int[]{11, 11});
+        pathFinding.add(new int[]{12, 11});
+        pathFinding.add(new int[]{12, 12});
+
+        // Assuming that Zombie's setPathFinding() method sets the path
+        zombie.setPathFinding(pathFinding);
+        zombiePositionPart.setPosition(12*TILE_SIZE, 12*TILE_SIZE);
+
+        // Process move towards
+        zombieProcessor.setZombieTime(2);
+        zombieProcessor.process(gameData, world);
+
+        // Check if the targetX and targetY are correctly assigned
+        assertEquals(12*TILE_SIZE + zombieMovingPart.getDx()*delta, zombiePositionPart.getX(),0.003);
+        assertEquals(12*TILE_SIZE + zombieMovingPart.getDy()*delta, zombiePositionPart.getY(),0.003);
+    }
+    @Test
+    public void testMoveTowardsWithNoPath() {
+        // No path set
+        zombieProcessor.process(gameData, world);
+
+        // We expect the zombie not to move
+        assertEquals(400, zombiePositionPart.getX());
+        assertEquals(400, zombiePositionPart.getY());
     }
 
 

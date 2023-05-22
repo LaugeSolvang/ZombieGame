@@ -1,5 +1,4 @@
 import common.data.entities.ValidLocation;
-import common.data.entities.zombie.IZombieAI;
 import common.services.IEntityProcessingService;
 import common.services.IGamePluginService;
 import common.services.KeyPressListener;
@@ -9,6 +8,5 @@ module Zombie{
     provides IGamePluginService with zombiesystem.ZombiePlugin;
     provides IEntityProcessingService with zombiesystem.ZombieProcessor;
     provides KeyPressListener with zombiesystem.ZombiePlugin;
-    uses IZombieAI;
     uses ValidLocation;
 }

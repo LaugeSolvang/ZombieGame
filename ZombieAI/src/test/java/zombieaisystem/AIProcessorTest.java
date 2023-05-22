@@ -9,11 +9,9 @@ import common.data.entityparts.PositionPart;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static common.data.GameData.TILE_SIZE;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AIProcessorTest {
@@ -22,25 +20,22 @@ class AIProcessorTest {
     private GameData gameData;
     private Player player;
     private Zombie zombie;
-    private PositionPart playerPositionPart;
-    private PositionPart zombiePositionPart;
-    private MovingPart zombieMovingPart;
     private String[][] map;
-    private final float delta = 1/60F;
 
     @BeforeEach
     public void setUp() {
         world = new World();
         gameData = new GameData();
+        float delta = 1 / 60F;
         gameData.setDelta(delta);
         gameData.setDisplayWidth(800);
         gameData.setDisplayHeight(800);
         player = new Player();
         zombie = new Zombie();
-        playerPositionPart = new PositionPart(10,10,31,63);
+        PositionPart playerPositionPart = new PositionPart(10, 10, 31, 63);
         player.add(playerPositionPart);
-        zombiePositionPart = new PositionPart(400,400,31,63);
-        zombieMovingPart = new MovingPart(10,100,100);
+        PositionPart zombiePositionPart = new PositionPart(400, 400, 31, 63);
+        MovingPart zombieMovingPart = new MovingPart(10, 100, 100);
         zombie.add(zombiePositionPart);
         zombie.add(zombieMovingPart);
         aiProcessor = new AIProcessor();
@@ -137,72 +132,7 @@ class AIProcessorTest {
             assertArrayEquals(expectedPath.get(i), actualPath.get(i));
         }
     }
-    @Test
-    public void testMoveTowardsWithPathSizeLessThanTwo() {
-        // Create a path with size less than or equal to 2
-        List<int[]> pathFinding = new ArrayList<>();
-        pathFinding.add(new int[]{11, 12});
-        pathFinding.add(new int[]{12, 12});
 
-        // Assuming that Zombie's setPathFinding() method sets the path
-        zombie.setPathFinding(pathFinding);
-
-        // Process move towards
-        aiProcessor.moveTowards(gameData, zombie);
-
-        // Check if the targetX and targetY are correctly assigned
-        assertEquals(400 + zombieMovingPart.getDx()*delta, zombiePositionPart.getX(),0.003);
-        assertEquals(400 + zombieMovingPart.getDy()*delta, zombiePositionPart.getY(),0.003);
-    }
-    @Test
-    public void testMoveTowardsWithPathSizeLessThan() {
-        // Create a path with size less than or equal to 2
-        List<int[]> pathFinding = new ArrayList<>();
-        pathFinding.add(new int[]{11, 11});
-        pathFinding.add(new int[]{11, 12});
-        pathFinding.add(new int[]{12, 12});
-        pathFinding.add(new int[]{12, 13});
-
-        // Assuming that Zombie's setPathFinding() method sets the path
-        zombie.setPathFinding(pathFinding);
-        zombiePositionPart.setPosition(12*TILE_SIZE, 12*TILE_SIZE);
-
-        // Process move towards
-        aiProcessor.moveTowards(gameData, zombie);
-
-        // Check if the targetX and targetY are correctly assigned
-        assertEquals(12*TILE_SIZE + zombieMovingPart.getDx()*delta, zombiePositionPart.getX(),0.003);
-        assertEquals(12*TILE_SIZE + zombieMovingPart.getDy()*delta, zombiePositionPart.getY(),0.003);
-    }
-    @Test
-    public void testMoveTowardsWithPathSizeLess() {
-        // Create a path with size less than or equal to 2
-        List<int[]> pathFinding = new ArrayList<>();
-        pathFinding.add(new int[]{11, 11});
-        pathFinding.add(new int[]{12, 11});
-        pathFinding.add(new int[]{12, 12});
-
-        // Assuming that Zombie's setPathFinding() method sets the path
-        zombie.setPathFinding(pathFinding);
-        zombiePositionPart.setPosition(12*TILE_SIZE, 12*TILE_SIZE);
-
-        // Process move towards
-        aiProcessor.setAITime(2);
-        aiProcessor.moveTowards(gameData, zombie);
-
-        // Check if the targetX and targetY are correctly assigned
-        assertEquals(12*TILE_SIZE + zombieMovingPart.getDx()*delta, zombiePositionPart.getX(),0.003);
-        assertEquals(12*TILE_SIZE + zombieMovingPart.getDy()*delta, zombiePositionPart.getY(),0.003);
-    }
-    @Test
-    public void testMoveTowardsWithNoPath() {
-        // No path set
-        aiProcessor.moveTowards(gameData, zombie);
-
-        // We expect the zombie not to move
-        assertEquals(400, zombiePositionPart.getX());
-        assertEquals(400, zombiePositionPart.getY());
-    }
     @Test
     public void testProcessWithoutPlayer() {
         // Remove player from the world
