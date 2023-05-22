@@ -4,7 +4,6 @@ import common.data.Entity;
 import common.data.GameData;
 import common.data.World;
 import common.data.entities.ValidLocation;
-import common.data.entities.zombie.IZombieAI;
 import common.data.entities.zombie.Zombie;
 import common.data.entityparts.DamagePart;
 import common.data.entityparts.LifePart;
@@ -13,6 +12,7 @@ import common.data.entityparts.PositionPart;
 import common.services.IEntityProcessingService;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.ServiceLoader;
 
 import static common.data.GameData.TILE_SIZE;
@@ -23,8 +23,6 @@ public class ZombieProcessor implements IEntityProcessingService {
     private float zombieTime = 0.0f;
     private final int ZOMBIE_SPAWN_INTERVAL = 15;
     private Collection<? extends ValidLocation> validLocations = getValidLocations();
-    private Collection<? extends IZombieAI> iZombieAIS = getIZombieAIs();
-
 
     @Override
     public void process(GameData gameData, World world) {
@@ -34,9 +32,8 @@ public class ZombieProcessor implements IEntityProcessingService {
         }
         zombieTime += gameData.getDelta();
 
-        spawnZombies(gameData, world);
         moveZombies(gameData, world);
-
+        spawnZombies(gameData, world);
     }
 
     private void spawnZombies(GameData gameData, World world) {
@@ -57,9 +54,63 @@ public class ZombieProcessor implements IEntityProcessingService {
     }
     private void moveZombies(GameData gameData, World world) {
         for (Entity zombie : world.getEntities(Zombie.class)) {
-            for (IZombieAI AI : iZombieAIS) {
-                AI.moveTowards(gameData, zombie);
+            PositionPart zombiePosition = zombie.getPart(PositionPart.class);
+            MovingPart zombieMovement = zombie.getPart(MovingPart.class);
+
+            List<int[]> pathFinding = ((Zombie) zombie).getPathFinding();
+            if (pathFinding == null) {
+                return;
             }
+
+            float currentX = (int) zombiePosition.getX();
+            float currentY = (int) zombiePosition.getY();
+
+            int targetX;
+            int targetY;
+
+            if (pathFinding.size() <= 2) {
+                targetX = pathFinding.get(pathFinding.size() - 1)[0] * TILE_SIZE;
+                targetY = pathFinding.get(pathFinding.size() - 1)[1] * TILE_SIZE;
+            } else {
+                targetX = pathFinding.get(2)[0] * TILE_SIZE;
+                targetY = pathFinding.get(2)[1] * TILE_SIZE;
+
+                if (targetX == currentX && targetY == currentY) {
+                    pathFinding.remove(2);
+                    if (pathFinding.size() >= 3) {
+                        targetX = pathFinding.get(2)[0] * TILE_SIZE;
+                        targetY = pathFinding.get(2)[1] * TILE_SIZE;
+                    }
+                }
+            }
+
+            float diffX = targetX - currentX;
+            float diffY = targetY - currentY;
+            float delta = gameData.getDelta();
+
+            if (Math.abs(diffX) <= Math.abs(zombieMovement.getDx() * delta)) {
+                zombieMovement.setDx(0);
+                zombiePosition.setX(currentX);
+            } else {
+                zombieMovement.setRight(diffX > 0);
+                zombieMovement.setLeft(diffX < 0);
+            }
+            if (Math.abs(diffY) <= Math.abs(zombieMovement.getDy() * delta)) {
+                zombieMovement.setDy(0);
+                zombiePosition.setY(currentY);
+            } else {
+                zombieMovement.setUp(diffY > 0);
+                zombieMovement.setDown(diffY < 0);
+            }
+
+            zombieMovement.process(gameData, zombie);
+            zombiePosition.process(gameData, zombie);
+
+            zombieMovement.setUp(false);
+            zombieMovement.setDown(false);
+            zombieMovement.setRight(false);
+            zombieMovement.setLeft(false);
+
             MovingPart movingPart = zombie.getPart(MovingPart.class);
             //makes the zombie face the direction they are going
             if (movingPart.getDx() < 0){
@@ -70,7 +121,6 @@ public class ZombieProcessor implements IEntityProcessingService {
                 String path = "Zombie/src/main/resources/zombie-kopi.png";
                 zombie.setPath(path);
             }
-
         }
     }
     private Entity createEntity(int x, int y) {
@@ -94,9 +144,6 @@ public class ZombieProcessor implements IEntityProcessingService {
 
         return zombie;
     }
-    private Collection<? extends IZombieAI> getIZombieAIs() {
-        return ServiceLoader.load(IZombieAI.class).stream().map(ServiceLoader.Provider::get).collect(toList());
-    }
     private Collection<? extends ValidLocation> getValidLocations() {
         return ServiceLoader.load(ValidLocation.class).stream().map(ServiceLoader.Provider::get).collect(toList());
     }
@@ -105,7 +152,7 @@ public class ZombieProcessor implements IEntityProcessingService {
         this.validLocations = validLocations;
     }
 
-    public void setiZombieAIS(Collection<? extends IZombieAI> iZombieAIS) {
-        this.iZombieAIS = iZombieAIS;
+    public void setZombieTime(float zombieTime) {
+        this.zombieTime = zombieTime;
     }
 }
