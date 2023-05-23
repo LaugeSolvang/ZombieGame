@@ -118,19 +118,19 @@ public class Game implements ApplicationListener {
 
     }
 
-    public static Collection<? extends IGamePluginService> getPluginServices() {
+    private static Collection<? extends IGamePluginService> getPluginServices() {
         return java.util.ServiceLoader.load(IGamePluginService.class).stream().map(java.util.ServiceLoader.Provider::get).collect(toList());
     }
 
-    public static Collection<? extends IEntityProcessingService> getEntityProcessingServices() {
+    private static Collection<? extends IEntityProcessingService> getEntityProcessingServices() {
         return java.util.ServiceLoader.load(IEntityProcessingService.class).stream().map(java.util.ServiceLoader.Provider::get).collect(toList());
     }
 
-    public static Collection<? extends IPostEntityProcessingService> getPostEntityProcessingServices() {
+    private static Collection<? extends IPostEntityProcessingService> getPostEntityProcessingServices() {
         return java.util.ServiceLoader.load(IPostEntityProcessingService.class).stream().map(java.util.ServiceLoader.Provider::get).collect(toList());
     }
 
-    public static Collection<? extends KeyPressListener> getKeyPressListeners() {
+    private static Collection<? extends KeyPressListener> getKeyPressListeners() {
         return java.util.ServiceLoader.load(KeyPressListener.class).stream().map(java.util.ServiceLoader.Provider::get).collect(toList());
     }
 }
