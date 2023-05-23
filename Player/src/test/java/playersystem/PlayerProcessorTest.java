@@ -108,7 +108,7 @@ class PlayerProcessorTest {
         playerProcessor.process(gameData, world);
 
         // Assert
-        assertEquals(49, weapon.getAmmo(), "Weapon ammo should decrease by 1 after use");
+        assertEquals(49, weapon.getAmmo());
         assertTrue(world.getEntities(Bullet.class).size() > 0);
     }
     @Test

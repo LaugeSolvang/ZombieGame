@@ -38,7 +38,7 @@ public class PlayerPlugin implements IGamePluginService, KeyPressListener {
         String path = "Player/src/main/resources/player.png";
         player.setPath(path);
         PositionPart positionPart = new PositionPart(x, y);
-        positionPart.setDimension(new int[]{31,61});
+        positionPart.setDimension(31,61);
         player.add(positionPart);
         player.add(new MovingPart(deceleration, acceleration, maxSpeed));
         player.add(new LifePart(life));
@@ -83,5 +83,4 @@ public class PlayerPlugin implements IGamePluginService, KeyPressListener {
             }
         }
     }
-
 }

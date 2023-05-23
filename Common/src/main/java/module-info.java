@@ -9,6 +9,4 @@ module Common {
     exports common.data.entities.obstruction;
     exports common.data.entities.player;
     exports common.data.entities;
-    exports common.utility;
-
 }

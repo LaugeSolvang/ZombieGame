@@ -49,10 +49,6 @@ public class GameData {
         this.gameTime = gameTime;
     }
 
-    public int getTileSize() {
-        return TILE_SIZE;
-    }
-
     public void setActivePlugin(String pluginKey, boolean isActive) {
         activePlugins.put(pluginKey, isActive);
     }

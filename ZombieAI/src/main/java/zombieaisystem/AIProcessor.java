@@ -43,9 +43,10 @@ public class AIProcessor implements IPostEntityProcessingService {
 
             PositionPart zombiePosition = zombie.getPart(PositionPart.class);
 
-            String INITIAL_STATE = (int)(zombiePosition.getX() / TILE_SIZE) + "," + (int)(zombiePosition.getY() / TILE_SIZE);
-            String GOAL_STATE = (int)(playerPosition.getX() / TILE_SIZE) + "," + (int)(playerPosition.getY() / TILE_SIZE);
+            AStar.State INITIAL_STATE = new AStar.State((int)(zombiePosition.getX() / TILE_SIZE), (int)(zombiePosition.getY() / TILE_SIZE));
+            AStar.State GOAL_STATE = new AStar.State((int)(playerPosition.getX() / TILE_SIZE), (int)(playerPosition.getY() / TILE_SIZE));
             zombie.setPathFinding(aStar.treeSearch(map, INITIAL_STATE, GOAL_STATE));
+
         }
     }
 }

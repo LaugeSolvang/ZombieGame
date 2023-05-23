@@ -135,7 +135,7 @@ public class ZombieProcessor implements IEntityProcessingService {
         zombie.setPath(path);
 
         PositionPart positionPart = new PositionPart(x, y);
-        positionPart.setDimension(new int[]{31,61});
+        positionPart.setDimension(31,61);
         zombie.add(positionPart);
 
         zombie.add(new MovingPart(deceleration, acceleration, maxSpeed));

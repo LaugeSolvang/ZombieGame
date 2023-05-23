@@ -52,7 +52,7 @@ public class BulletProcessor implements IEntityProcessingService, BulletSPI {
         float x = weaponPos.getX() + weaponPos.getHeight() / 2;
         float y = weaponPos.getY() + weaponPos.getWidth() / 2;
         PositionPart positionPart = new PositionPart(x, y);
-        positionPart.setDimension(new int[]{3,3});
+        positionPart.setDimension(3,3);
         bullet.add(positionPart);
         bullet.setPath(path);
         bullet.setRadius(2);

@@ -9,7 +9,6 @@ import java.util.Map;
 
 public class SpriteCache {
     private static final Map<String, Sprite> spriteMap = new HashMap<>();
-
     public static Sprite getSprite(String path) {
         if (!spriteMap.containsKey(path)) {
             Texture texture = new Texture(Gdx.files.internal(path));

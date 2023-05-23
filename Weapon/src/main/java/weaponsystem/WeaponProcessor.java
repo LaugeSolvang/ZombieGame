@@ -107,7 +107,7 @@ public class WeaponProcessor implements IEntityProcessingService, IShoot {
         weapon.setPath(path);
 
         PositionPart positionPart = new PositionPart(x, y);
-        positionPart.setDimension(new int[]{32,32});
+        positionPart.setDimension(32,32);
         weapon.add(positionPart);
         weapon.add(new TimerPart(0));
         weapon.add(new DamagePart(damage));

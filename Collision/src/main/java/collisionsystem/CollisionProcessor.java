@@ -15,27 +15,23 @@ import java.util.Objects;
 public class CollisionProcessor implements IPostEntityProcessingService {
     @Override
     public void process(GameData gameData, World world) {
-        // Create a quadtree to partition the world
-        Quadtree<Entity> quadtree = new Quadtree<>(0,0,0,45,23);
+        Quadtree<Entity> quadtree = new Quadtree<>(0,0,0, gameData.getDisplayWidth(), gameData.getDisplayWidth());
 
         for (Entity entity : world.getEntities()) {
-            PositionPart positionPart = entity.getPart(PositionPart.class);
-            quadtree.insert(entity, positionPart.getX(), positionPart.getY(), positionPart.getWidth(), positionPart.getHeight());
+            PositionPart pos = entity.getPart(PositionPart.class);
+            quadtree.insert(entity, pos.getX(), pos.getY(), pos.getWidth(), pos.getHeight());
         }
 
-        for (Entity firstEntity : world.getEntities()) {
-            PositionPart firstPosition = firstEntity.getPart(PositionPart.class);
-            List<Entity> nearbyEntities = quadtree.retrieve(firstEntity, firstPosition.getX(), firstPosition.getY(), firstPosition.getWidth(), firstPosition.getHeight());
+        for (Entity entity : world.getEntities()) {
+            PositionPart pos = entity.getPart(PositionPart.class);
+            List<Entity> nearbyEntities = quadtree.retrieve(entity, pos.getX(), pos.getY(), pos.getWidth(), pos.getHeight());
 
-            for (Entity secondEntity : nearbyEntities) {
-                // Skip the iteration if the entities are identical
-                if (firstEntity.getID().equals(secondEntity.getID())) {
+            for (Entity nearbyEntity : nearbyEntities) {
+                if (entity.getID().equals(nearbyEntity.getID())) {
                     continue;
                 }
-
-                // Check for collision between the two different entities
-                if (isColliding(firstPosition, secondEntity.getPart(PositionPart.class))) {
-                    handleCollision(firstEntity, secondEntity, gameData, world);
+                if (isColliding(pos, nearbyEntity.getPart(PositionPart.class))) {
+                    handleCollision(entity, nearbyEntity, gameData, world);
                 }
             }
         }

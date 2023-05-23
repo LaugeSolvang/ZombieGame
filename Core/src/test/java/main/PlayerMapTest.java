@@ -12,7 +12,6 @@ import common.services.IEntityProcessingService;
 import common.services.IGamePluginService;
 import common.services.IPostEntityProcessingService;
 import common.services.KeyPressListener;
-import common.utility.ImageDimension;
 import mapsystem.MapPlugin;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -81,8 +80,6 @@ public class PlayerMapTest {
                 entityProcessingServices,
                 postEntityProcessingServices,
                 keyPressListeners);
-        int value[] = ImageDimension.getDimensions("Common/src/main/resources/sprites/weapon.png");
-        System.out.println(value[0]);
     }
 
     @Test
@@ -92,15 +89,10 @@ public class PlayerMapTest {
         // Check if a player and a weapon are present in the world
         boolean playerPresent = world.getEntities(Player.class).size() > 0;
         assertTrue(playerPresent, "Player entity not found in the world");
-        assertTrue(world.getMap()!= null, "Map not found in the world");
+        assertNotNull(world.getMap(), "Map not found in the world");
 
-        for (Entity obstruction: world.getEntities()) {
-            PositionPart positionPart = obstruction.getPart(PositionPart.class);
-            positionPart.setDimension(new int[]{32,32});
-        }
         List<Entity> player = world.getEntities(Player.class);
         PositionPart playerPositionPart = player.get(0).getPart(PositionPart.class);
-        playerPositionPart.setDimension(new int[]{31,61});
         MovingPart playerMovingPart = player.get(0).getPart(MovingPart.class);
 
         assertEquals((int)playerPositionPart.getX(),displayWidth/2);
@@ -116,8 +108,6 @@ public class PlayerMapTest {
         assertEquals((int)playerPositionPart.getY(),481);
         gameKeys.setKey(GameKeys.NINE, true);
         gameLogic.checkForUserInput(gameData, world);
-
-        System.out.println(playerMovingPart.getDx());
 
         do {
             gameKeys.setKey(GameKeys.RIGHT, true);
