@@ -14,9 +14,16 @@ import common.data.entities.player.Player;
 import common.data.entityparts.LifePart;
 import common.data.entityparts.PositionPart;
 import common.data.Score;
-import managers.ServiceLoaderUtils;
+import common.services.IEntityProcessingService;
+import common.services.IGamePluginService;
+import common.services.IPostEntityProcessingService;
+import common.services.KeyPressListener;
 import managers.GameInputProcessor;
 import managers.SpriteCache;
+
+import java.util.Collection;
+
+import static java.util.stream.Collectors.toList;
 
 public class Game implements ApplicationListener {
     private SpriteBatch sb;
@@ -38,10 +45,10 @@ public class Game implements ApplicationListener {
         sb = new SpriteBatch();
 
         gameLogic = new GameLogic(
-                ServiceLoaderUtils.getPluginServices(),
-                ServiceLoaderUtils.getEntityProcessingServices(),
-                ServiceLoaderUtils.getPostEntityProcessingServices(),
-                ServiceLoaderUtils.getKeyPressListeners()
+                getPluginServices(),
+                getEntityProcessingServices(),
+                getPostEntityProcessingServices(),
+                getKeyPressListeners()
         );
 
         Gdx.input.setInputProcessor(new GameInputProcessor(gameData));
@@ -109,5 +116,21 @@ public class Game implements ApplicationListener {
     @Override
     public void dispose() {
 
+    }
+
+    public static Collection<? extends IGamePluginService> getPluginServices() {
+        return java.util.ServiceLoader.load(IGamePluginService.class).stream().map(java.util.ServiceLoader.Provider::get).collect(toList());
+    }
+
+    public static Collection<? extends IEntityProcessingService> getEntityProcessingServices() {
+        return java.util.ServiceLoader.load(IEntityProcessingService.class).stream().map(java.util.ServiceLoader.Provider::get).collect(toList());
+    }
+
+    public static Collection<? extends IPostEntityProcessingService> getPostEntityProcessingServices() {
+        return java.util.ServiceLoader.load(IPostEntityProcessingService.class).stream().map(java.util.ServiceLoader.Provider::get).collect(toList());
+    }
+
+    public static Collection<? extends KeyPressListener> getKeyPressListeners() {
+        return java.util.ServiceLoader.load(KeyPressListener.class).stream().map(java.util.ServiceLoader.Provider::get).collect(toList());
     }
 }
