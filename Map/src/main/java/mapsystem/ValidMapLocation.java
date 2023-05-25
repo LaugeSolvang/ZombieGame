@@ -12,7 +12,7 @@ import java.util.Random;
 
 import static common.data.GameData.TILE_SIZE;
 
-public class MapProcessor implements ValidLocation {
+public class ValidMapLocation implements ValidLocation {
     @Override
     public int[] generateSpawnLocation(World world, GameData gameData) {
         String[][] map = world.getMap();

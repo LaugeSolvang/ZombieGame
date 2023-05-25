@@ -13,8 +13,8 @@ import java.util.Arrays;
 import static common.data.GameData.TILE_SIZE;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class MapProcessorTest {
-    private MapProcessor mapProcessor;
+public class ValidMapLocationTest {
+    private ValidMapLocation validMapLocation;
     private GameData gameData;
     private World world;
     private Player player;
@@ -26,7 +26,7 @@ public class MapProcessorTest {
 
     @BeforeEach
     public void setUp() {
-        mapProcessor = new MapProcessor();
+        validMapLocation = new ValidMapLocation();
         gameData = new GameData();
         world = new World();
         player = new Player();
@@ -52,12 +52,12 @@ public class MapProcessorTest {
         world.setMap(obstructionMap);
 
         // Act
-        int[] spawnLocation = mapProcessor.generateSpawnLocation(world, gameData);
+        int[] spawnLocation = validMapLocation.generateSpawnLocation(world, gameData);
 
         // Assert
         assertNotNull(spawnLocation);
         assertEquals(2, spawnLocation.length);
-        assertTrue(mapProcessor.isValidLocation(obstructionMap, player.getPart(PositionPart.class), spawnLocation[0], spawnLocation[1]));
+        assertTrue(validMapLocation.isValidLocation(obstructionMap, player.getPart(PositionPart.class), spawnLocation[0], spawnLocation[1]));
     }
     @Test
     public void generateSpawnLocation_withInvalidPlayerLocation_returnsNull() {
@@ -68,7 +68,7 @@ public class MapProcessorTest {
         }
 
         // Act
-        int[] spawnLocation = mapProcessor.generateSpawnLocation(world, gameData);
+        int[] spawnLocation = validMapLocation.generateSpawnLocation(world, gameData);
 
         // Assert
         assertNull(spawnLocation);
@@ -78,7 +78,7 @@ public class MapProcessorTest {
         //Arrange
         world.setMap(obstructionMap);
         // Act
-        boolean isValid = mapProcessor.isValidLocation(obstructionMap, positionPart, 8, 8);
+        boolean isValid = validMapLocation.isValidLocation(obstructionMap, positionPart, 8, 8);
 
         // Assert
         assertTrue(isValid);
@@ -88,7 +88,7 @@ public class MapProcessorTest {
         //Arrange
         world.setMap(obstructionMap);
         // Act
-        boolean isValid = mapProcessor.isValidLocation(obstructionMap, positionPart, playerX-5, playerY-5);
+        boolean isValid = validMapLocation.isValidLocation(obstructionMap, positionPart, playerX-5, playerY-5);
 
         // Assert
         assertFalse(isValid);
@@ -99,7 +99,7 @@ public class MapProcessorTest {
         world.setMap(obstructionMap);
 
         // Act
-        boolean isValid = mapProcessor.isValidLocation(emptyMap, positionPart, 3, 3);
+        boolean isValid = validMapLocation.isValidLocation(emptyMap, positionPart, 3, 3);
 
         // Assert
         assertFalse(isValid);
